@@ -24,47 +24,49 @@
 */
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>connid</artifactId>
-        <groupId>org.connid</groupId>
+        <artifactId>soap</artifactId>
+        <groupId>org.connid.bundles.soap</groupId>
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>framework-internal</artifactId>
+    <groupId>org.connid.bundles.soap</groupId>
+    <artifactId>utilities</artifactId>
 
-    <name>Framework Internal</name>
+    <name>Bundles: SOAP: Utilities</name>
+
+    <packaging>jar</packaging>
 
     <dependencies>
 
         <dependency>
-            <groupId>org.connid</groupId>
-            <artifactId>framework</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
         </dependency>
 
+        <!-- CXF -->
         <dependency>
-            <groupId>org.connid</groupId>
-            <artifactId>test-common</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
         </dependency>
 
+        <!-- Spring -->
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>${groovy-all.version}</version>
-            <scope>provided</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
         </dependency>
 
     </dependencies>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
 </project>
