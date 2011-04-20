@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.logging.Handler;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
 import org.identityconnectors.common.logging.Log.Level;
 import org.junit.Test;
 
@@ -31,8 +29,10 @@ public class JDKLoggerTests {
         jdkLogger.setUseParentHandlers(false);
         final List<LogRecord> records = new ArrayList<LogRecord>();
         jdkLogger.addHandler(new Handler() {
+
             @Override
-            public void close() throws SecurityException {
+            public void close()
+                    throws SecurityException {
             }
 
             @Override
@@ -44,7 +44,8 @@ public class JDKLoggerTests {
                 records.add(record);
             }
         });
-        logger.log(JDKLoggerTests.class, "method1", Level.ERROR, "Msg", new Exception());
+        logger.log(JDKLoggerTests.class, "method1", Level.ERROR, "Msg",
+                new Exception());
         assertEquals("Must log one record", 1, records.size());
         assertEquals("method1", records.get(0).getSourceMethodName());
         assertEquals("Msg", records.get(0).getMessage());
@@ -56,22 +57,27 @@ public class JDKLoggerTests {
         JDKLogger logger = new JDKLogger();
         Logger jdkLogger = logger.getJDKLogger(JDKLoggerTests.class.getName());
 
-        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.INFO.getName());
+        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.
+                getName(), java.util.logging.Level.INFO.getName());
         assertEquals(java.util.logging.Level.INFO, jdkLogger.getLevel());
         assertTrue(logger.isLoggable(JDKLoggerTests.class, Level.INFO));
 
-        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.WARNING.getName());
+        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.
+                getName(), java.util.logging.Level.WARNING.getName());
         assertEquals(java.util.logging.Level.WARNING, jdkLogger.getLevel());
         assertTrue(logger.isLoggable(JDKLoggerTests.class, Level.WARN));
 
-        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.INFO.getName());
+        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.
+                getName(), java.util.logging.Level.INFO.getName());
         assertEquals(java.util.logging.Level.INFO, jdkLogger.getLevel());
         assertFalse(logger.isLoggable(JDKLoggerTests.class, Level.OK));
 
-        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.OFF.getName());
+        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.
+                getName(), java.util.logging.Level.OFF.getName());
         assertFalse(logger.isLoggable(JDKLoggerTests.class, Level.WARN));
 
-        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.ALL.getName());
+        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.
+                getName(), java.util.logging.Level.ALL.getName());
         assertTrue(logger.isLoggable(JDKLoggerTests.class, Level.OK));
     }
 
@@ -117,8 +123,11 @@ public class JDKLoggerTests {
     }
 
     private static class CreateLogger implements Runnable {
+
         final CyclicBarrier barier;
+
         final JDKLogger logger;
+
         final String key;
 
         private CreateLogger(CyclicBarrier barier, JDKLogger logger, String key) {

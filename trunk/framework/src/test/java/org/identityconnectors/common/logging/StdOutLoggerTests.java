@@ -30,10 +30,7 @@ import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.identityconnectors.common.StringPrintWriter;
-import org.identityconnectors.common.logging.Log;
-import org.identityconnectors.common.logging.LogSpi;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -41,7 +38,7 @@ import org.junit.Test;
  * Simple tests of {@link StdOutLogger}.
  */
 public class StdOutLoggerTests {
-    
+
     @Test
     public void checkIsLogger() {
         LogSpi logSpi = new StdOutLogger();
@@ -49,9 +46,10 @@ public class StdOutLoggerTests {
             Assert.assertTrue(logSpi.isLoggable(String.class, level));
         }
     }
-    
+
     @Test
-    public void checkLogFormat() throws Exception {
+    public void checkLogFormat()
+            throws Exception {
         String MSG_EXP = "Expected message from logger attempt";
         PrintStream tmp = System.out;
         Exception EXCEPTION_EXP = new Exception();
@@ -62,10 +60,10 @@ public class StdOutLoggerTests {
             System.setOut(pstrm);
             // write something to the log..
             LogSpi logSpi = new StdOutLogger();
-            logSpi.log(String.class, "checkLogFormtat", Log.Level.OK, MSG_EXP, EXCEPTION_EXP);
+            logSpi.log(String.class, "checkLogFormtat", Log.Level.OK, MSG_EXP,
+                    EXCEPTION_EXP);
             pstrm.flush();
-        }
-        finally {
+        } finally {
             // no matter what put it back..
             System.setOut(tmp);
         }
@@ -73,7 +71,7 @@ public class StdOutLoggerTests {
         String logRecord = new String(bout.toByteArray(), "UTF-8");
         BufferedReader rdr = new BufferedReader(new StringReader(logRecord));
         String records[] = rdr.readLine().split("\t");
-        Map<String, String> map = new HashMap<String, String>(); 
+        Map<String, String> map = new HashMap<String, String>();
         for (String record : records) {
             String frag[] = record.split(":");
             map.put(frag[0].trim(), frag[1].trim());
@@ -81,7 +79,8 @@ public class StdOutLoggerTests {
         assertEquals(MSG_EXP, map.get("Message"));
         assertEquals(String.class.getName(), map.get("Class"));
         assertEquals(Log.Level.OK.toString(), map.get("Level"));
-        assertEquals(Long.toString(Thread.currentThread().getId()), map.get("Thread Id"));
+        assertEquals(Long.toString(Thread.currentThread().getId()), map.get(
+                "Thread Id"));
         // read construct the rest for the exception..
         StringPrintWriter actual = new StringPrintWriter();
         for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
@@ -91,5 +90,4 @@ public class StdOutLoggerTests {
         EXCEPTION_EXP.printStackTrace(expected);
         assertEquals(expected.getString(), actual.getString());
     }
-
 }

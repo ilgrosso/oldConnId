@@ -23,17 +23,17 @@
 package org.identityconnectors.framework.impl.api;
 
 import static org.identityconnectors.common.IOUtil.makeURL;
-
+import static org.junit.Assert.*;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.Set;
-
 import junit.framework.Assert;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.Version;
 import org.identityconnectors.common.l10n.CurrentLocale;
@@ -71,14 +71,30 @@ import org.junit.Test;
 
 public abstract class ConnectorInfoManagerTestBase {
 
-    private static ConnectorInfo findConnectorInfo
-        (ConnectorInfoManager manager,
-         String version,
-         String connectorName) {
+    protected static String bundlesDirectory;
+
+    @Before
+    public void setUpIdentityConnectorsBundles() {
+        Properties props = new java.util.Properties();
+        try {
+            InputStream propStream =
+                    getClass().getResourceAsStream("/bundles.properties");
+            props.load(propStream);
+            bundlesDirectory = props.getProperty("bundles.directory");
+        } catch (Throwable t) {
+            System.err.println("Could not load bundles.properties");
+            t.printStackTrace();
+        }
+        assertNotNull(bundlesDirectory);
+    }
+
+    private static ConnectorInfo findConnectorInfo(ConnectorInfoManager manager,
+            String version, String connectorName) {
+
         for (ConnectorInfo info : manager.getConnectorInfos()) {
             ConnectorKey key = info.getConnectorKey();
-            if ( version.equals(key.getBundleVersion()) &&
-                connectorName.equals(key.getConnectorName()) ) {
+            if (version.equals(key.getBundleVersion())
+                    && connectorName.equals(key.getConnectorName())) {
                 //intentionally ineffecient to test
                 //more code
                 return manager.findConnectorInfo(key);
@@ -103,155 +119,175 @@ public abstract class ConnectorInfoManagerTestBase {
     }
 
     @Test
-    public void testClassLoading() throws Exception {
+    public void testClassLoading()
+            throws Exception {
         final ClassLoader startLocal =
-            Thread.currentThread().getContextClassLoader();
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info1 = 
-            findConnectorInfo(manager,
-                              "1.0.0.0",
-                              "org.identityconnectors.testconnector.TstConnector");
+                Thread.currentThread().getContextClassLoader();
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info1 =
+                findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
         Assert.assertNotNull(info1);
-        ConnectorInfo info2 = 
-            findConnectorInfo(manager,
-                             "2.0.0.0",
-                             "org.identityconnectors.testconnector.TstConnector");
+        ConnectorInfo info2 =
+                findConnectorInfo(manager,
+                "2.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
         Assert.assertNotNull(info2);
-        
+
         APIConfiguration apiConfig1 = info1.createDefaultAPIConfiguration();
         ConfigurationProperties props = apiConfig1.getConfigurationProperties();
-        ConfigurationProperty property  = props.getProperty("numResults");
+        ConfigurationProperty property = props.getProperty("numResults");
         property.setValue(1);
-        
+
         ConnectorFacade facade1 =
-            ConnectorFacadeFactory.getInstance().newInstance(apiConfig1);
+                ConnectorFacadeFactory.getInstance().newInstance(apiConfig1);
 
         ConnectorFacade facade2 =
-            ConnectorFacadeFactory.getInstance().newInstance(info2.createDefaultAPIConfiguration());
-        
+                ConnectorFacadeFactory.getInstance().newInstance(info2.
+                createDefaultAPIConfiguration());
+
         Set<Attribute> attrs = CollectionUtil.<Attribute>newReadOnlySet();
-        Assert.assertEquals("1.0", facade1.create(ObjectClass.ACCOUNT,attrs,null).getUidValue());
-        Assert.assertEquals("2.0", facade2.create(ObjectClass.ACCOUNT,attrs,null).getUidValue());
-        
-        final int [] count = new int[1];
+        Assert.assertEquals("1.0", facade1.create(ObjectClass.ACCOUNT, attrs,
+                null).getUidValue());
+        Assert.assertEquals("2.0", facade2.create(ObjectClass.ACCOUNT, attrs,
+                null).getUidValue());
+
+        final int[] count = new int[1];
         facade1.search(ObjectClass.ACCOUNT,
-                null, 
+                null,
                 new ResultsHandler() {
-            public boolean handle(ConnectorObject obj) {
-                count[0]++;
-                //make sure thread local classloader is restored
-                Assert.assertSame(startLocal, Thread.currentThread().getContextClassLoader());
-                return true;
-            }
-        },null);
+
+                    @Override
+                    public boolean handle(ConnectorObject obj) {
+                        count[0]++;
+                        //make sure thread local classloader is restored
+                        Assert.assertSame(startLocal, Thread.currentThread().
+                                getContextClassLoader());
+                        return true;
+                    }
+                }, null);
         Assert.assertEquals(1, count[0]);
-        
+
         //make sure thread local classloader is restored
-        Assert.assertSame(startLocal, Thread.currentThread().getContextClassLoader());
+        Assert.assertSame(startLocal, Thread.currentThread().
+                getContextClassLoader());
     }
-    
+
     @Test
-    public void testNativeLibraries() throws Exception {
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info = 
-            findConnectorInfo(manager,
-                    "2.0.0.0",
-                    "org.identityconnectors.testconnector.TstConnector");
-        
+    public void testNativeLibraries()
+            throws Exception {
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info =
+                findConnectorInfo(manager,
+                "2.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
         APIConfiguration api = info.createDefaultAPIConfiguration();
         ConnectorFacade facade =
-            ConnectorFacadeFactory.getInstance().newInstance(api);
-        
+                ConnectorFacadeFactory.getInstance().newInstance(api);
+
         try {
             // The connector will do a System.loadLibrary().
-            facade.authenticate(ObjectClass.ACCOUNT, "username", new GuardedString("password".toCharArray()), null);
+            facade.authenticate(ObjectClass.ACCOUNT, "username",
+                    new GuardedString("password".toCharArray()), null);
         } catch (UnsatisfiedLinkError e) {
-            // If this particular exception occurs, then the bundle class loader has
-            // correctly pointed to the native library (but the library could not be
-            // loaded, since it is not a valid library--we want to keep our tests
-            // platform-independent).
-            Assert.assertTrue(e.getMessage().contains("file too short"));
+            // If this particular exception occurs, then the bundle class loader
+            // has correctly pointed to the native library (but the library
+            // could not be loaded, since it is not a valid library--we want to
+            // keep our tests platform-independent).
+            Assert.assertTrue(e.getMessage().contains(
+                    "no native in java.library.path"));
         } catch (RuntimeException e) {
-            // Remote framework serializes UnsatisfiedLinkError as RuntimeException.
-            Assert.assertTrue(e.getMessage().contains("file too short"));
+            // Remote framework serializes UnsatisfiedLinkError as
+            // RuntimeException.
+            Assert.assertTrue(e.getMessage().contains(
+                    "no native in java.library.path"));
         }
     }
-    
+
     /**
      * Attempt to test the information from the configuration.
      * 
      * @throws Exception iff there is an issue.
      */
     @Test
-    public void testAPIConfiguration() throws Exception {
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info = 
-            findConnectorInfo(manager,
-                    "1.0.0.0",
-                    "org.identityconnectors.testconnector.TstConnector");
-        
+    public void testAPIConfiguration()
+            throws Exception {
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info =
+                findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
         APIConfiguration api = info.createDefaultAPIConfiguration();
-        
+
         ConfigurationProperties props = api.getConfigurationProperties();
-        ConfigurationProperty property  = props.getProperty("tstField");
+        ConfigurationProperty property = props.getProperty("tstField");
         Assert.assertNotNull(property);
-        
+
         Set<Class<? extends APIOperation>> operations =
-            property.getOperations();
+                property.getOperations();
         Assert.assertEquals(1, operations.size());
         Assert.assertEquals(SyncApiOp.class, operations.iterator().next());
 
         CurrentLocale.clear();
-        Assert.assertEquals("Help for test field.",property.getHelpMessage(null));
-        Assert.assertEquals("Display for test field.",property.getDisplayName(null));
+        Assert.assertEquals("Help for test field.",
+                property.getHelpMessage(null));
+        Assert.assertEquals("Display for test field.",
+                property.getDisplayName(null));
         Assert.assertEquals("Test Framework Value",
                 info.getMessages().format("TEST_FRAMEWORK_KEY", "empty"));
 
         Locale xlocale = new Locale("es");
         CurrentLocale.set(xlocale);
-        Assert.assertEquals("tstField.help_es",property.getHelpMessage(null));
-        Assert.assertEquals("tstField.display_es",property.getDisplayName(null));
-        
-        Locale esESlocale = new Locale("es","ES");
-        CurrentLocale.set(esESlocale);
-        Assert.assertEquals("tstField.help_es-ES",property.getHelpMessage(null));
-        Assert.assertEquals("tstField.display_es-ES",property.getDisplayName(null));
-        
-        Locale esARlocale = new Locale("es","AR");
-        CurrentLocale.set(esARlocale);
-        Assert.assertEquals("tstField.help_es",property.getHelpMessage(null));
-        Assert.assertEquals("tstField.display_es",property.getDisplayName(null));
+        Assert.assertEquals("tstField.help_es", property.getHelpMessage(null));
+        Assert.assertEquals("tstField.display_es",
+                property.getDisplayName(null));
 
-        
+        Locale esESlocale = new Locale("es", "ES");
+        CurrentLocale.set(esESlocale);
+        Assert.assertEquals("tstField.help_es-ES",
+                property.getHelpMessage(null));
+        Assert.assertEquals("tstField.display_es-ES",
+                property.getDisplayName(null));
+
+        Locale esARlocale = new Locale("es", "AR");
+        CurrentLocale.set(esARlocale);
+        Assert.assertEquals("tstField.help_es", property.getHelpMessage(null));
+        Assert.assertEquals("tstField.display_es",
+                property.getDisplayName(null));
+
         CurrentLocale.clear();
-        
+
         ConnectorFacadeFactory facf = ConnectorFacadeFactory.getInstance();
         ConnectorFacade facade = facf.newInstance(api);
         // call the various create/update/delete commands..
         facade.schema();
     }
-    
+
     /**
      * Attempt to test the information from the configuration.
      * 
      * @throws Exception iff there is an issue.
      */
     @Test
-    public void testValidate() throws Exception {
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info = 
-            findConnectorInfo(manager,
-                    "1.0.0.0",
-                    "org.identityconnectors.testconnector.TstConnector");
-        
+    public void testValidate()
+            throws Exception {
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info =
+                findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
         APIConfiguration api = info.createDefaultAPIConfiguration();
-        
+
         ConfigurationProperties props = api.getConfigurationProperties();
-        ConfigurationProperty property  = props.getProperty("failValidation");
+        ConfigurationProperty property = props.getProperty("failValidation");
         property.setValue(false);
         ConnectorFacadeFactory facf = ConnectorFacadeFactory.getInstance();
         ConnectorFacade facade = facf.newInstance(api);
@@ -263,13 +299,11 @@ public abstract class ConnectorInfoManagerTestBase {
         try {
             CurrentLocale.set(new Locale("en"));
             facade.validate();
-            
+
             Assert.fail("exception expected");
-        }
-        catch (ConnectorException e) {
+        } catch (ConnectorException e) {
             Assert.assertEquals("validation failed en", e.getMessage());
-        }
-        finally {
+        } finally {
             CurrentLocale.clear();
         }
         //validate and also test that locale is propogated
@@ -277,17 +311,15 @@ public abstract class ConnectorInfoManagerTestBase {
         try {
             CurrentLocale.set(new Locale("es"));
             facade.validate();
-            
+
             Assert.fail("exception expected");
-        }
-        catch (ConnectorException e) {
+        } catch (ConnectorException e) {
             Assert.assertEquals("validation failed es", e.getMessage());
-        }
-        finally {
+        } finally {
             CurrentLocale.clear();
         }
     }
-    
+
     /**
      * Main purpose of this is to test searching with
      * many results and that we can properly handle
@@ -295,138 +327,145 @@ public abstract class ConnectorInfoManagerTestBase {
      * code in the remote stuff that is there to handle this
      * in particular that we want to excercise.
      */
-    @Test 
-    public void testSearchWithManyResults() throws Exception {
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info = 
-            findConnectorInfo(manager,
-                    "1.0.0.0",
-                    "org.identityconnectors.testconnector.TstConnector");
-        
+    @Test
+    public void testSearchWithManyResults()
+            throws Exception {
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info =
+                findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
         APIConfiguration api = info.createDefaultAPIConfiguration();
-        
+
         ConfigurationProperties props = api.getConfigurationProperties();
-        ConfigurationProperty property  = props.getProperty("numResults");
-        
+        ConfigurationProperty property = props.getProperty("numResults");
+
         //1000 is several times the remote size between pauses
         property.setValue(1000);
-        
+
         ConnectorFacadeFactory facf = ConnectorFacadeFactory.getInstance();
         ConnectorFacade facade = facf.newInstance(api);
 
         final List<ConnectorObject> results = new ArrayList<ConnectorObject>();
-        
+
         facade.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
+
             public boolean handle(ConnectorObject obj) {
                 results.add(obj);
                 return true;
             }
-        },null);
-        
-        Assert.assertEquals(1000,results.size());
-        for ( int i = 0; i < results.size(); i++ ) {
+        }, null);
+
+        Assert.assertEquals(1000, results.size());
+        for (int i = 0; i < results.size(); i++) {
             ConnectorObject obj = results.get(i);
             Assert.assertEquals(String.valueOf(i),
                     obj.getUid().getUidValue());
         }
-        
+
         results.clear();
-        
+
         facade.search(ObjectClass.ACCOUNT,
-                null, 
+                null,
                 new ResultsHandler() {
-            public boolean handle(ConnectorObject obj) {
-                if ( results.size() < 500 ) {
-                    results.add(obj);
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
-        },null);
-        
-        Assert.assertEquals(500,results.size());
-        for ( int i = 0; i < results.size(); i++ ) {
+
+                    public boolean handle(ConnectorObject obj) {
+                        if (results.size() < 500) {
+                            results.add(obj);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }, null);
+
+        Assert.assertEquals(500, results.size());
+        for (int i = 0; i < results.size(); i++) {
             ConnectorObject obj = results.get(i);
             Assert.assertEquals(String.valueOf(i),
                     obj.getUid().getUidValue());
         }
     }
-    
+
     //@Test 
-    public void testSearchStress() throws Exception {
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info = 
-            findConnectorInfo(manager,
-                    "1.0.0.0",
-                    "org.identityconnectors.testconnector.TstConnector");
-        
+    public void testSearchStress()
+            throws Exception {
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info =
+                findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
         APIConfiguration api = info.createDefaultAPIConfiguration();
-        
+
         ConfigurationProperties props = api.getConfigurationProperties();
-        ConfigurationProperty property  = props.getProperty("numResults");
-        
+        ConfigurationProperty property = props.getProperty("numResults");
+
         property.setValue(10000);
-        
+
         ConnectorFacadeFactory facf = ConnectorFacadeFactory.getInstance();
         ConnectorFacade facade = facf.newInstance(api);
         long start = System.currentTimeMillis();
         facade.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
+
             public boolean handle(ConnectorObject obj) {
                 return true;
             }
-        },null);
+        }, null);
         long end = System.currentTimeMillis();
-        System.out.println("Test took: "+(end-start)/1000);
+        System.out.println("Test took: " + (end - start) / 1000);
     }
     //@Test 
-    public void testSchemaStress() throws Exception {
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info = 
-            findConnectorInfo(manager,
-                    "1.0.0.0",
-                    "org.identityconnectors.testconnector.TstConnector");
-        
+
+    public void testSchemaStress()
+            throws Exception {
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info =
+                findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
         APIConfiguration api = info.createDefaultAPIConfiguration();
-        
-        
+
+
         ConnectorFacadeFactory facf = ConnectorFacadeFactory.getInstance();
         ConnectorFacade facade = facf.newInstance(api);
-        
+
         for (int i = 0; i < 1000; i++) {
             facade.schema();
         }
     }
-    
+
     //@Test 
-    public void testCreateStress() throws Exception {
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info = 
-            findConnectorInfo(manager,
-                    "1.0.0.0",
-                    "org.identityconnectors.testconnector.TstConnector");
-        
+    public void testCreateStress()
+            throws Exception {
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info =
+                findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
         APIConfiguration api = info.createDefaultAPIConfiguration();
-        
-        
+
+
         ConnectorFacadeFactory facf = ConnectorFacadeFactory.getInstance();
         ConnectorFacade facade = facf.newInstance(api);
-        
+
         for (int i = 0; i < 1000; i++) {
             Set<Attribute> attrs = new HashSet<Attribute>();
-            for ( int j = 0; j < 50; j++) {
-                attrs.add(AttributeBuilder.build("myattributename"+j, "myattributevalue"+j));
+            for (int j = 0; j < 50; j++) {
+                attrs.add(AttributeBuilder.build("myattributename" + j,
+                        "myattributevalue" + j));
             }
-            facade.create(ObjectClass.ACCOUNT,attrs,null);
+            facade.create(ObjectClass.ACCOUNT, attrs, null);
         }
     }
-    
-    
+
     /**
      * Main purpose of this is to test sync with
      * many results and that we can properly handle
@@ -434,85 +473,87 @@ public abstract class ConnectorInfoManagerTestBase {
      * code in the remote stuff that is there to handle this
      * in particular that we want to excercise.
      */
-    @Test 
-    public void testSyncWithManyResults() throws Exception {
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info = 
-            findConnectorInfo(manager,
-                    "1.0.0.0",
-                    "org.identityconnectors.testconnector.TstConnector");
-        
+    @Test
+    public void testSyncWithManyResults()
+            throws Exception {
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info =
+                findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
         APIConfiguration api = info.createDefaultAPIConfiguration();
-        
+
         ConfigurationProperties props = api.getConfigurationProperties();
-        ConfigurationProperty property  = props.getProperty("numResults");
-        
+        ConfigurationProperty property = props.getProperty("numResults");
+
         //1000 is several times the remote size between pauses
         property.setValue(1000);
-        
+
         ConnectorFacadeFactory facf = ConnectorFacadeFactory.getInstance();
         ConnectorFacade facade = facf.newInstance(api);
 
         SyncToken latest = facade.getLatestSyncToken(ObjectClass.ACCOUNT);
         Assert.assertEquals("mylatest", latest.getValue());
-        
+
         final List<SyncDelta> results = new ArrayList<SyncDelta>();
-        
+
         facade.sync(ObjectClass.ACCOUNT, null, new SyncResultsHandler() {
+
             public boolean handle(SyncDelta obj) {
                 results.add(obj);
                 return true;
             }
-        },null);
-        
-        Assert.assertEquals(1000,results.size());
-        for ( int i = 0; i < results.size(); i++ ) {
+        }, null);
+
+        Assert.assertEquals(1000, results.size());
+        for (int i = 0; i < results.size(); i++) {
             SyncDelta obj = results.get(i);
             Assert.assertEquals(String.valueOf(i),
                     obj.getObject().getUid().getUidValue());
         }
-        
+
         results.clear();
-        
+
         facade.sync(ObjectClass.ACCOUNT,
-                null, 
+                null,
                 new SyncResultsHandler() {
-            public boolean handle(SyncDelta obj) {
-                if ( results.size() < 500 ) {
-                    results.add(obj);
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
-        },null);
-        
-        Assert.assertEquals(500,results.size());
-        for ( int i = 0; i < results.size(); i++ ) {
+
+                    public boolean handle(SyncDelta obj) {
+                        if (results.size() < 500) {
+                            results.add(obj);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }, null);
+
+        Assert.assertEquals(500, results.size());
+        for (int i = 0; i < results.size(); i++) {
             SyncDelta obj = results.get(i);
             Assert.assertEquals(String.valueOf(i),
                     obj.getObject().getUid().getUidValue());
         }
     }
-    
+
     //TODO: this needs to overridden for C# testing
     @Test
-    public void testScripting() throws Exception
-    {
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info = 
-            findConnectorInfo(manager,
-                    "1.0.0.0",
-                    "org.identityconnectors.testconnector.TstConnector");
+    public void testScripting()
+            throws Exception {
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info =
+                findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
         APIConfiguration api = info.createDefaultAPIConfiguration();
-        
-        
+
+
         ConnectorFacadeFactory facf = ConnectorFacadeFactory.getInstance();
         ConnectorFacade facade = facf.newInstance(api);
-        
+
         ScriptContextBuilder builder = new ScriptContextBuilder();
         builder.addScriptArgument("arg1", "value1");
         builder.addScriptArgument("arg2", "value2");
@@ -522,166 +563,170 @@ public abstract class ConnectorInfoManagerTestBase {
         //connector object
         {
             String SCRIPT =
-                "return connector.concat(arg1,arg2)";
+                    "return connector.concat(arg1,arg2)";
             builder.setScriptText(SCRIPT);
-            String result = (String)facade.runScriptOnConnector(builder.build(), 
+            String result = (String) facade.runScriptOnConnector(builder.build(),
                     null);
-            
+
             Assert.assertEquals("value1value2", result);
         }
-        
+
         //test that they can access a class in the class loader
         {
             String SCRIPT =
-                "return org.identityconnectors.testcommon.TstCommon.getVersion()";
+                    "return org.identityconnectors.testcommon.TstCommon.getVersion()";
             builder.setScriptText(SCRIPT);
-            String result = (String)facade.runScriptOnConnector(builder.build(), 
+            String result = (String) facade.runScriptOnConnector(builder.build(),
                     null);
             Assert.assertEquals("1.0", result);
         }
-        
+
         //test that they cannot access a class in internal
         {
             String clazz = ConfigurationPropertyImpl.class.getName();
-            
+
             String SCRIPT =
-                "return new "+clazz+"()";
+                    "return new " + clazz + "()";
             builder.setScriptText(SCRIPT);
             try {
-                facade.runScriptOnConnector(builder.build(), 
+                facade.runScriptOnConnector(builder.build(),
                         null);
                 Assert.fail("exception expected");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 String msg = e.getMessage();
-                String expectedMessage = 
-                    "unable to resolve class org.identityconnectors.framework.impl.api.ConfigurationPropertyImpl";
-                Assert.assertTrue("Unexpected message: "+msg, 
+                String expectedMessage =
+                        "unable to resolve class org.identityconnectors.framework.impl.api.ConfigurationPropertyImpl";
+                Assert.assertTrue("Unexpected message: " + msg,
                         msg.contains(expectedMessage));
             }
         }
-        
+
         // test that they can access a class in common
         {
             String clazz = AttributeBuilder.class.getName();
             String SCRIPT = "return " + clazz + ".build(\"myattr\")";
             builder.setScriptText(SCRIPT);
-            Attribute attr = (Attribute) facade.runScriptOnConnector(builder.build(), null);
+            Attribute attr = (Attribute) facade.runScriptOnConnector(builder.
+                    build(), null);
             Assert.assertEquals("myattr", attr.getName());
         }
     }
-    
+
     @Test
-    public void testConnectionPooling() throws Exception {
+    public void testConnectionPooling()
+            throws Exception {
         ConnectorPoolManager.dispose();
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info1 = 
-            findConnectorInfo(manager,
-                              "1.0.0.0",
-                              "org.identityconnectors.testconnector.TstConnector");    
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info1 =
+                findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
         Assert.assertNotNull(info1);
-        
+
         //reset connection count
         {
             //trigger TstConnection.init to be called
             APIConfiguration config =
-                info1.createDefaultAPIConfiguration();
-            config.getConfigurationProperties().getProperty("resetConnectionCount").setValue(true);            
+                    info1.createDefaultAPIConfiguration();
+            config.getConfigurationProperties().getProperty(
+                    "resetConnectionCount").setValue(true);
             ConnectorFacade facade1 =
-                ConnectorFacadeFactory.getInstance().newInstance(config);
+                    ConnectorFacadeFactory.getInstance().newInstance(config);
             facade1.schema(); //force instantiation            
         }
-        
+
         APIConfiguration config =
-            info1.createDefaultAPIConfiguration();
-        
+                info1.createDefaultAPIConfiguration();
+
         config.getConnectorPoolConfiguration().setMinIdle(0);
         config.getConnectorPoolConfiguration().setMaxIdle(0);
-        
+
         ConnectorFacade facade1 =
-            ConnectorFacadeFactory.getInstance().newInstance(config);
+                ConnectorFacadeFactory.getInstance().newInstance(config);
 
         OperationOptionsBuilder builder = new OperationOptionsBuilder();
         builder.setOption("testPooling", "true");
         OperationOptions options = builder.build();
         Set<Attribute> attrs = CollectionUtil.<Attribute>newReadOnlySet();
-        Assert.assertEquals("1", facade1.create(ObjectClass.ACCOUNT,attrs,options).getUidValue());
-        Assert.assertEquals("2", facade1.create(ObjectClass.ACCOUNT,attrs,options).getUidValue());
-        Assert.assertEquals("3", facade1.create(ObjectClass.ACCOUNT,attrs,options).getUidValue());
-        Assert.assertEquals("4", facade1.create(ObjectClass.ACCOUNT,attrs,options).getUidValue());
+        Assert.assertEquals("1", facade1.create(ObjectClass.ACCOUNT, attrs,
+                options).getUidValue());
+        Assert.assertEquals("2", facade1.create(ObjectClass.ACCOUNT, attrs,
+                options).getUidValue());
+        Assert.assertEquals("3", facade1.create(ObjectClass.ACCOUNT, attrs,
+                options).getUidValue());
+        Assert.assertEquals("4", facade1.create(ObjectClass.ACCOUNT, attrs,
+                options).getUidValue());
         config =
-            info1.createDefaultAPIConfiguration();
+                info1.createDefaultAPIConfiguration();
         config.getConnectorPoolConfiguration().setMinIdle(1);
         config.getConnectorPoolConfiguration().setMaxIdle(2);
         facade1 =
-            ConnectorFacadeFactory.getInstance().newInstance(config);
-        Assert.assertEquals("5", facade1.create(ObjectClass.ACCOUNT,attrs,options).getUidValue());
-        Assert.assertEquals("5", facade1.create(ObjectClass.ACCOUNT,attrs,options).getUidValue());
-        Assert.assertEquals("5", facade1.create(ObjectClass.ACCOUNT,attrs,options).getUidValue());
-        Assert.assertEquals("5", facade1.create(ObjectClass.ACCOUNT,attrs,options).getUidValue());
+                ConnectorFacadeFactory.getInstance().newInstance(config);
+        Assert.assertEquals("5", facade1.create(ObjectClass.ACCOUNT, attrs,
+                options).getUidValue());
+        Assert.assertEquals("5", facade1.create(ObjectClass.ACCOUNT, attrs,
+                options).getUidValue());
+        Assert.assertEquals("5", facade1.create(ObjectClass.ACCOUNT, attrs,
+                options).getUidValue());
+        Assert.assertEquals("5", facade1.create(ObjectClass.ACCOUNT, attrs,
+                options).getUidValue());
     }
-    
+
     @Test
-    public void testTimeout() throws Exception {
-        ConnectorInfoManager manager = 
-            getConnectorInfoManager();
-        ConnectorInfo info1 = 
-            findConnectorInfo(manager,
-                              "1.0.0.0",
-                              "org.identityconnectors.testconnector.TstConnector");
-        
+    public void testTimeout()
+            throws Exception {
+        ConnectorInfoManager manager =
+                getConnectorInfoManager();
+        ConnectorInfo info1 =
+                findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
         APIConfiguration config = info1.createDefaultAPIConfiguration();
         config.setTimeout(CreateApiOp.class, 5000);
         config.setTimeout(SearchApiOp.class, 5000);
         ConfigurationProperties props = config.getConfigurationProperties();
-        ConfigurationProperty property  = props.getProperty("numResults"); 
+        ConfigurationProperty property = props.getProperty("numResults");
         //1000 is several times the remote size between pauses
         property.setValue(2);
         OperationOptionsBuilder opBuilder = new OperationOptionsBuilder();
         opBuilder.setOption("delay", 10000);
-        
-        ConnectorFacade facade1 =
-            ConnectorFacadeFactory.getInstance().newInstance(config);
 
-        
+        ConnectorFacade facade1 =
+                ConnectorFacadeFactory.getInstance().newInstance(config);
+
+
         Set<Attribute> attrs = CollectionUtil.<Attribute>newReadOnlySet();
         try {
-            facade1.create(ObjectClass.ACCOUNT,attrs,opBuilder.build()).getUidValue();
+            facade1.create(ObjectClass.ACCOUNT, attrs, opBuilder.build()).
+                    getUidValue();
             Assert.fail("expected timeout");
-        }
-        catch (OperationTimeoutException e) {
+        } catch (OperationTimeoutException e) {
             //expected
         }
-        
+
         try {
             facade1.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
+
                 public boolean handle(ConnectorObject obj) {
                     return true;
                 }
-            },opBuilder.build());
+            }, opBuilder.build());
             Assert.fail("expected timeout");
-        }
-        catch (OperationTimeoutException e) {
+        } catch (OperationTimeoutException e) {
             //expected
         }
     }
-    
-    private final static String TEST_BUNDLES_DIR_PROPERTY = "testbundles.dir";
 
-    protected final File getTestBundlesDir() {
-        File testBundlesDir = new File(System.getProperty(TEST_BUNDLES_DIR_PROPERTY, "../testbundles"));
-        if (!testBundlesDir.isDirectory()) {
-            throw new ConnectorException(testBundlesDir.getPath() + " does not exist");
-        }
-        return testBundlesDir;
-    }
-    
-    protected final List<URL> getTestBundles() throws Exception {
-        File testBundlesDir = getTestBundlesDir();
+    protected final List<URL> getTestBundles()
+            throws Exception {
+
         List<URL> rv = new ArrayList<URL>();
-        rv.add(makeURL(testBundlesDir,"testbundlev1/dist/org.identityconnectors.testbundle-1.0.0.0.jar"));
-        rv.add(makeURL(testBundlesDir,"testbundlev2/dist/org.identityconnectors.testbundle-2.0.0.0.jar"));
+        rv.add(makeURL(new File(bundlesDirectory),
+                "org.connid.testbundles-testbundlev1-1.0.0.0.jar"));
+        rv.add(makeURL(new File(bundlesDirectory),
+                "org.connid.testbundles-testbundlev2-2.0.0.0.jar"));
         return rv;
     }
 
@@ -690,7 +735,8 @@ public abstract class ConnectorInfoManagerTestBase {
      * @return
      * @throws Exception
      */
-    protected abstract ConnectorInfoManager getConnectorInfoManager() throws Exception;
-    
+    protected abstract ConnectorInfoManager getConnectorInfoManager()
+            throws Exception;
+
     protected abstract void shutdownConnnectorInfoManager();
 }

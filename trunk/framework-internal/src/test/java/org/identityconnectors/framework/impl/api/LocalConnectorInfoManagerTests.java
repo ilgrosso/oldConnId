@@ -22,52 +22,33 @@
  */
 package org.identityconnectors.framework.impl.api;
 
-import static org.junit.Assert.fail;
-
 import java.net.URL;
 import java.util.List;
-
-import org.identityconnectors.common.Version;
 import org.identityconnectors.framework.api.ConnectorFacadeFactory;
 import org.identityconnectors.framework.api.ConnectorInfoManager;
 import org.identityconnectors.framework.api.ConnectorInfoManagerFactory;
-import org.identityconnectors.framework.common.FrameworkUtilTestHelpers;
-import org.identityconnectors.framework.common.exceptions.ConfigurationException;
-import org.junit.Test;
 
-
-public class LocalConnectorInfoManagerTests extends ConnectorInfoManagerTestBase {
+public class LocalConnectorInfoManagerTests
+        extends ConnectorInfoManagerTestBase {
 
     /**
-     * Tests that the framework refuses to load a bundle that requests
-     * a framework version newer than the one present.
-     */
-    @Test
-    public void testCheckVersion() throws Exception {
-        // The test bundles require framework 1.0, so pretend the framework is older.
-        FrameworkUtilTestHelpers.setFrameworkVersion(Version.parse("0.5"));
-        try {
-            getConnectorInfoManager();
-            fail();
-        } catch (ConfigurationException e) {
-            if (!e.getMessage().contains("unrecognized framework version")) {
-                fail();
-            }
-        }
-    }
-
-    /**
-     * To be overridden by subclasses to get different ConnectorInfoManagers
+     * To be overridden by subclasses to get different ConnectorInfoManagers.
      * @return
      * @throws Exception
      */
-    protected ConnectorInfoManager getConnectorInfoManager() throws Exception {
+    @Override
+    protected ConnectorInfoManager getConnectorInfoManager()
+            throws Exception {
+
         List<URL> urls = getTestBundles();
-        ConnectorInfoManagerFactory fact = ConnectorInfoManagerFactory.getInstance();
-        ConnectorInfoManager manager = fact.getLocalManager(urls.toArray(new URL[0]));
+        ConnectorInfoManagerFactory fact = ConnectorInfoManagerFactory.
+                getInstance();
+        ConnectorInfoManager manager = fact.getLocalManager(urls.toArray(
+                new URL[0]));
         return manager;
     }
 
+    @Override
     protected void shutdownConnnectorInfoManager() {
         ConnectorFacadeFactory.getInstance().dispose();
         ConnectorInfoManagerFactory.getInstance().clearLocalCache();

@@ -24,23 +24,15 @@ package org.identityconnectors.framework.common.objects;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.AttributeBuilder;
-import org.identityconnectors.framework.common.objects.ConnectorObject;
-import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
 import org.junit.Test;
-
-
 
 public class FilterBuilderTests {
 
     // =======================================================================
     // Equals..
     // =======================================================================
-
     @Test
     public void equalsFilter() {
         Attribute attr;
@@ -67,7 +59,6 @@ public class FilterBuilderTests {
     // =======================================================================
     // Comparable..
     // =======================================================================
-
     @Test
     public void greaterThanFilter() {
         Attribute attr;
@@ -152,7 +143,7 @@ public class FilterBuilderTests {
         assertTrue(f.accept(bld.build()));
         bld.addAttribute("name", "fasdfklj");
         assertFalse(f.accept(bld.build()));
-        
+
     }
 
     @Test
@@ -176,9 +167,9 @@ public class FilterBuilderTests {
         bld.setUid("1");
         bld.setName(Integer.toString(1));
         bld.addAttribute("name", "fredrick");
-        assertTrue(f.accept(bld.build()));        
+        assertTrue(f.accept(bld.build()));
         bld.addAttribute("name", "falkjfklj");
-        assertFalse(f.accept(bld.build()));        
+        assertFalse(f.accept(bld.build()));
     }
     // =======================================================================
     // Binary Operators
@@ -221,9 +212,9 @@ public class FilterBuilderTests {
 
     @Test(expected = IllegalArgumentException.class)
     public void illegalArgument() {
-        FilterBuilder.lessThan((Attribute)null);
+        FilterBuilder.lessThan((Attribute) null);
     }
-    
+
     // =======================================================================
     // Set Contains Filters
     // =======================================================================
@@ -237,7 +228,7 @@ public class FilterBuilderTests {
         f = FilterBuilder.containsAllValues(AttributeBuilder.build("a", "a"));
         assertTrue(f.accept(bld.build()));
     }
-    
+
     @Test
     public void containsAllValuesFilterFalse() {
         Filter f = null;
@@ -255,12 +246,14 @@ public class FilterBuilderTests {
     // =======================================================================
 
     static class TrueFilter implements Filter {
+
         public boolean accept(ConnectorObject obj) {
             return true;
         }
     }
 
     static class FalseFilter implements Filter {
+
         public boolean accept(ConnectorObject obj) {
             return false;
         }

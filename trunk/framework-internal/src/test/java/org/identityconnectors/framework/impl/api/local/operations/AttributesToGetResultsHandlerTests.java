@@ -32,20 +32,20 @@ import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
-import org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandler;
 import org.junit.Test;
 
-
 public class AttributesToGetResultsHandlerTests {
-    
-    @Test(expected=NullPointerException.class)
-    public void testAttrsToGet() throws Exception {
-        new TestHandler((String[])null);
+
+    @Test(expected = NullPointerException.class)
+    public void testAttrsToGet()
+            throws Exception {
+        new TestHandler((String[]) null);
     }
 
     @Test
-    public void testReduceAttributes() throws Exception {
-        String[] attrsToGet = { "a", "b" };
+    public void testReduceAttributes()
+            throws Exception {
+        String[] attrsToGet = {"a", "b"};
         TestHandler tst = new TestHandler(attrsToGet);
         Set<Attribute> expected = CollectionUtil.newSet(build("a"), build("b"));
         Set<Attribute> testAttrs = CollectionUtil.newSet(expected);
@@ -55,19 +55,21 @@ public class AttributesToGetResultsHandlerTests {
     }
 
     @Test
-    public void testIgnoreMissing() throws Exception {
-        String[] attrsToGet = { "a", "b", "c", "d" };
+    public void testIgnoreMissing()
+            throws Exception {
+        String[] attrsToGet = {"a", "b", "c", "d"};
         TestHandler tst = new TestHandler(attrsToGet);
         Set<Attribute> expected = CollectionUtil.newSet(build("a"), build("b"));
         Set<Attribute> testAttrs = CollectionUtil.newSet(expected);
         testAttrs.add(build("g"));
         Set<Attribute> actual = tst.reduceToAttrsToGet(testAttrs);
-        assertEquals(expected, actual);        
+        assertEquals(expected, actual);
     }
-    
+
     @Test
-    public void testWithConnectorObject() throws Exception {
-        String[] attrsToGet = { "a", "b" };
+    public void testWithConnectorObject()
+            throws Exception {
+        String[] attrsToGet = {"a", "b"};
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         bld.setUid("1");
         bld.setName("aname");
@@ -79,12 +81,11 @@ public class AttributesToGetResultsHandlerTests {
         ConnectorObject actual = tst.reduceToAttrsToGet(bld.build());
         assertEquals(expected, actual);
     }
-    
+
     static class TestHandler extends AttributesToGetResultsHandler {
+
         public TestHandler(String[] attrsToGet) {
             super(attrsToGet);
         }
     }
-    
-    
 }

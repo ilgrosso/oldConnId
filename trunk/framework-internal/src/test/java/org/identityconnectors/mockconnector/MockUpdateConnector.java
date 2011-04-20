@@ -36,18 +36,16 @@ import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.filter.AbstractFilterTranslator;
-import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.SearchOp;
 import org.identityconnectors.framework.spi.operations.UpdateOp;
 
-
 public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String> {
 
     private Configuration _cfg;
-    
+
     public void dispose() {
         // nothing to do this is a mock connector..
     }
@@ -55,14 +53,15 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
     public void init(Configuration cfg) {
         _cfg = cfg;
     }
+
     public Configuration getConfiguration() {
         return _cfg;
     }
-
     // =======================================================================
     // Test Data
     // =======================================================================
     private static List<ConnectorObject> objects = new ArrayList<ConnectorObject>();
+
     static {
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         for (int i = 0; i < 100; i++) {
@@ -70,7 +69,9 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
             bld.setName(Integer.toString(i));
             objects.add(bld.build());
         }
-    };
+    }
+
+    ;
 
     // =======================================================================
     // Test Methods
@@ -80,7 +81,9 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
      * 
      * @see UpdateOp#update(ConnectorObject)
      */
-    public Uid update(ObjectClass objclass, Uid uid, Set<Attribute> attrs, OperationOptions options) {
+    public Uid update(ObjectClass objclass, Uid uid, Set<Attribute> attrs,
+            OperationOptions options) {
+
         String val = AttributeUtil.getAsStringValue(uid);
         int idx = Integer.valueOf(val).intValue();
         // get out the object..
@@ -92,10 +95,13 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
         objects.set(idx, obj);
         return obj.getUid();
     }
-    
-    public FilterTranslator<String> createFilterTranslator(ObjectClass oclass, OperationOptions options) {
+
+    public FilterTranslator<String> createFilterTranslator(ObjectClass oclass,
+            OperationOptions options) {
+
         //no translation - ok since this is just for tests
-        return new AbstractFilterTranslator<String>(){};
+        return new AbstractFilterTranslator<String>() {
+        };
     }
 
     /**
@@ -103,9 +109,11 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
      * 
      * @see SearchOp#search(Filter)
      */
-    public void executeQuery(ObjectClass oclass, String query, ResultsHandler handler, OperationOptions options) {
+    public void executeQuery(ObjectClass oclass, String query,
+            ResultsHandler handler, OperationOptions options) {
+
         Iterator<ConnectorObject> iter = objects.iterator();
-        while ( iter.hasNext() ) {
+        while (iter.hasNext()) {
             if (!handler.handle(iter.next())) {
                 break;
             }

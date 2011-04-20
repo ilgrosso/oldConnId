@@ -25,25 +25,19 @@ package org.identityconnectors.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-
-import org.identityconnectors.common.CollectionUtil;
-import org.identityconnectors.common.IOUtil;
-import org.identityconnectors.common.StringPrintWriter;
-import org.identityconnectors.common.StringUtil;
 import org.junit.Test;
-
 
 public class StringUtilTests {
     // ========================================================================
     // JUnit Tests
     // ========================================================================
+
     /**
      */
     @Test
@@ -95,9 +89,9 @@ public class StringUtilTests {
     @Test
     public void testStripXmlAttribute() {
         final String DATA[][] = {
-                // source, attr, result
-                { null, null, null }, { "attr='fads'", "attr", "" },
-                { "at1='fasd' at1=''", "at1", "" } };
+            // source, attr, result
+            {null, null, null}, {"attr='fads'", "attr", ""},
+            {"at1='fasd' at1=''", "at1", ""}};
         String tst = null;
         for (int i = 0; i < DATA.length; i++) {
             tst = StringUtil.stripXmlAttribute(DATA[i][0], DATA[i][1]);
@@ -110,10 +104,10 @@ public class StringUtilTests {
      */
     @Test
     public void testStripNewlines() {
-        final String[][] TESTS = new String[][] { { null, null },
-                { "afdslf\n", "afdslf" }, { "afds\nfadkfj", "afdsfadkfj" },
-                { "afds \nfadkfj", "afds fadkfj" },
-                { "afds\n fadkfj", "afds fadkfj" } };
+        final String[][] TESTS = new String[][]{{null, null},
+            {"afdslf\n", "afdslf"}, {"afds\nfadkfj", "afdsfadkfj"},
+            {"afds \nfadkfj", "afds fadkfj"},
+            {"afds\n fadkfj", "afds fadkfj"}};
         String tmp;
         for (String[] data : TESTS) {
             tmp = StringUtil.stripNewlines(data[0]);
@@ -126,14 +120,14 @@ public class StringUtilTests {
     @Test
     public void testStripXmlComments() {
         final String DATA[][] = {
-                // test data -> result
-                { null, null }, { "<!--test1-->", "" },
-                { "test data", "test data" },
-                { "<!--test data", "<!--test data" },
-                { "test data-->", "test data-->" },
-                { "test data <!-- fasdkfj -->", "test data " },
-                { "<!-- fasdkfj --> test data", " test data" },
-                { "<!-- fasdkfj --> test data<!-- fadsom-->", " test data" } };
+            // test data -> result
+            {null, null}, {"<!--test1-->", ""},
+            {"test data", "test data"},
+            {"<!--test data", "<!--test data"},
+            {"test data-->", "test data-->"},
+            {"test data <!-- fasdkfj -->", "test data "},
+            {"<!-- fasdkfj --> test data", " test data"},
+            {"<!-- fasdkfj --> test data<!-- fadsom-->", " test data"}};
 
         String tst = null;
         for (int i = 0; i < DATA.length; i++) {
@@ -177,7 +171,6 @@ public class StringUtilTests {
         assertTrue(StringUtil.isNotBlank("bob"));
         assertTrue(StringUtil.isNotBlank("  bob  "));
     }
-    
     private static final String TEMPLATE = "StringUtilTests_template.js";
 
     private static final String PAUSE_TEXT = "pause.text";
@@ -219,7 +212,6 @@ public class StringUtilTests {
             assertFalse(StringUtil.isWhitespace(i));
         }
     }
-
     final char TEXTQ = '"';
 
     final char FEILDD = ',';
@@ -230,7 +222,8 @@ public class StringUtilTests {
     @Test
     public void testParseLine() {
         List<Object> values;
-        values = CollectionUtil.<Object>newReadOnlyList("bob", "george", 4, 23, 230948);
+        values = CollectionUtil.<Object>newReadOnlyList("bob", "george", 4, 23,
+                230948);
         parseLineTest(TEXTQ, FEILDD, values);
 
     }
@@ -239,7 +232,7 @@ public class StringUtilTests {
     public void testRandomParseLine() {
         // try random stuff..
         final Random r = new Random(17);
-        final char[] replace = new char[] {TEXTQ, FEILDD};
+        final char[] replace = new char[]{TEXTQ, FEILDD};
         for (int i = 0; i < 100; i++) {
             final List<Object> values = randomList(r, 10, replace, 'a');
             parseLineTest(TEXTQ, FEILDD, values);
@@ -316,27 +309,26 @@ public class StringUtilTests {
         }
         return ret;
     }
-    
+
     @Test
     public void testRandomString() {
         // just execute it because it doesn't really matter..
         String s = StringUtil.randomString();
         assertTrue(s.length() < 257);
     }
-    
+
     @Test
     public void testEndsWith() {
         assertTrue(StringUtil.endsWith("afdsf", 'f'));
         assertFalse(StringUtil.endsWith(null, 'f'));
         assertFalse(StringUtil.endsWith("fadsfkj", 'f'));
     }
-    
     private static final String PROP_TEST[] = {
-      "# Some comment",
-      "prop1=SomeProp",
-      "prop2=OtherProp"
+        "# Some comment",
+        "prop1=SomeProp",
+        "prop2=OtherProp"
     };
-    
+
     @Test
     public void testToProperties() {
         StringPrintWriter wrt = new StringPrintWriter();

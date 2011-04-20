@@ -29,18 +29,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-
-import org.identityconnectors.common.IOUtil;
 import org.junit.Test;
-
-
 
 public class IOUtilsTests {
 
     //=======================================================================
     // JUnit Tests
     //=======================================================================
-    @Test public void quietClose() {
+    @Test
+    public void quietClose() {
         // test reader
         ExceptionReader rdr = new ExceptionReader();
         IOUtil.quietClose(rdr);
@@ -58,76 +55,89 @@ public class IOUtilsTests {
         IOUtil.quietClose(wrt);
         assertTrue(wrt.closeCalled);
     }
-    
-    @Test public void resourcePath() {
+
+    @Test
+    public void resourcePath() {
         // test resource path returns the right thing..
-        
     }
-    
+
     //public static String getResourcePath(Class<?> c, String res) {
     //public static InputStream getResourceAsStream(Class<?> clazz, String res) {
     //public static byte[] getResourceAsBytes(Class<?> clazz, String res) {
     //public static String getResourceAsString(Class<?> clazz, String res, Charset charset) {
     //public static String getResourceAsString(Class<?> clazz, String res) {
- 
     static class ExceptionReader extends Reader {
+
         boolean closeCalled;
-        
+
         @Override
-        public void close() throws IOException {
+        public void close()
+                throws IOException {
             closeCalled = true;
             throw new IOException();
         }
 
         @Override
-        public int read(char[] arg0, int arg1, int arg2) throws IOException {
+        public int read(char[] arg0, int arg1, int arg2)
+                throws IOException {
             return 0;
-        }        
+        }
     }
-    
+
     static class ExceptionInputStream extends InputStream {
+
         boolean closeCalled;
 
         @Override
-        public void close() throws IOException {
+        public void close()
+                throws IOException {
             closeCalled = true;
             throw new IOException();
         }
 
         @Override
-        public int read() throws IOException {
+        public int read()
+                throws IOException {
             return 0;
-        }        
+        }
     }
-    
+
     static class ExceptionWriter extends Writer {
+
         boolean closeCalled;
 
         @Override
-        public void close() throws IOException {
+        public void close()
+                throws IOException {
             closeCalled = true;
             throw new IOException();
         }
 
         @Override
-        public void flush() throws IOException {
+        public void flush()
+                throws IOException {
         }
 
         @Override
-        public void write(char[] arg0, int arg1, int arg2) throws IOException {
-        }        
+        public void write(char[] arg0, int arg1, int arg2)
+                throws IOException {
+        }
     }
-    
+
     static class ExceptionOutputStream extends OutputStream {
+
         boolean closeCalled;
 
         @Override
-        public void close() throws IOException {
+        public void close()
+                throws IOException {
             closeCalled = true;
             throw new IOException();
         }
+
         @Override
-        public void write(int arg0) throws IOException {            
+        public void write(int arg0)
+                throws IOException {
         }
     }
 }

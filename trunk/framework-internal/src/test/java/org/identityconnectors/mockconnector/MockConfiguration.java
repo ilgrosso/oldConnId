@@ -29,29 +29,26 @@ public class MockConfiguration extends AbstractConfiguration {
     boolean fail;
 
     public MockConfiguration() {
-        
     }
 
     public boolean getFail() {
         return this.fail;
     }
-    
+
     public void setFail(boolean fail) {
         this.fail = fail;
     }
-    
+
     /**
      * Determines if this configuration will fail validation.
      */
     public MockConfiguration(boolean failvalidation) {
         this.fail = failvalidation;
     }
-    
-    
+
     public void validate() {
         if (fail) {
             throw new IllegalStateException();
         }
     }
-    
 }

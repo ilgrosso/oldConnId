@@ -32,16 +32,17 @@ import org.identityconnectors.framework.impl.api.Searches.ConnectorObjectSearch;
 import org.identityconnectors.test.common.ToListResultsHandler;
 import org.junit.Test;
 
-
 public class FilteredResultsHandlerTests {
+
     @Test
     public void withPassThruFilter() {
-        
+
         final int EXPECTED = 1000;
         ConnectorObjectSearch data = new ConnectorObjectSearch(EXPECTED);
         ToListResultsHandler results = new ToListResultsHandler();
-        data.search(ObjectClass.ACCOUNT,null, new FilteredResultsHandler(results,
-                new FilteredResultsHandler.PassThruFilter()),null);
+        data.search(ObjectClass.ACCOUNT, null, new FilteredResultsHandler(
+                results,
+                new FilteredResultsHandler.PassThruFilter()), null);
         int actual = 0;
         for (ConnectorObject obj : results.getObjects()) {
             // check that we limit expected values..
@@ -61,8 +62,9 @@ public class FilteredResultsHandlerTests {
         final int EXPECTED = 1000;
         ConnectorObjectSearch data = new ConnectorObjectSearch(EXPECTED);
         ToListResultsHandler results = new ToListResultsHandler();
-        data.search(ObjectClass.ACCOUNT, null, new FilteredResultsHandler(results,
-                null),null);
+        data.search(ObjectClass.ACCOUNT, null, new FilteredResultsHandler(
+                results,
+                null), null);
         int actual = 0;
         for (ConnectorObject obj : results.getObjects()) {
             // check that we limit expected values..
@@ -84,8 +86,9 @@ public class FilteredResultsHandlerTests {
         final long EXPECTED_HIGH = 200;
         ConnectorObjectSearch data = new ConnectorObjectSearch(DATA);
         ToListResultsHandler results = new ToListResultsHandler();
-        data.search(ObjectClass.ACCOUNT, null, new FilteredResultsHandler(results,
-                new RangeFilter(EXPECTED_LOW,EXPECTED_HIGH)),null);
+        data.search(ObjectClass.ACCOUNT, null, new FilteredResultsHandler(
+                results,
+                new RangeFilter(EXPECTED_LOW, EXPECTED_HIGH)), null);
         long actual = EXPECTED_LOW;
         for (ConnectorObject obj : results.getObjects()) {
             // check that we limit expected values..
@@ -100,12 +103,10 @@ public class FilteredResultsHandlerTests {
         assertEquals(EXPECTED_HIGH - EXPECTED_LOW, actual - EXPECTED_LOW);
     }
 
-    
-
     @Test(expected = IllegalArgumentException.class)
     public void nullProducer() {
         new FilteredResultsHandler(null, new RangeFilter(0, 100));
-        
+
     }
 
     /**
@@ -113,6 +114,7 @@ public class FilteredResultsHandlerTests {
      * filter the producer output.
      */
     static class RangeFilter implements Filter {
+
         final long low, high;
 
         public RangeFilter(long low, long high) {

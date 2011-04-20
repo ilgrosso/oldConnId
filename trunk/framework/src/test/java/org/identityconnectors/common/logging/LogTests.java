@@ -26,21 +26,23 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import org.identityconnectors.common.logging.Log;
-import org.identityconnectors.common.logging.LogSpi;
 import org.identityconnectors.common.logging.Log.Level;
 import org.junit.Test;
-
 
 public class LogTests {
 
     public static class MockLogSpi implements LogSpi {
+
         public Log.Level _level = null;
+
         public Class<?> _class = null;
+
         public String _message = null;
+
         public String _methodName = null;
+
         public Throwable _exception = null;
+
         public boolean _isloggable = false;
 
         public boolean isLoggable(Class<?> clazz, Level level) {
@@ -265,7 +267,7 @@ public class LogTests {
             assertEquals(EXPECTED_EX, spi._exception);
         }
     }
-    
+
     @Test
     public void checkSystemProperty() {
         // don't mess up other tests w/ changing out logging..
@@ -291,8 +293,8 @@ public class LogTests {
             }
         }
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void checkGetLog() {
         Log.getLog(MockLogSpi.class);
     }

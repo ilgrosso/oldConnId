@@ -24,12 +24,7 @@ package org.identityconnectors.common;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
-import org.identityconnectors.common.IOUtil;
-import org.identityconnectors.common.StringPrintWriter;
 import org.junit.Test;
-
-
 import static org.junit.Assert.*;
 
 /**
@@ -37,8 +32,8 @@ import static org.junit.Assert.*;
  */
 public class StringPrintWriterTests {
 
-    String[] DATA = new String[] { "Some random text to use!",
-            "Some more text to use wee!", "Even more text to use woo hoo!" };
+    String[] DATA = new String[]{"Some random text to use!",
+        "Some more text to use wee!", "Even more text to use woo hoo!"};
 
     @Test
     public void getString() {
@@ -78,7 +73,7 @@ public class StringPrintWriterTests {
         }
         assertEquals(swrt.toString(), pwrt.getString());
     }
-    
+
     public void printlnArray() {
         StringWriter swrt = new StringWriter();
         PrintWriter wrt = new PrintWriter(swrt);
@@ -101,6 +96,4 @@ public class StringPrintWriterTests {
         pwrt.print(DATA);
         assertEquals(swrt.toString(), pwrt.getString());
     }
-
-    
 }
