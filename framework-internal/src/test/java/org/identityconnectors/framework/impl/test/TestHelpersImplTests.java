@@ -24,9 +24,7 @@ package org.identityconnectors.framework.impl.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
 import java.util.Map;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.objects.ConnectorMessages;
 import org.identityconnectors.framework.spi.Configuration;
@@ -39,7 +37,8 @@ public class TestHelpersImplTests {
         TestConfiguration testConfig = new TestConfiguration();
         // There is no "foo" property in the config bean. We want to ensure
         // that fillConfiguration() does not fail for unknown properties.
-        Map<String, ? extends Object> configData = CollectionUtil.newMap("host", "example.com", "port", 1234, "foo", "bar");
+        Map<String, ? extends Object> configData = CollectionUtil.newMap("host",
+                "example.com", "port", 1234, "foo", "bar");
         new TestHelpersImpl().fillConfiguration(testConfig, configData);
 
         assertEquals("example.com", testConfig.getHost());
@@ -49,11 +48,13 @@ public class TestHelpersImplTests {
     public final static class TestConfiguration implements Configuration {
 
         private String host;
+
         private int port;
 
         public ConnectorMessages getConnectorMessages() {
             return null;
         }
+
         public void setConnectorMessages(ConnectorMessages messages) {
             fail("Should not call setConnectorMessages()");
         }
@@ -78,5 +79,4 @@ public class TestHelpersImplTests {
             this.port = port;
         }
     }
-
 }

@@ -37,7 +37,6 @@ import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
-import org.identityconnectors.framework.impl.api.local.operations.SearchImpl;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.SearchOp;
@@ -54,8 +53,10 @@ public class SearchImplTests {
     public void testEliminateDups() {
         List<ConnectorObject> data;
         // create duplicate data..
-        Set<ConnectorObject> expected = new LinkedHashSet<ConnectorObject>();
-        List<List<ConnectorObject>> main = new ArrayList<List<ConnectorObject>>();
+        Set<ConnectorObject> expected =
+                new LinkedHashSet<ConnectorObject>();
+        List<List<ConnectorObject>> main =
+                new ArrayList<List<ConnectorObject>>();
         // create first batch
         data = new ArrayList<ConnectorObject>();
         for (int i = 0; i < 5; i++) {
@@ -79,7 +80,7 @@ public class SearchImplTests {
         main.add(data);
         List<ConnectorObject> actual = TestHelpers.searchToList(
                 new DuplicateProvider(), ObjectClass.ACCOUNT, new MockFilter(
-                        main), null);
+                main), null);
         List<ConnectorObject> expecteList = CollectionUtil.newList(expected);
         Assert.assertEquals(expecteList, actual);
     }
@@ -105,7 +106,7 @@ public class SearchImplTests {
         Connector connector = new DuplicateProvider();
         SearchImpl search = new SearchImpl(null, connector);
         OperationOptionsBuilder bld = new OperationOptionsBuilder();
-        bld.setAttributesToGet(new String[] {"a", "b"});
+        bld.setAttributesToGet(new String[]{"a", "b"});
         OperationOptions options = bld.build();
         List<ConnectorObject> actual = TestHelpers.searchToList(
                 search, ObjectClass.ACCOUNT, filter, options);
@@ -123,11 +124,13 @@ public class SearchImplTests {
 
     public static class DuplicateProvider implements
             SearchOp<List<ConnectorObject>>, Connector {
+
         /**
          * Just return something..
          */
         public static class MockFilterTranslator implements
                 FilterTranslator<List<ConnectorObject>> {
+
             public List<List<ConnectorObject>> translate(Filter filter) {
                 return ((MockFilter) filter).getObjects();
             }
@@ -153,7 +156,6 @@ public class SearchImplTests {
         //
         public void dispose() {
             // TODO Auto-generated method stub
-            
         }
 
         public Configuration getConfiguration() {
@@ -163,7 +165,6 @@ public class SearchImplTests {
 
         public void init(Configuration cfg) {
             // TODO Auto-generated method stub
-            
         }
     }
 
@@ -171,6 +172,7 @@ public class SearchImplTests {
      * Use the filter to pass objects to the filter translator.
      */
     public static class MockFilter implements Filter {
+
         public final List<List<ConnectorObject>> _objs;
 
         public MockFilter(List<List<ConnectorObject>> objs) {

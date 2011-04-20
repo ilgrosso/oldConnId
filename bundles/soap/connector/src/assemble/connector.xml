@@ -27,6 +27,13 @@
             <outputDirectory>lib</outputDirectory>
         </fileSet>
         
+        <fileSet>
+            <directory>${basedir}/../../../legal</directory>
+            <includes>
+                <include>license.txt</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+        </fileSet>
     </fileSets>
     
 </assembly>

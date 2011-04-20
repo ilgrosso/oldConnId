@@ -30,12 +30,16 @@
     <parent>
         <artifactId>connid</artifactId>
         <groupId>org.connid</groupId>
-        <version>0.1-SNAPSHOT</version>
+        <version>1.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>framework-internal</artifactId>
 
     <name>Framework Internal</name>
+
+    <properties>
+        <testbundles.dir>/tmp/testbundles</testbundles.dir>
+    </properties>
 
     <dependencies>
 
@@ -67,4 +71,71 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <inherited>true</inherited>
+                <configuration>
+                    <includes>
+                        <include>**/*Tests.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <id>set-bundles</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${testbundles.dir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/../testbundles/testbundlev1/target</directory>
+                                    <includes>
+                                        <include>*.jar</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${basedir}/../testbundles/testbundlev2/target</directory>
+                                    <includes>
+                                        <include>*.jar</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${basedir}/../testbundles</directory>
+                                    <includes>
+                                        <include>server.pfx</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+    </build>
 </project>

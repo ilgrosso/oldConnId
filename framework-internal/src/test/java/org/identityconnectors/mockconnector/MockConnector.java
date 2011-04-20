@@ -32,14 +32,15 @@ import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.SchemaOp;
 
-
 public class MockConnector implements Connector, SchemaOp {
 
     /**
      * Represents a call to a connector method.
      */
     public static class Call {
+
         final Object[] args;
+
         final String methodName;
 
         public Call(String methodName, Object... args) {
@@ -55,12 +56,11 @@ public class MockConnector implements Connector, SchemaOp {
             return this.args;
         }
     }
-
     // need to keep track of when methods are called an their parameters..
     private static List<Call> callPattern = new ArrayList<Call>();
 
     private Configuration _config;
-    
+
     public void dispose() {
         addCall();
     }
@@ -74,7 +74,7 @@ public class MockConnector implements Connector, SchemaOp {
         _config = cfg;
         addCall(cfg);
     }
-    
+
     public Configuration getConfiguration() {
         return _config;
     }

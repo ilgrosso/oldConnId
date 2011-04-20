@@ -29,27 +29,29 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class GuardedStringTests {
-    
+
     @Before
     public void setUp() {
         GuardedString.setEncryptor(new SimpleEncryptor());
     }
-    
+
     @After
     public void tearDown() {
         GuardedString.setEncryptor(null);
     }
-    
+
     @Test
     public void testBasics() {
         GuardedString str = new GuardedString("foo".toCharArray());
         Assert.assertEquals("foo", decryptToString(str));
         str.appendChar('2');
         Assert.assertEquals("foo2", decryptToString(str));
-        Assert.assertFalse(str.verifyBase64SHA1Hash(SecurityUtil.computeBase64SHA1Hash("foo".toCharArray())));
-        Assert.assertTrue(str.verifyBase64SHA1Hash(SecurityUtil.computeBase64SHA1Hash("foo2".toCharArray())));
+        Assert.assertFalse(str.verifyBase64SHA1Hash(SecurityUtil.
+                computeBase64SHA1Hash("foo".toCharArray())));
+        Assert.assertTrue(str.verifyBase64SHA1Hash(SecurityUtil.
+                computeBase64SHA1Hash("foo2".toCharArray())));
     }
-    
+
     @Test
     public void testEquals() {
         GuardedString str1 = new GuardedString();
@@ -60,7 +62,7 @@ public class GuardedStringTests {
         str1.appendChar('2');
         Assert.assertEquals(str1, str2);
     }
-    
+
     @Test
     public void testReadOnly() {
         GuardedString str = new GuardedString("foo".toCharArray());
@@ -71,16 +73,14 @@ public class GuardedStringTests {
         try {
             str.appendChar('2');
             Assert.fail("expected exception");
-        }
-        catch (IllegalStateException e) {
-            
+        } catch (IllegalStateException e) {
         }
         str = str.copy();
         Assert.assertEquals("foo", decryptToString(str));
         str.appendChar('2');
         Assert.assertEquals("foo2", decryptToString(str));
     }
-    
+
     @Test
     public void testDispose() {
         GuardedString str = new GuardedString("foo".toCharArray());
@@ -88,58 +88,47 @@ public class GuardedStringTests {
         try {
             decryptToString(str);
             Assert.fail("expected exception");
-        }
-        catch (IllegalStateException e) {
-            
+        } catch (IllegalStateException e) {
         }
         try {
             str.isReadOnly();
             Assert.fail("expected exception");
-        }
-        catch (IllegalStateException e) {
-            
+        } catch (IllegalStateException e) {
         }
         try {
             str.appendChar('c');
             Assert.fail("expected exception");
-        }
-        catch (IllegalStateException e) {
-            
+        } catch (IllegalStateException e) {
         }
         try {
             str.copy();
             Assert.fail("expected exception");
-        }
-        catch (IllegalStateException e) {
-            
+        } catch (IllegalStateException e) {
         }
         try {
             str.verifyBase64SHA1Hash("foo");
             Assert.fail("expected exception");
-        }
-        catch (IllegalStateException e) {
-            
+        } catch (IllegalStateException e) {
         }
     }
-    
+
     @Test
     public void testUnicode() {
 
-        for ( int i = 0; i < 0xFFFF; i++) {
+        for (int i = 0; i < 0xFFFF; i++) {
             final int expected = i;
-            char c = (char)i;
+            char c = (char) i;
             GuardedString gs = new GuardedString(new char[]{c});
             gs.access(new GuardedString.Accessor() {
+
                 public void access(char[] clearChars) {
-                    int v = (int)clearChars[0];
+                    int v = (int) clearChars[0];
                     Assert.assertEquals(expected, v);
                 }
-    
             });
 
         }
     }
-    
 
     /**
      * Highly insecure method! Do not do this in production
@@ -149,9 +138,10 @@ public class GuardedStringTests {
         final StringBuilder buf = new StringBuilder();
         string.access(
                 new GuardedString.Accessor() {
-                    public void access(char [] chars) {
+
+                    public void access(char[] chars) {
                         buf.append(chars);
-                    }                    
+                    }
                 });
         return buf.toString();
     }

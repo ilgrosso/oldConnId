@@ -32,7 +32,6 @@ import java.util.ResourceBundle;
 import org.identityconnectors.common.l10n.CurrentLocale;
 import org.identityconnectors.framework.common.objects.ConnectorMessages;
 
-
 public class ConnectorMessagesImpl implements ConnectorMessages {
 
     /**
@@ -42,79 +41,76 @@ public class ConnectorMessagesImpl implements ConnectorMessages {
      * C# and one for Java, I have a single implementation
      * for both.
      */
-    
-    private Map<Locale, Map<String, String>> _catalogs = new HashMap<Locale, Map<String, String>>();
-    
+    private Map<Locale, Map<String, String>> _catalogs =
+            new HashMap<Locale, Map<String, String>>();
+
     public ConnectorMessagesImpl() {
     }
-    
+
+    @Override
     public String format(String key, String dflt, Object... args) {
-        if ( key == null ) {
+        if (key == null) {
             return dflt;
         }
-        
-        Locale locale = CurrentLocale.get();
-        if ( locale == null ) {
-            locale = Locale.getDefault();
-        }
-        
-        if ( dflt == null ) {
+        if (dflt == null) {
             dflt = key;
         }
-        
+
+        Locale locale = CurrentLocale.get();
+
         //first look for most-specific catalog
         String message = getCatalogMessage(locale, key);
-        if ( message == null ) {
-            message = getCatalogMessage(new Locale(locale.getLanguage(), locale.getCountry()), key);
+        if (message == null) {
+            message = getCatalogMessage(new Locale(locale.getLanguage(),
+                    locale.getCountry()), key);
         }
         //now look for language
-        if ( message == null ) {
+        if (message == null) {
             message = getCatalogMessage(new Locale(locale.getLanguage()), key);
         }
         //otherwise use the default catalog
-        if ( message == null ) {
+        if (message == null) {
             message = getCatalogMessage(new Locale(""), key);
         }
         //and default to framework
-        if ( message == null ) {
-            message = getFrameworkMessage(locale,key);
+        if (message == null) {
+            message = getFrameworkMessage(locale, key);
         }
-        if ( message == null ) {
+        if (message == null) {
             return dflt;
-        }
-        else {
-            MessageFormat formater = new MessageFormat(message, locale);
-            return formater.format(args, new StringBuffer(), null).toString();
+        } else {
+            return new MessageFormat(message, locale).format(args,
+                    new StringBuffer(), null).toString();
         }
     }
-    
+
     private String getCatalogMessage(Locale locale, String key) {
         Map<String, String> catalog = _catalogs.get(locale);
         return catalog != null ? catalog.get(key) : null;
     }
-    
+
     private String getFrameworkMessage(Locale locale, String key) {
-        final String baseName = ConnectorMessagesImpl.class.getPackage().getName() + ".Messages";
+        final String baseName = ConnectorMessagesImpl.class.getPackage().
+                getName() + ".Messages";
         //this will throw if not there, but there should always be
         //at least a bundle
-        final ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale);
+        final ResourceBundle bundle =
+                ResourceBundle.getBundle(baseName, locale);
         try {
             return bundle.getString(key);
-        }
-        catch (MissingResourceException e) {
+        } catch (MissingResourceException e) {
             return null;
         }
     }
-        
+
     public Map<Locale, Map<String, String>> getCatalogs() {
         return _catalogs;
     }
-    
+
     public void setCatalogs(Map<Locale, Map<String, String>> catalogs) {
-        if ( catalogs == null ) {
+        if (catalogs == null) {
             catalogs = new HashMap<Locale, Map<String, String>>();
         }
         _catalogs = catalogs;
     }
-
 }

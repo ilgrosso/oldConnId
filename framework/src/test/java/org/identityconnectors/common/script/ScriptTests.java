@@ -34,7 +34,8 @@ public class ScriptTests {
         Script s1 = new Script("Groovy", "print 'foo'");
         assertEquals("Groovy", s1.getScriptLanguage());
         assertEquals("print 'foo'", s1.getScriptText());
-        Script s2 = new ScriptBuilder().setScriptLanguage("Groovy").setScriptText("print 'foo'").build();
+        Script s2 = new ScriptBuilder().setScriptLanguage("Groovy").
+                setScriptText("print 'foo'").build();
         assertEquals(s1, s2);
         assertEquals(s1.hashCode(), s2.hashCode());
     }
@@ -49,14 +50,16 @@ public class ScriptTests {
         }
 
         try {
-            new ScriptBuilder().setScriptText("print 'foo'").setScriptLanguage("").build();
+            new ScriptBuilder().setScriptText("print 'foo'").setScriptLanguage(
+                    "").build();
             fail();
         } catch (IllegalArgumentException e) {
             // OK.
         }
 
         try {
-            new ScriptBuilder().setScriptText("print 'foo'").setScriptLanguage(" ").build();
+            new ScriptBuilder().setScriptText("print 'foo'").setScriptLanguage(
+                    " ").build();
             fail();
         } catch (IllegalArgumentException e) {
             // OK.

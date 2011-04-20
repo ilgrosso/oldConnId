@@ -26,7 +26,6 @@ import static org.junit.Assert.assertFalse;
 
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.logging.LogSpi;
-import org.identityconnectors.common.logging.impl.NoOpLogger;
 import org.junit.Test;
 
 /**

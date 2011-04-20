@@ -31,13 +31,11 @@ import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 
 public class Searches {
-    
-    
-    
+
     static class EmptySearch implements SearchApiOp {
 
-        public void search(final ObjectClass oclass, final Filter filter, final ResultsHandler handler, final OperationOptions options) {
-            
+        public void search(final ObjectClass oclass, final Filter filter,
+                final ResultsHandler handler, final OperationOptions options) {
         }
     }
 
@@ -47,14 +45,15 @@ public class Searches {
          * Amount of data to produce.
          */
         final int _limit;
-        
-        
+
         public ConnectorObjectSearch(int limit) {
             _limit = limit;
         }
 
-        public void search(final ObjectClass oclass, final Filter filter, final ResultsHandler handler, OperationOptions options) {
-            for ( int i = 0 ; i < _limit; i++ ) {
+        public void search(final ObjectClass oclass, final Filter filter,
+                final ResultsHandler handler, OperationOptions options) {
+
+            for (int i = 0; i < _limit; i++) {
                 beforeObject(i);
                 ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
                 bld.setUid(Integer.toString(i));
@@ -67,45 +66,48 @@ public class Searches {
                 }
             }
         }
+
         protected void beforeObject(int count) {
-            
         }
     }
-    
+
     public static class WaitObjectSearch extends ConnectorObjectSearch {
+
         /**
          * Time to wait between objects or 0 for no wait
          */
         final long _wait;
-        
+
         public WaitObjectSearch(int limit, long wait) {
             super(limit);
             _wait = wait;
         }
-        
+
         @Override
         protected void beforeObject(int count) {
             long wait = getCurrentWait(count);
             if (wait != 0) {
-                try { Thread.sleep(wait); } catch (Exception e) {}
-            }            
+                try {
+                    Thread.sleep(wait);
+                } catch (Exception e) {
+                }
+            }
         }
-        
+
         protected long getCurrentWait(int count) {
             return _wait;
         }
-        
     }
 
     public static class WaitListObjectSearch extends WaitObjectSearch {
 
-        private long [] waitList;
+        private long[] waitList;
 
         public WaitListObjectSearch(long... waitList) {
-            super(waitList.length,0);
+            super(waitList.length, 0);
             this.waitList = waitList;
         }
-        
+
         @Override
         protected long getCurrentWait(int count) {
             return waitList[count];
@@ -113,9 +115,11 @@ public class Searches {
     }
 
     public static class ThrowsExceptionSearch extends ConnectorObjectSearch {
+
         final int idx;
+
         final RuntimeException ex;
-        
+
         public ThrowsExceptionSearch(final int limit, final int idx,
                 final RuntimeException ex) {
             super(limit);

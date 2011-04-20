@@ -28,20 +28,21 @@ import org.identityconnectors.common.script.ScriptExecutorFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
-
 public class GroovyScriptExecutorFactoryTests {
 
     @Test
-    public void testValidScript() throws Exception {
+    public void testValidScript()
+            throws Exception {
         ScriptExecutor ex = getScriptExecutor("print 'Hello World\\n'");
         ex.execute(null);
         ex.execute(null);
         ex.execute(null);
         ex.execute(null);
     }
-    
+
     @Test
-    public void testWithVariables() throws Exception {
+    public void testWithVariables()
+            throws Exception {
         Object actual;
         ScriptExecutor ex = getScriptExecutor("return x;");
         actual = ex.execute(CollectionUtil.<String, Object>newMap("x", 1));
@@ -49,9 +50,10 @@ public class GroovyScriptExecutorFactoryTests {
         actual = ex.execute(CollectionUtil.<String, Object>newMap("x", 2));
         Assert.assertEquals(2, actual);
     }
-    
+
     private ScriptExecutor getScriptExecutor(String script) {
         ClassLoader loader = getClass().getClassLoader();
-        return ScriptExecutorFactory.newInstance("GROOVY").newScriptExecutor(loader, script, false);
+        return ScriptExecutorFactory.newInstance("GROOVY").newScriptExecutor(
+                loader, script, false);
     }
 }

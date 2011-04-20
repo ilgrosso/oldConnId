@@ -22,11 +22,9 @@
  */
 package org.identityconnectors.framework.impl.api;
 
-
 import java.net.InetAddress;
 import java.net.URL;
 import java.util.List;
-
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.common.security.SecurityUtil;
 import org.identityconnectors.framework.api.ConnectorFacadeFactory;
@@ -35,38 +33,41 @@ import org.identityconnectors.framework.api.ConnectorInfoManagerFactory;
 import org.identityconnectors.framework.api.RemoteFrameworkConnectionInfo;
 import org.identityconnectors.framework.server.ConnectorServer;
 
-
-public class RemoteConnectorInfoManagerClearTests extends ConnectorInfoManagerTestBase {
+public class RemoteConnectorInfoManagerClearTests
+        extends ConnectorInfoManagerTestBase {
 
     private static ConnectorServer _server;
-    
+
     /**
      * To be overridden by subclasses to get different ConnectorInfoManagers
      * @return
      * @throws Exception
      */
     @Override
-    protected ConnectorInfoManager getConnectorInfoManager() throws Exception {
+    protected ConnectorInfoManager getConnectorInfoManager()
+            throws Exception {
         List<URL> urls = getTestBundles();
-        
+
         final int PORT = 8759;
-        
+
         _server = ConnectorServer.newInstance();
-        _server.setKeyHash(SecurityUtil.computeBase64SHA1Hash("changeit".toCharArray()));
+        _server.setKeyHash(SecurityUtil.computeBase64SHA1Hash("changeit".
+                toCharArray()));
         _server.setBundleURLs(urls);
         _server.setPort(PORT);
         _server.setIfAddress(InetAddress.getByName("127.0.0.1"));
         _server.start();
-        ConnectorInfoManagerFactory fact = ConnectorInfoManagerFactory.getInstance();
-        
-        RemoteFrameworkConnectionInfo connInfo = new
-        RemoteFrameworkConnectionInfo("127.0.0.1",PORT,new GuardedString("changeit".toCharArray()));
-        
+        ConnectorInfoManagerFactory fact = ConnectorInfoManagerFactory.
+                getInstance();
+
+        RemoteFrameworkConnectionInfo connInfo = new RemoteFrameworkConnectionInfo(
+                "127.0.0.1", PORT, new GuardedString("changeit".toCharArray()));
+
         ConnectorInfoManager manager = fact.getRemoteManager(connInfo);
-        
+
         return manager;
     }
-    
+
     @Override
     protected void shutdownConnnectorInfoManager() {
         if (_server != null) {
@@ -77,5 +78,4 @@ public class RemoteConnectorInfoManagerClearTests extends ConnectorInfoManagerTe
         ConnectorFacadeFactory.getInstance().dispose();
         ConnectorInfoManagerFactory.getInstance().clearLocalCache();
     }
-    
 }

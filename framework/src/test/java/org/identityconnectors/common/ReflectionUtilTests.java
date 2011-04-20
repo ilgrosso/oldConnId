@@ -26,9 +26,7 @@ import static org.identityconnectors.common.ReflectionUtil.containsInterface;
 import static org.identityconnectors.common.ReflectionUtil.getAllInterfaces;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.util.Set;
-
 import org.junit.Test;
 
 public class ReflectionUtilTests {
@@ -50,26 +48,20 @@ public class ReflectionUtilTests {
     // Helper Classes/Interfaces
     //=======================================================================
     interface I1 {
-
     }
 
     interface I2 {
-
     }
-    
+
     interface I3 {
-        
     }
 
     class C1 implements I1, I2 {
+    }
 
-    }
-    
     interface I5 extends I1 {
-        
     }
-    
+
     class C2 implements I5 {
-        
     }
 }

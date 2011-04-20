@@ -24,11 +24,8 @@ package org.identityconnectors.common;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import org.identityconnectors.common.Pair;
 import org.junit.Assert;
 import org.junit.Test;
-
 
 /**
  * Tests the pair object.
@@ -47,10 +44,10 @@ public class PairTests {
 
     @Test
     public void hash() {
-        Set<Pair<Integer, Integer>> set = new HashSet<Pair<Integer,Integer>>();
-        for (int i=0; i<20; i++) {
-            Pair<Integer, Integer> pair = new Pair<Integer, Integer>(i, i+1);
-            Pair<Integer, Integer> tst = new Pair<Integer, Integer>(i, i+1);
+        Set<Pair<Integer, Integer>> set = new HashSet<Pair<Integer, Integer>>();
+        for (int i = 0; i < 20; i++) {
+            Pair<Integer, Integer> pair = new Pair<Integer, Integer>(i, i + 1);
+            Pair<Integer, Integer> tst = new Pair<Integer, Integer>(i, i + 1);
             set.add(pair);
             Assert.assertTrue(set.contains(tst));
         }

@@ -25,11 +25,9 @@ package org.identityconnectors.framework.impl.api;
 import static org.identityconnectors.framework.common.objects.ObjectClass.ACCOUNT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.api.APIConfiguration;
@@ -60,7 +58,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class ConnectorFacadeTests {
 
     // =======================================================================
@@ -76,6 +73,7 @@ public class ConnectorFacadeTests {
     // Helper Methods
     // =======================================================================
     private interface TestOperationPattern {
+
         /**
          * Simple call back to make the 'facade' calls.
          */
@@ -102,7 +100,8 @@ public class ConnectorFacadeTests {
         Configuration config = new MockConfiguration(false);
         ConnectorFacadeFactory factory = ConnectorFacadeFactory.getInstance();
         // **test only**
-        APIConfiguration impl = TestHelpers.createTestConfiguration(clazz, config);
+        APIConfiguration impl = TestHelpers.createTestConfiguration(clazz,
+                config);
         ConnectorFacade facade;
         facade = factory.newInstance(impl);
         // make the call on the connector facade..
@@ -132,35 +131,40 @@ public class ConnectorFacadeTests {
                 config);
         ConnectorFacade facade;
         facade = factory.newInstance(impl);
-        facade.authenticate(ObjectClass.ACCOUNT, "fadf", new GuardedString("fadsf".toCharArray()),null);
+        facade.authenticate(ObjectClass.ACCOUNT, "fadf", new GuardedString("fadsf".
+                toCharArray()), null);
     }
-    
+
     @Test
     public void runScriptOnConnectorCallPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
                 facade.runScriptOnConnector(
-                        new ScriptContextBuilder("lang","script").build(), 
+                        new ScriptContextBuilder("lang", "script").build(),
                         null);
             }
 
             public void checkCalls(List<Call> calls) {
-                assertEquals("runScriptOnConnector", calls.remove(0).getMethodName());
+                assertEquals("runScriptOnConnector", calls.remove(0).
+                        getMethodName());
             }
         });
     }
-    
+
     @Test
     public void runScriptOnResourceCallPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
                 facade.runScriptOnResource(
-                        new ScriptContextBuilder("lang","script").build(), 
+                        new ScriptContextBuilder("lang", "script").build(),
                         null);
             }
 
             public void checkCalls(List<Call> calls) {
-                assertEquals("runScriptOnResource", calls.remove(0).getMethodName());
+                assertEquals("runScriptOnResource", calls.remove(0).
+                        getMethodName());
             }
         });
     }
@@ -171,6 +175,7 @@ public class ConnectorFacadeTests {
     @Test
     public void schemaCallPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
                 facade.schema();
             }
@@ -184,8 +189,10 @@ public class ConnectorFacadeTests {
     @Test
     public void authenticateCallPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
-                facade.authenticate(ObjectClass.ACCOUNT, "dfadf", new GuardedString("fadfkj".toCharArray()),null);
+                facade.authenticate(ObjectClass.ACCOUNT, "dfadf", new GuardedString("fadfkj".
+                        toCharArray()), null);
             }
 
             public void checkCalls(List<Call> calls) {
@@ -197,6 +204,7 @@ public class ConnectorFacadeTests {
     @Test
     public void resolveUsernameCallPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
                 facade.resolveUsername(ObjectClass.ACCOUNT, "dfadf", null);
             }
@@ -210,9 +218,10 @@ public class ConnectorFacadeTests {
     @Test
     public void createCallPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
                 Set<Attribute> attrs = CollectionUtil.<Attribute>newReadOnlySet();
-                facade.create(ObjectClass.ACCOUNT,attrs,null);
+                facade.create(ObjectClass.ACCOUNT, attrs, null);
             }
 
             public void checkCalls(List<Call> calls) {
@@ -220,29 +229,33 @@ public class ConnectorFacadeTests {
             }
         });
     }
-    
-    @Test( expected = NullPointerException.class )
+
+    @Test(expected = NullPointerException.class)
     public void createWithOutObjectClassPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
                 Set<Attribute> attrs = new HashSet<Attribute>();
-                facade.create(null,attrs,null);
+                facade.create(null, attrs, null);
             }
+
             public void checkCalls(List<Call> calls) {
                 Assert.fail("Should not get here..");
             }
         });
     }
-    
-    @Test( expected = IllegalArgumentException.class )
+
+    @Test(expected = IllegalArgumentException.class)
     public void createDuplicatAttributesPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
                 Set<Attribute> attrs = new HashSet<Attribute>();
                 attrs.add(AttributeBuilder.build("abc", 1));
                 attrs.add(AttributeBuilder.build("abc", 2));
-                facade.create(ObjectClass.ACCOUNT,attrs,null);
+                facade.create(ObjectClass.ACCOUNT, attrs, null);
             }
+
             public void checkCalls(List<Call> calls) {
                 Assert.fail("Should not get here..");
             }
@@ -252,6 +265,7 @@ public class ConnectorFacadeTests {
     @Test
     public void updateCallPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
                 Set<Attribute> attrs = new HashSet<Attribute>();
                 attrs.add(AttributeBuilder.build("accountid"));
@@ -267,8 +281,9 @@ public class ConnectorFacadeTests {
     @Test
     public void deleteCallPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
-                facade.delete(ObjectClass.ACCOUNT, newUid(0),null);
+                facade.delete(ObjectClass.ACCOUNT, newUid(0), null);
             }
 
             public void checkCalls(List<Call> calls) {
@@ -280,9 +295,11 @@ public class ConnectorFacadeTests {
     @Test
     public void searchCallPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
                 // create an empty results handler..
                 ResultsHandler rh = new ResultsHandler() {
+
                     public boolean handle(ConnectorObject obj) {
                         return true;
                     }
@@ -292,7 +309,8 @@ public class ConnectorFacadeTests {
             }
 
             public void checkCalls(List<Call> calls) {
-                assertEquals("createFilterTranslator", calls.remove(0).getMethodName());
+                assertEquals("createFilterTranslator", calls.remove(0).
+                        getMethodName());
                 assertEquals("executeQuery", calls.remove(0).getMethodName());
             }
         });
@@ -301,6 +319,7 @@ public class ConnectorFacadeTests {
     @Test
     public void getCallPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
                 // create an empty results handler..
                 // call the search method..
@@ -308,15 +327,17 @@ public class ConnectorFacadeTests {
             }
 
             public void checkCalls(List<Call> calls) {
-                assertEquals("createFilterTranslator", calls.remove(0).getMethodName());
+                assertEquals("createFilterTranslator", calls.remove(0).
+                        getMethodName());
                 assertEquals("executeQuery", calls.remove(0).getMethodName());
             }
         });
     }
-    
+
     @Test
     public void testOpCallPattern() {
         testCallPattern(new TestOperationPattern() {
+
             public void makeCall(ConnectorFacade facade) {
                 facade.test();
             }
@@ -326,7 +347,7 @@ public class ConnectorFacadeTests {
             }
         });
     }
-    
+
     @Test
     public void updateMergeTests() {
         Attribute expected, actual;
@@ -334,7 +355,8 @@ public class ConnectorFacadeTests {
         ConnectorFacadeFactory factory = ConnectorFacadeFactory.getInstance();
         Class<? extends Connector> clazz = MockUpdateConnector.class;
         // **test only**
-        APIConfiguration impl = TestHelpers.createTestConfiguration(clazz, config);
+        APIConfiguration impl = TestHelpers.createTestConfiguration(clazz,
+                config);
         impl.setTimeout(GetApiOp.class, APIOperation.NO_TIMEOUT);
         impl.setTimeout(UpdateApiOp.class, APIOperation.NO_TIMEOUT);
         impl.setTimeout(SearchApiOp.class, APIOperation.NO_TIMEOUT);
@@ -350,7 +372,8 @@ public class ConnectorFacadeTests {
         addAttrSet.add(AttributeBuilder.build(ATTR_NAME, ADDED));
         Name name = obj.getName();
         addAttrSet.remove(name);
-        Uid uid = facade.addAttributeValues(ACCOUNT, obj.getUid(), AttributeUtil.filterUid(addAttrSet), null);
+        Uid uid = facade.addAttributeValues(ACCOUNT, obj.getUid(), AttributeUtil.
+                filterUid(addAttrSet), null);
         // get back the object and see if there are the same..
         addAttrSet.add(name);
         ConnectorObject addO = new ConnectorObject(ACCOUNT, addAttrSet);
@@ -358,7 +381,8 @@ public class ConnectorFacadeTests {
         assertEquals(addO, obj);
         // attempt to add on to an existing attribute..
         addAttrSet.remove(name);
-        uid = facade.addAttributeValues(ACCOUNT, obj.getUid(), AttributeUtil.filterUid(addAttrSet), null);
+        uid = facade.addAttributeValues(ACCOUNT, obj.getUid(), AttributeUtil.
+                filterUid(addAttrSet), null);
         // get the object back out and check on it..
         obj = facade.getObject(ObjectClass.ACCOUNT, uid, null);
         expected = AttributeBuilder.build(ATTR_NAME, ADDED, ADDED);
@@ -367,7 +391,8 @@ public class ConnectorFacadeTests {
         // attempt to delete a value from an attribute..
         Set<Attribute> deleteAttrs = CollectionUtil.newSet(addO.getAttributes());
         deleteAttrs.remove(name);
-        uid = facade.removeAttributeValues(ACCOUNT, addO.getUid(), AttributeUtil.filterUid(deleteAttrs), null);
+        uid = facade.removeAttributeValues(ACCOUNT, addO.getUid(), AttributeUtil.
+                filterUid(deleteAttrs), null);
         obj = facade.getObject(ObjectClass.ACCOUNT, uid, null);
         expected = AttributeBuilder.build(ATTR_NAME, ADDED);
         actual = obj.getAttributeByName(ATTR_NAME);
@@ -376,11 +401,12 @@ public class ConnectorFacadeTests {
         Set<Attribute> nonExist = new HashSet<Attribute>();
         nonExist.add(newUid(1));
         nonExist.add(AttributeBuilder.build("does not exist", "asdfe"));
-        uid = facade.removeAttributeValues(ACCOUNT, addO.getUid(), AttributeUtil.filterUid(nonExist), null);
+        uid = facade.removeAttributeValues(ACCOUNT, addO.getUid(), AttributeUtil.
+                filterUid(nonExist), null);
         obj = facade.getObject(ObjectClass.ACCOUNT, newUid(1), null);
         assertTrue(obj.getAttributeByName("does not exist") == null);
     }
-    
+
     static Uid newUid(int id) {
         return new Uid(Integer.toString(id));
     }

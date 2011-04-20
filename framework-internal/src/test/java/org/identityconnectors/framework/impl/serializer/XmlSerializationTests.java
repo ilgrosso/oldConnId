@@ -26,9 +26,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
 import junit.framework.Assert;
-
 import org.identityconnectors.framework.common.serializer.ObjectSerializerFactory;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
 import org.identityconnectors.framework.common.serializer.XmlObjectResultsHandler;
@@ -36,26 +34,29 @@ import org.identityconnectors.framework.common.serializer.XmlObjectSerializer;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 
-
 public class XmlSerializationTests extends ObjectSerializationTests {
+
     @Override
     protected Object cloneObject(Object o) {
         String xml = SerializerUtil.serializeXmlObject(o, true);
         System.out.println(xml);
-        o = SerializerUtil.deserializeXmlObject(xml, true); 
-        
+        o = SerializerUtil.deserializeXmlObject(xml, true);
+
         //pass through a list to make sure dtd correctly defines all xml objects
         List<Object> list = new ArrayList<Object>();
         list.add(o);
         xml = SerializerUtil.serializeXmlObject(list, true);
         System.out.println(xml);
         @SuppressWarnings("unchecked")
-        List<Object> rv = (List<Object>)SerializerUtil.deserializeXmlObject(xml, true); 
+        List<Object> rv = (List<Object>) SerializerUtil.deserializeXmlObject(
+                xml, true);
         return rv.get(0);
     }
-    
+
     @Test
-    public void testMultiObject() throws Exception {
+    public void testMultiObject()
+            throws Exception {
+
         ObjectSerializerFactory factory = ObjectSerializerFactory.getInstance();
         StringWriter sw = new StringWriter();
         XmlObjectSerializer ser = factory.newXmlSerializer(sw, true, true);
@@ -65,15 +66,18 @@ public class XmlSerializationTests extends ObjectSerializationTests {
         String xml = sw.toString();
         System.out.println(xml);
         final List<Object> results = new ArrayList<Object>();
-        factory.deserializeXmlStream(new InputSource(new StringReader(xml)), 
+        factory.deserializeXmlStream(new InputSource(new StringReader(xml)),
                 new XmlObjectResultsHandler() {
-                public boolean handle(Object o) {
-                    results.add(o);
-                    return true;
-                }},
-                true); 
-        Assert.assertEquals(2,results.size());
-        Assert.assertEquals("foo",results.get(0));
-        Assert.assertEquals("bar",results.get(1));
+
+                    @Override
+                    public boolean handle(final Object o) {
+                        results.add(o);
+                        return true;
+                    }
+                },
+                true);
+        Assert.assertEquals(2, results.size());
+        Assert.assertEquals("foo", results.get(0));
+        Assert.assertEquals("bar", results.get(1));
     }
 }

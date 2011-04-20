@@ -44,11 +44,11 @@ import org.identityconnectors.framework.spi.operations.TestOp;
 import org.identityconnectors.framework.spi.operations.UpdateAttributeValuesOp;
 import org.identityconnectors.framework.spi.operations.UpdateOp;
 
-
 public class MockAllOpsConnector extends MockConnector implements CreateOp,
-        DeleteOp, UpdateOp, SearchOp<String>, UpdateAttributeValuesOp, AuthenticateOp, 
+        DeleteOp, UpdateOp, SearchOp<String>, UpdateAttributeValuesOp, AuthenticateOp,
         ResolveUsernameOp, TestOp, ScriptOnConnectorOp, ScriptOnResourceOp {
 
+    @Override
     public Object runScriptOnConnector(ScriptContext request,
             OperationOptions options) {
         assert request != null;
@@ -57,6 +57,7 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp,
         return null;
     }
 
+    @Override
     public Object runScriptOnResource(ScriptContext request,
             OperationOptions options) {
         assert request != null;
@@ -65,6 +66,7 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp,
         return null;
     }
 
+    @Override
     public Uid create(final ObjectClass oclass, final Set<Attribute> attrs,
             OperationOptions options) {
         assert attrs != null;
@@ -72,19 +74,22 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp,
         return null;
     }
 
+    @Override
     public void delete(final ObjectClass objClass, final Uid uid,
             OperationOptions options) {
         assert uid != null && objClass != null;
         addCall(objClass, uid);
     }
 
+    @Override
     public Uid update(ObjectClass objclass, Uid uid, Set<Attribute> attrs,
             OperationOptions options) {
         assert objclass != null && attrs != null;
         addCall(objclass, attrs);
         return null;
     }
-    
+
+    @Override
     public Uid addAttributeValues(ObjectClass objclass,
             Uid uid,
             Set<Attribute> valuesToAdd,
@@ -92,7 +97,8 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp,
         addCall(objclass, valuesToAdd);
         return null;
     }
-    
+
+    @Override
     public Uid removeAttributeValues(ObjectClass objclass,
             Uid uid,
             Set<Attribute> valuesToRemove,
@@ -100,7 +106,8 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp,
         addCall(objclass, valuesToRemove);
         return null;
     }
-    
+
+    @Override
     public FilterTranslator<String> createFilterTranslator(ObjectClass oclass,
             OperationOptions options) {
         assert oclass != null && options != null;
@@ -110,25 +117,31 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp,
         };
     }
 
+    @Override
     public void executeQuery(ObjectClass oclass, String query,
             ResultsHandler handler, OperationOptions options) {
         assert oclass != null && handler != null && options != null;
         addCall(oclass, query, handler, options);
     }
 
-    public Uid authenticate(ObjectClass objectClass, String username, GuardedString password,
-            OperationOptions options) {
+    @Override
+    public Uid authenticate(ObjectClass objectClass, String username,
+            GuardedString password, OperationOptions options) {
         assert username != null && password != null;
         addCall(username, password);
         return null;
     }
 
-    public Uid resolveUsername(ObjectClass objectClass, String username, OperationOptions options) {
+    @Override
+    public Uid resolveUsername(ObjectClass objectClass, String username,
+            OperationOptions options) {
+
         assert username != null;
         addCall(username);
         return null;
     }
-    
+
+    @Override
     public void test() {
         addCall();
     }

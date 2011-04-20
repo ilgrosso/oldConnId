@@ -30,7 +30,9 @@ public class FooScriptExecutorFactory extends ScriptExecutorFactory {
     }
 
     @Override
-    public ScriptExecutor newScriptExecutor(ClassLoader loader, String script, boolean compile) {
+    public ScriptExecutor newScriptExecutor(ClassLoader loader, String script,
+            boolean compile) {
+
         return null;
     }
 }

@@ -24,7 +24,6 @@ package org.identityconnectors.framework.common;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,22 +32,26 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.util.Properties;
-
 import org.identityconnectors.common.Version;
 import org.junit.Test;
 
 public class FrameworkUtilTests {
 
     @Test
-    public void testFrameworkVersion() throws Exception {
-        ClassLoader loader = new VersionClassLoader(this.getClass().getClassLoader(), "1.2.3-alpha");
-        assertEquals(Version.parse("1.2.3"), FrameworkUtil.getFrameworkVersion(loader));
+    public void testFrameworkVersion()
+            throws Exception {
+        ClassLoader loader = new VersionClassLoader(this.getClass().
+                getClassLoader(), "1.2.3-alpha");
+        assertEquals(Version.parse("1.2.3"), FrameworkUtil.getFrameworkVersion(
+                loader));
     }
 
     @Test
-    public void testFrameworkVersionCannotBeBlank() throws Exception {
+    public void testFrameworkVersionCannotBeBlank()
+            throws Exception {
         try {
-            FrameworkUtil.getFrameworkVersion(new VersionClassLoader(this.getClass().getClassLoader(), " "));
+            FrameworkUtil.getFrameworkVersion(new VersionClassLoader(this.
+                    getClass().getClassLoader(), " "));
             fail();
         } catch (IllegalStateException e) {
             // OK.
@@ -74,16 +77,24 @@ public class FrameworkUtilTests {
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
             try {
                 props.store(output, null);
-                return new URL("fakejar", null, 0, "connectors-framework.properties", new URLStreamHandler() {
+                return new URL("fakejar", null, 0,
+                        "connectors-framework.properties", new URLStreamHandler() {
+
                     @Override
-                    protected URLConnection openConnection(URL u) throws IOException {
+                    protected URLConnection openConnection(URL u)
+                            throws IOException {
                         return new URLConnection(u) {
+
                             @Override
-                            public void connect() throws IOException {
+                            public void connect()
+                                    throws IOException {
                             }
+
                             @Override
-                            public InputStream getInputStream() throws IOException {
-                                return new ByteArrayInputStream(output.toByteArray());
+                            public InputStream getInputStream()
+                                    throws IOException {
+                                return new ByteArrayInputStream(output.
+                                        toByteArray());
                             }
                         };
                     }

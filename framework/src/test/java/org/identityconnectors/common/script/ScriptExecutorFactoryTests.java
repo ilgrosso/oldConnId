@@ -24,9 +24,7 @@ package org.identityconnectors.common.script;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import java.util.Set;
-
 import org.junit.Test;
 
 public class ScriptExecutorFactoryTests {
@@ -39,7 +37,9 @@ public class ScriptExecutorFactoryTests {
         assertTrue(languages.contains("Foo"));
         assertTrue(languages.contains("Bar"));
 
-        assertEquals("Foo", ScriptExecutorFactory.newInstance("Foo").getLanguageName());
-        assertEquals("Bar", ScriptExecutorFactory.newInstance("Bar").getLanguageName());
+        assertEquals("Foo", ScriptExecutorFactory.newInstance("Foo").
+                getLanguageName());
+        assertEquals("Bar", ScriptExecutorFactory.newInstance("Bar").
+                getLanguageName());
     }
 }
