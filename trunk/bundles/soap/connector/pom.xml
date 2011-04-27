@@ -34,7 +34,7 @@
     </parent>
 
     <groupId>org.connid.bundles.soap</groupId>
-    <artifactId>connector</artifactId>
+    <artifactId>org.connid.bundles.soap</artifactId>
 
     <name>Bundles: SOAP: Connector</name>
 
@@ -143,7 +143,6 @@
     </dependencies>
 
     <build>
-        <finalName>${project.groupId}-${project.version}</finalName>
         <plugins>
             
             <plugin>
@@ -158,7 +157,6 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
 
-                    <finalName>${project.groupId}-${project.version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
 
                     <descriptors>
