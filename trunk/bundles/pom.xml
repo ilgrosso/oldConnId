@@ -45,6 +45,7 @@
         <module>soap</module>
         <module>ldap</module>
         <module>db</module>
+        <module>googleapps</module>
     </modules>
 
 </project>
