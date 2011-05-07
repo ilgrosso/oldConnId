@@ -1,0 +1,75 @@
+=Connector Servers=
+
+A connector server is required when a connector bundle is not directly executed within your application. By using one or more connector servers, the connector architecture thus permits your application to communicate with externally deployed bundles.
+
+A Java connector server is useful when you do not wish to execute a Java connector bundle in the same VM as your application. It may be beneficial to run a Java connector on a different host for performance improvements if the bundle works faster when deployed on the same host as the native managed resource. Additionally, one may wish to use a Java connector server under a Java remote connector server in order to eliminate the possibility of an application VM crash due to a fault in a JNI-based connector.
+
+==Installing a Java Connector Server==
+
+Minimum Requirements:
+ * Java 1.5 or later
+ * Refer to your Java connectors to determine if there are any additional requirements
+
+===Create your execution environment===
+    * Create an empty directory (e.g. {{{/usr/jconnserv}}}) on the host where you wish to run the Java connector server.
+    * Copy the jars {{{framework-XX.jar}}} and {{{framework-internal-XX.jar}}} (where XX is the version you want to use) and {{{groovy-all.jar}}} from the local maven repository into the directory
+    * Create a new directory called {{{bundles}}} in the directory.
+    * Using jar or unzip or similar tool, extract the {{{connectorserver.properties}}} from the {{{framework-internal-XX.jar}}} into the directory. The {{{connectoserver.properties}}} file is located in the jar as the path {{{org/identityconnectors/framework/server/connectorserver.properties}}}.
+
+===Test your execution environment===
+ * Run the Java connector server with no arguments to see the list of command-line options
+{{{
+    java -cp "connector-framework.jar:connector-framework-internal.jar:groovy-all.jar" \
+         org.identityconnectors.framework.server.Main
+}}}
+
+ * You should see the following output:
+{{{
+    Usage: 
+           Main -run -properties 
+           Main -setKey -key  -properties 
+           Main -setDefaults -properties 
+}}}
+
+===Configure your Java connector server===
+
+    * Run the connector server with the {{{-setKey}}} option as described above to set your desired key into your properties file
+    * For all other properties (e.g. port), edit the {{{connectorserver.properties}}} manually. The available properties are described in the {{{connectorserver.properties}}} file.
+
+==Running your Java connector server==
+
+Run the server by launching with the {{{-run}}} option:
+{{{
+    java -cp "connector-framework.jar:connector-framework-internal.jar:groovy-all.jar" \ 
+         org.identityconnectors.framework.server.Main -run \
+         -properties connectorserver.properties
+}}}
+
+==Installing Connectors on a Java Connector Server==
+
+To deploy a Java connector:
+
+    * Copy the Java connector bundle jar file change directory to the {{{bundles}}} directory in your Java connector server directory
+    * If necessary, add to the classpath any 3rd party jars required by any Java connector.
+    * Restart the Java connector server 
+
+==Using SSL to communicate with connector servers==
+
+The following steps are necessary to successfully communicate with a connector server using SSL:
+
+    * Deploy an SSL certificate to the connector server's system.
+    * Configure your connector server to provide SSL sockets.
+    * Configure your application to communicate with the communicate with the connector server via SSL. 
+
+===Configure your application to use SSL===
+
+Refer to your application manual for specific notes on how to configure connections to connector servers. You will need to indicate to your application that an SSL connection is required when establishing a connection for each SSL-enabled connector server.
+
+Additionally, if any of the SSL certificates used by your connector servers is issued by a non-standard certificate authority, your application must be configured to respect the additional authorities. Refer to your application manual for notes regarding certificate authorities.
+
+Java applications may solve the non-standard certificate authority issue by expecting that the following Java system properties are passed when launching the application:
+
+    * {{{javax.net.ssl.trustStorePassword}}}<br>For example, {{{-Djavax.net.ssl.trustStorePassword=changeit}}}
+    * {{{javax.net.ssl.trustStore}}}<br>For example, {{{-Djavax.net.ssl.trustStore=/usr/myApp_cacerts}}}
+
+Or, instead, the non-standard certificate authorities may be imported to the standard {{{${JAVA_HOME}/lib/security/cacerts}}}. 
