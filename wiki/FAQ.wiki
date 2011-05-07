@@ -1,0 +1,7 @@
+=Frequently Asked Questions=
+
+==What are Connectors?==
+
+Connectors provide applications with a way to [Design decouple] from the resources that they connect to. !ConnId is aimed at user provisioning and identity management, but is generalized enough to support several different kinds of applications. For example, in addition to basic CRUD operations, the API supports Search, Sync, Authenticate, and Scripting operations, as well as others.
+
+Connectors themselves are self-contained [ConnectorBundles bundles] that ride on top of the Connectors Framework. Applications are completely separated from the bundles, so that different implementations can be swapped in and out without affecting the app or its dependencies. 
