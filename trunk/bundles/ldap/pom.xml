@@ -30,12 +30,12 @@
     <parent>
         <artifactId>bundles</artifactId>
         <groupId>org.connid.bundles</groupId>
-        <version>1.3-SNAPSHOT</version>
+        <version>1.3</version>
     </parent>
 
     <groupId>org.connid.bundles</groupId>
     <artifactId>org.connid.bundles.ldap</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
 
     <name>Bundles: LDAP</name>
 
@@ -59,14 +59,14 @@
         <dependency>
             <groupId>org.connid</groupId>
             <artifactId>framework</artifactId>
-            <version>${connid.version}</version>
+            <version>1.3</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.connid</groupId>
             <artifactId>framework-internal</artifactId>
-            <version>${connid.version}</version>
+            <version>1.3</version>
             <scope>runtime</scope>
         </dependency>
         
@@ -94,7 +94,7 @@
         <dependency>
             <groupId>org.connid</groupId>
             <artifactId>test-common</artifactId>
-            <version>${connid.version}</version>
+            <version>1.3</version>
             <scope>test</scope>
         </dependency>
         
@@ -118,115 +118,112 @@
                         <phase>process-test-classes</phase>
                         <configuration>
                             <target>
-                                <get src="http://www.opends.org/promoted-builds/1.0.0/OpenDS-1.0.0.zip" 
-                                     dest="${java.io.tmpdir}" skipexisting="true"/>
-                                <delete dir="${opends.setup.dir}"/>
+                                <get src="http://www.opends.org/promoted-builds/1.0.0/OpenDS-1.0.0.zip" dest="${java.io.tmpdir}" skipexisting="true" />
+                                <delete dir="${opends.setup.dir}" />
                                 <unzip dest="${opends.setup.dir}" src="${java.io.tmpdir}/OpenDS-1.0.0.zip">
                                      <!-- Remove the "OpenDS-1.x.y" prefix. -->
-                                    <regexpmapper from="[^/\\]+[/\\](.*)" to="\1"/>
+                                    <regexpmapper from="[^/\\]+[/\\](.*)" to="\1" />
                                 </unzip>
                                 
                                 <condition property="tool.import-ldif" value="bat/import-ldif.bat" else="bin/import-ldif">
-                                    <os family="windows"/>
+                                    <os family="windows" />
                                 </condition>
                                 <condition property="tool.ldapmodify" value="bat/ldapmodify.bat" else="bin/ldapmodify">
-                                    <os family="windows"/>
+                                    <os family="windows" />
                                 </condition>
                                 <condition property="tool.make-ldif" value="bat/make-ldif.bat" else="bin/make-ldif">
-                                    <os family="windows"/>
+                                    <os family="windows" />
                                 </condition>
                                 <condition property="tool.rebuild-index" value="bat/rebuild-index.bat" else="bin/rebuild-index">
-                                    <os family="windows"/>
+                                    <os family="windows" />
                                 </condition>
                                 <condition property="tool.start-ds" value="bat/start-ds.bat" else="bin/start-ds">
-                                    <os family="windows"/>
+                                    <os family="windows" />
                                 </condition>
                                 <condition property="tool.stop-ds" value="bat/stop-ds.bat" else="bin/stop-ds">
-                                    <os family="windows"/>
+                                    <os family="windows" />
                                 </condition>
                                 <chmod perm="+x">
                                     <fileset dir="${opends.setup.dir}">
-                                        <include name="${tool.import-ldif}"/>
-                                        <include name="${tool.ldapmodify}"/>
-                                        <include name="${tool.make-ldif}"/>
-                                        <include name="${tool.rebuild-index}"/>
-                                        <include name="${tool.start-ds}"/>
-                                        <include name="${tool.stop-ds}"/>
-                                        <include name="lib/_client-script.sh"/>
-                                        <include name="lib/_mixed-script.sh"/>
-                                        <include name="lib/_server-script.sh"/>
+                                        <include name="${tool.import-ldif}" />
+                                        <include name="${tool.ldapmodify}" />
+                                        <include name="${tool.make-ldif}" />
+                                        <include name="${tool.rebuild-index}" />
+                                        <include name="${tool.start-ds}" />
+                                        <include name="${tool.stop-ds}" />
+                                        <include name="lib/_client-script.sh" />
+                                        <include name="lib/_mixed-script.sh" />
+                                        <include name="lib/_server-script.sh" />
                                     </fileset>
                                 </chmod>
                                 
-                                <copy tofile="${opends.setup.dir}/config/config.ldif" 
-                                      file="${project.build.directory}/test-classes/opends/config.ldif"/>
-                                <copy tofile="${opends.setup.dir}/config/keystore.pin" 
-                                      file="${project.build.directory}/test-classes/opends/keystore.pin"/>
+                                <copy tofile="${opends.setup.dir}/config/config.ldif" file="${project.build.directory}/test-classes/opends/config.ldif" />
+                                <copy tofile="${opends.setup.dir}/config/keystore.pin" file="${project.build.directory}/test-classes/opends/keystore.pin" />
 
                                 <!-- Generate a self-signed certificate. The password is the one in opends/password.pin. -->
                                 <genkey alias="server-cert" keyalg="rsa" keystore="${opends.setup.dir}/config/keystore" storetype="JKS" storepass="password" validity="365">
                                     <dname>
-                                        <param name="CN" value="opends.example.com"/>
-                                        <param name="O" value="Example Organization"/>
-                                        <param name="C" value="US"/>
+                                        <param name="CN" value="opends.example.com" />
+                                        <param name="O" value="Example Organization" />
+                                        <param name="C" value="US" />
                                     </dname>
                                 </genkey>
 
                                 <!-- Generate and import data. -->
                                 <exec executable="${opends.setup.dir}/${tool.make-ldif}" dir="${opends.setup.dir}">
-                                    <arg value="-t"/>
-                                    <arg value="${project.build.directory}/test-classes/opends/bigcompany.template"/>
-                                    <arg value="-o"/>
-                                    <arg value="${opends.setup.dir}/bigcompany.ldif"/>
+                                    <arg value="-t" />
+                                    <arg value="${project.build.directory}/test-classes/opends/bigcompany.template" />
+                                    <arg value="-o" />
+                                    <arg value="${opends.setup.dir}/bigcompany.ldif" />
                                 </exec>
                                 <exec executable="${opends.setup.dir}/${tool.import-ldif}" dir="${opends.setup.dir}">
-                                    <arg value="--clearBackend"/>
-                                    <arg value="--ldifFile"/>
-                                    <arg value="${project.build.directory}/test-classes/opends/data.ldif"/>
-                                    <arg value="--backendID"/>
-                                    <arg value="userRoot"/>
+                                    <arg value="--clearBackend" />
+                                    <arg value="--ldifFile" />
+                                    <arg value="${project.build.directory}/test-classes/opends/data.ldif" />
+                                    <arg value="--backendID" />
+                                    <arg value="userRoot" />
                                 </exec>
                                 <exec executable="${opends.setup.dir}/${tool.import-ldif}" dir="${opends.setup.dir}">
-                                    <arg value="--append"/>
-                                    <arg value="--ldifFile"/>
-                                    <arg value="${opends.setup.dir}/bigcompany.ldif"/>
-                                    <arg value="--backendID"/>
-                                    <arg value="userRoot"/>
+                                    <arg value="--append" />
+                                    <arg value="--ldifFile" />
+                                    <arg value="${opends.setup.dir}/bigcompany.ldif" />
+                                    <arg value="--backendID" />
+                                    <arg value="userRoot" />
                                 </exec>
                                 <exec executable="${opends.setup.dir}/${tool.rebuild-index}" dir="${opends.setup.dir}">
-                                    <arg value="--baseDN"/>
-                                    <arg value="dc=example,dc=com"/>
-                                    <arg value="--index"/>
-                                    <arg value="vlv.index-uid"/>
+                                    <arg value="--baseDN" />
+                                    <arg value="dc=example,dc=com" />
+                                    <arg value="--index" />
+                                    <arg value="vlv.index-uid" />
                                 </exec>
 
                                 <!-- Set up an admin user. -->
-                                <exec executable="${opends.setup.dir}/${tool.start-ds}" dir="${opends.setup.dir}"/>
+                                <exec executable="${opends.setup.dir}/${tool.start-ds}" dir="${opends.setup.dir}" />
                                 <exec executable="${opends.setup.dir}/${tool.ldapmodify}" dir="${opends.setup.dir}">
-                                    <arg value="-h"/>
-                                    <arg value="${opends.host}"/>
-                                    <arg value="-p"/>
-                                    <arg value="${opends.port}"/>
-                                    <arg value="-D"/>
-                                    <arg value="${opends.principal}"/>
-                                    <arg value="-w"/>
-                                    <arg value="${opends.credentials}"/>
-                                    <arg value="-f"/>
-                                    <arg value="${project.build.directory}/test-classes/opends/admin.ldif"/>
+                                    <arg value="-h" />
+                                    <arg value="${opends.host}" />
+                                    <arg value="-p" />
+                                    <arg value="${opends.port}" />
+                                    <arg value="-D" />
+                                    <arg value="${opends.principal}" />
+                                    <arg value="-w" />
+                                    <arg value="${opends.credentials}" />
+                                    <arg value="-f" />
+                                    <arg value="${project.build.directory}/test-classes/opends/admin.ldif" />
                                 </exec>
-                                <exec executable="${opends.setup.dir}/${tool.stop-ds}" dir="${opends.setup.dir}"/>
+                                <exec executable="${opends.setup.dir}/${tool.stop-ds}" dir="${opends.setup.dir}" />
                                 
-                                <delete dir="${opends.dest.dir}"/>
-                                <mkdir dir="${opends.dest.dir}"/>
+                                <delete dir="${opends.dest.dir}" />
+                                <mkdir dir="${opends.dest.dir}" />
                                 <copy todir="${opends.dest.dir}">
                                     <fileset dir="${opends.setup.dir}">
                                         <!-- This needs to be in sync with LdapConnectorTestBase. -->
-                                        <include name="config/schema/*.ldif"/>
-                                        <include name="config/admin-backend.ldif"/>
-                                        <include name="config/config.ldif"/>
-                                        <include name="config/keystore"/>
-                                        <include name="config/keystore.pin"/>
-                                        <include name="db/userRoot/*.jdb"/>
+                                        <include name="config/schema/*.ldif" />
+                                        <include name="config/admin-backend.ldif" />
+                                        <include name="config/config.ldif" />
+                                        <include name="config/keystore" />
+                                        <include name="config/keystore.pin" />
+                                        <include name="db/userRoot/*.jdb" />
                                     </fileset>
                                 </copy>
                             </target>
