@@ -1,4 +1,7 @@
+#summary Connector bundles
+
 =Connector Bundles=
+<wiki:toc max_depth="5"/>
 
 A bundle is nothing more than a specialized JAR. There are special attributes within the JAR's manifest that are recognized by the connectors framework. This document describes the plan for connector bundles and classloading strategy.
 
