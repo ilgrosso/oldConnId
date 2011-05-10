@@ -1,6 +1,6 @@
 #summary Table of contents
 
- 1. [Downloads How to download ConnId artifacts (server, bundles, ...)]
+ 1. [Downloads How to download ConnId artifacts]
  1. [FAQ Frequently Asked Questions]
  1. [Design Design overview]
  1. [ConnectorServers Connector servers]
