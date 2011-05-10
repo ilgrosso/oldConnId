@@ -1,0 +1,9 @@
+#summary How to download ConnId artifacts (server, bundles, ...)
+
+= Downloads =
+
+The standard way to get ConnId artifacts is by Maven standard dependency handling features.
+
+However, you can also get all artifacts at the following locations:
+ * [http://repo1.maven.org/maven2/org/connid Stable releases]
+ * [http://oss.sonatype.org/content/repositories/snapshots/org/connid/ Snapshot releases]
