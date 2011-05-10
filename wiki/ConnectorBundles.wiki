@@ -1,4 +1,4 @@
-#summary Connector bundles
+#summary A look inside connector bundles inner structure
 
 =Connector Bundles=
 <wiki:toc max_depth="5"/>
