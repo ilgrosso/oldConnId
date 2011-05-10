@@ -1,5 +1,8 @@
+#summary Using connectors in an application
 #labels Featured,Documentation,API,HOWTO
+
 =Using Connectors in an Application=
+<wiki:toc max_depth="5"/>
 
 == How do I access the connector API?==
 
