@@ -1,4 +1,7 @@
+#summary Connector servers
+
 =Connector Servers=
+<wiki:toc max_depth="5"/>
 
 A connector server is required when a connector bundle is not directly executed within your application. By using one or more connector servers, the connector architecture thus permits your application to communicate with externally deployed bundles.
 
