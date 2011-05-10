@@ -1,3 +1,5 @@
+#summary Frequently Asked Questions
+
 =Frequently Asked Questions=
 <wiki:toc max_depth="5"/>
 
