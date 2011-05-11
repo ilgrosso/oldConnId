@@ -313,6 +313,7 @@
         <module>framework</module>
         <module>framework-internal</module>
         <module>test-common</module>
+        <module>testbundles</module>
         <module>test-contract</module>
         <module>bundles</module>
     </modules>
