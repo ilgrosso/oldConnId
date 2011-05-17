@@ -157,6 +157,10 @@ public class ProvisioningTestITCase {
             surname.setName("surname");
             surname.setValues(Collections.singletonList("doe"));
 
+            WSAttributeValue fullname = new WSAttributeValue();
+            fullname.setName("fullname");
+            fullname.setValues(Collections.singletonList("john doe"));
+            
             WSAttributeValue birthdate = new WSAttributeValue();
             birthdate.setName("birthdate");
             birthdate.setValues(Collections.singletonList("01/01/1990"));
@@ -167,6 +171,7 @@ public class ProvisioningTestITCase {
             attrs.add(type);
             attrs.add(name);
             attrs.add(surname);
+            attrs.add(fullname);
             attrs.add(birthdate);
 
             String accountId = provisioning.create(attrs);
