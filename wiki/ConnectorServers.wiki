@@ -1,6 +1,5 @@
 #summary Connector servers
 
-=Connector Servers=
 <wiki:toc max_depth="5"/>
 
 A connector server is required when a connector bundle is not directly executed within your application. By using one or more connector servers, the connector architecture thus permits your application to communicate with externally deployed bundles.
@@ -10,6 +9,8 @@ Connector servers are available for both Java and .NET.
 A Java connector server is useful when you do not wish to execute a Java connector bundle in the same VM as your application. It may be beneficial to run a Java connector on a different host for performance improvements if the bundle works faster when deployed on the same host as the native managed resource. Additionally, one may wish to use a Java connector server under a Java remote connector server in order to eliminate the possibility of an application VM crash due to a fault in a JNI-based connector.
 
 The use of .NET connector servers is especially useful when an application is written in Java, but a connector bundle is written using C#. Since a Java application (e.g. J2EE application) cannot load C# classes, it is necessary to instead deploy the C# bundles under a .NET connector server. The Java application can communicate with the C# connector server over the network, and the C# connector server serves as a proxy to provide to any authenticated application access to the C# bundles deployed within the C# connector server.
+
+=Java Connector Server=
 
 ==Installing a Java Connector Server==
 
