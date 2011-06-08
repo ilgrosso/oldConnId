@@ -27,4 +27,13 @@
         </fileSet>
     </fileSets>
     
+    <dependencySets>
+        <dependencySet>
+            <includes>
+                <include>com.sun.jndi.ldap:ldapbp</include>
+            </includes>
+            <outputDirectory>lib</outputDirectory>
+        </dependencySet>
+    </dependencySets>
+
 </assembly>
