@@ -44,6 +44,16 @@ public class WebServiceConfiguration extends AbstractConfiguration {
      */
     private String servicename = null;
 
+    /*
+     * Connection timeout
+     */
+    private String connectionTimeout = "30";
+
+    /*
+     * Receive timeout
+     */
+    private String receiveTimeout = "60";
+
     /**
      * Accessor for the example property. Uses ConfigurationProperty annotation
      * to provide property metadata to the application.
@@ -77,6 +87,28 @@ public class WebServiceConfiguration extends AbstractConfiguration {
         this.servicename = classname;
     }
 
+    @ConfigurationProperty(displayMessageKey = "CONNECTIONTIMEOUT_DISPLAY",
+    helpMessageKey = "CONNECTIONTIMEOUT_HELP",
+    confidential = false)
+    public String getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(String connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+
+    @ConfigurationProperty(displayMessageKey = "RECEIVETIMEOUT_DISPLAY",
+    helpMessageKey = "RECEIVETIMEOUT_HELP",
+    confidential = false)
+    public String getReceiveTimeout() {
+        return receiveTimeout;
+    }
+
+    public void setReceiveTimeout(String receiveTimeout) {
+        this.receiveTimeout = receiveTimeout;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -94,10 +126,33 @@ public class WebServiceConfiguration extends AbstractConfiguration {
                     "Service name cannot be null or empty.");
         }
 
+        // Check if servicename has been specified.
+        if (StringUtil.isBlank(connectionTimeout)) {
+            connectionTimeout = "30";
+        }
+
+        try {
+            Long.parseLong(connectionTimeout);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                    "The specified connection timeout is not valid.");
+        }
+
+        if (StringUtil.isBlank(receiveTimeout)) {
+            receiveTimeout = "60";
+        }
+
+        try {
+            Long.parseLong(receiveTimeout);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                    "The specified receive timeout is not valid.");
+        }
+
         try {
             // Check if the specified enpoint is a well-formed URL.
             new URL(endpoint);
-        } catch (MalformedURLException ex) {
+        } catch (MalformedURLException e) {
             throw new IllegalArgumentException(
                     "The specified endpoint is not a valid URL.");
         }

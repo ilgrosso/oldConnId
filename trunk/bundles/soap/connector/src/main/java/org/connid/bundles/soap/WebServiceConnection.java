@@ -22,7 +22,11 @@
  */
 package org.connid.bundles.soap;
 
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.connid.bundles.soap.provisioning.interfaces.Provisioning;
 
 import org.slf4j.Logger;
@@ -35,7 +39,7 @@ public class WebServiceConnection {
     /**
      * Logger definition.
      */
-    private static final Logger log =
+    private static final Logger LOG =
             LoggerFactory.getLogger(WebServiceConnection.class);
 
     private final String SUCCESS = "OK";
@@ -47,10 +51,10 @@ public class WebServiceConnection {
     public WebServiceConnection(WebServiceConfiguration configuration) {
         try {
 
-            ApplicationContext context = new ClassPathXmlApplicationContext(
+            final ApplicationContext context = new ClassPathXmlApplicationContext(
                     new String[]{APPLICATIONCONTEXT});
 
-            JaxWsProxyFactoryBean proxyFactory =
+            final JaxWsProxyFactoryBean proxyFactory =
                     (JaxWsProxyFactoryBean) context.getBean(
                     JaxWsProxyFactoryBean.class);
 
@@ -64,24 +68,36 @@ public class WebServiceConnection {
 
             provisioning = (Provisioning) proxyFactory.create();
 
+            final Client client = ClientProxy.getClient(provisioning);
+            if (client != null) {
+                final HTTPConduit conduit = (HTTPConduit) client.getConduit();
+                final HTTPClientPolicy policy =
+                        (HTTPClientPolicy) conduit.getClient();
+
+                policy.setConnectionTimeout(Long.parseLong(
+                        configuration.getConnectionTimeout()) * 1000L);
+                policy.setReceiveTimeout(Long.parseLong(
+                        configuration.getReceiveTimeout()) * 1000L);
+            }
+
         } catch (IllegalArgumentException e) {
 
-            if (log.isErrorEnabled()) {
-                log.error("Invalid confoguration", e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error("Invalid confoguration", e);
             }
 
         } catch (ClassNotFoundException e) {
 
-            if (log.isErrorEnabled()) {
-                log.error("Provisioning class" +
-                        " \"" + configuration.getServicename() + "\" " +
-                        "not found", e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error("Provisioning class"
+                        + " \"" + configuration.getServicename() + "\" "
+                        + "not found", e);
             }
 
         } catch (Throwable t) {
 
-            if (log.isErrorEnabled()) {
-                log.error("Unknown exception", t);
+            if (LOG.isErrorEnabled()) {
+                LOG.error("Unknown exception", t);
             }
 
         }
@@ -98,13 +114,15 @@ public class WebServiceConnection {
      * If internal connection is not usable, throw IllegalStateException
      */
     public void test() {
-        if (provisioning == null)
+        if (provisioning == null) {
             throw new IllegalStateException("Service port not found.");
+        }
 
         String res = provisioning.checkAlive();
 
-        if (!SUCCESS.equals(res))
+        if (!SUCCESS.equals(res)) {
             throw new IllegalStateException("Invalid response.");
+        }
     }
 
     public Provisioning getProvisioning() {
