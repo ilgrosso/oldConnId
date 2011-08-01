@@ -35,16 +35,16 @@
 
     <groupId>org.connid.bundles</groupId>
     <artifactId>org.connid.bundles.flatfile</artifactId>
-    <version>1.2</version>
+    <version>1.3-SNAPSHOT</version>
 
     <name>ConnId Bundles: FlatFile</name>
 
     <packaging>jar</packaging>
 
     <scm>
-        <connection>scm:svn:http://connid.googlecode.com/svn/bundles/flatfile/tags/org.connid.bundles.flatfile-1.2</connection>
-        <developerConnection>scm:svn:https://connid.googlecode.com/svn/bundles/flatfile/tags/org.connid.bundles.flatfile-1.2</developerConnection>
-        <url>http://connid.googlecode.com/svn/bundles/flatfile/tags/org.connid.bundles.flatfile-1.2</url>
+        <connection>scm:svn:http://connid.googlecode.com/svn/bundles/flatfile/trunk/</connection>
+        <developerConnection>scm:svn:https://connid.googlecode.com/svn/bundles/flatfile/trunk/</developerConnection>
+        <url>http://connid.googlecode.com/svn/bundles/flatfile/trunk/</url>
     </scm>
 
     <properties>
