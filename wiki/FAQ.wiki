@@ -41,7 +41,7 @@ To use Connectors in your application, start by downloading [http://code.google.
     * *framework-internal-XX.jar* (runtime dependency only) 
 where XX is the desired version.
 
-Then, download the [http://code.google.com/p/connid/downloads/lis Connector Bundle(s)] you'd like to use and add them to the classpath as well. Now you are ready to set up the !ConnectorFacade and start programming to the API. See the [UsingConnectorsInAnApplication API Info] section for more details on this.
+Then, download the [http://code.google.com/p/connid/downloads/list Connector Bundle(s)] you'd like to use and add them to the classpath as well. Now you are ready to set up the !ConnectorFacade and start programming to the API. See the [UsingConnectorsInAnApplication API Info] section for more details on this.
 
 ==How Do I Write My Own Connector?==
 
