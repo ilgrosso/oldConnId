@@ -1,5 +1,7 @@
 #summary GoogleApps connector
 
+<wiki:toc max_depth="2"/>
+
 =Overview=
 
 Google Apps is a software-as-a-service platform (SAAS) that provides email, calendar, documents and other services. This
@@ -8,5 +10,3 @@ connector uses the Google Apps provisioning APIs to create, add, delete and modi
 Please note that only the Premium (paid) or Educational versions of Google Apps provide access to the provisioning APIs. <em>This connector will not work on free Google Apps domains.</em>
 
 More information on Google Apps can be found [http://www.google.com/apps/intl/en/business/index.html here].
-
-<wiki:toc max_depth="2"/>
