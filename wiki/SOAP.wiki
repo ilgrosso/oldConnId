@@ -1,5 +1,7 @@
 #summary SOAP connector
 
+<wiki:toc max_depth="2"/>
+
 = Overview =
 
 The SOAP Connector supports provisioning to SOAP web services implementing a specific interface.
