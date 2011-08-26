@@ -4,6 +4,6 @@
  1. [AvailableConnectorBundles Available Connector bundles]
  1. [Design Design overview]
  1. [ConnectorServers Connector servers design]
- 1. [Design/ConnectorBundles Connector bundles design]
+ 1. [ConnectorBundles Connector bundles design]
  1. [UsingConnectorsInAnApplication Using Connectors in an Application]
  1. [FAQ Frequently Asked Questions]
