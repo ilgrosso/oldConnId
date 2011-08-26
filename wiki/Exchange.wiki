@@ -1,0 +1,47 @@
+#summary Exchange connector
+
+=Overview=
+
+The Exchange Connector supports provisioning to Windows servers running Active Directory and MS Exchange Server 2007. In fact, the Exchange connector is an extension to the Active Directory connector.
+
+=Installation=
+
+ # Install Microsoft Windows PowerShell v1.0 and the Exchange Management Shell PowerShell extension.
+ # Extract the Exchange Connector zip file to the directory where the connector server resides.
+    The default path is C:\Program Files\Identity Connectors\Connector Server; however, you can change this path if more than one connector server is running on the same machine.
+    <b>Note</b>: The Exchange connector is built on top of the Active Directory connector and the Exchange connector's zip file contains the Active Directory version with which it can cooperate. If you already have an Active Directory connector installed, extracting the Exchange connector's zip file will overwrite your existing connector. Be sure that the Active Directory connector version contained in the zip file is appropriate for you before extracting the compressed file. If not, you might have to install a new connector server for hosting the Exchange connector.
+ # Restart the Connector Server.
+
+=Supported operations=
+
+The Exchange Connector supports the same operations as those supported by the Active Directory connector. See the Active Directory connector [ActiveDirectory#Supported_Operations Supported Operations] section for more information.
+
+=Configuration=
+
+The Exchange connector's configuration properties are same as those supported by the Active Directory connector. See the Active Directory connector [ActiveDirectory#Configuration Configuration] section for more information.
+
+=Schema=
+
+The Exchange connector supports the same schema attributes as the Active Directory connector. See the Active Directory connector Schema section for more information.
+
+The Exchange connector supports the following, additional attributes for the ACCOUNT objectclass.
+Unless otherwise noted, the following attributes are single-valued and can be created, updated, and read.
+
+<table class="confluenceTable" border="1"><tbody>
+<tr>
+<th class="confluenceTh"> Name </th>
+<th class="confluenceTh"> Description </th>
+</tr>
+<tr>
+<td class="confluenceTd"> <tt>RecipientType</tt> </td>
+<td class="confluenceTd"> Required attribute (Possible values: <tt>User</tt>, <tt>MailUser</tt>, <tt>UserMailbox</tt>) </td>
+</tr>
+<tr>
+<td class="confluenceTd"> <tt>!ExternalEmailAddress</tt> </td>
+<td class="confluenceTd"> Multi-valued attribute  </td>
+</tr>
+<tr>
+<td class="confluenceTd"> <tt>Database</tt> </td>
+<td class="confluenceTd"></td>
+</tr>
+</tbody></table>
