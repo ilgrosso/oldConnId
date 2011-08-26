@@ -23,7 +23,7 @@ The Active Directory Connector supports provisioning to Windows servers 2003 / 2
 
 The following table describes all of the configuration properties that you can specify on the Configuration object when you are setting up an Active Directory connector.
 
-<table class="confluenceTable" border="1"><tbody>
+<table border="1"><tbody>
 <tr>
 <th class="confluenceTh"> Configuration Property </th>
 <th class="confluenceTh"> Type </th>
@@ -31,70 +31,70 @@ The following table describes all of the configuration properties that you can s
 <th class="confluenceTh"> Definition </th>
 </tr>
 <tr>
-<td class="confluenceTd"> Active Directory Domain Controller Hostname </td>
-<td class="confluenceTd"> String </td>
-<td class="confluenceTd"> </td>
-<td class="confluenceTd"> Specifies a particular domain controller, enter the hostname, IP address, or domain name of the LDAP server. If it is not supplied, serverless bind is used. </td>
+<td> Active Directory Domain Controller Hostname </td>
+<td> String </td>
+<td> </td>
+<td> Specifies a particular domain controller, enter the hostname, IP address, or domain name of the LDAP server. If it is not supplied, serverless bind is used. </td>
 </tr>
 <tr>
-<td class="confluenceTd"> Container </td>
-<td class="confluenceTd"> String </td>
-<td class="confluenceTd"> X </td>
-<td class="confluenceTd"> A container object which will be the default root of all searches. Unless a search explicitly passes in other criteria, only objects under this container will be searched. For example, if you want to retrieve users from the Users container, enter CN=Users,DC=MYDOMAIN,DC=COM. </td>
+<td> Container </td>
+<td> String </td>
+<td> X </td>
+<td> A container object which will be the default root of all searches. Unless a search explicitly passes in other criteria, only objects under this container will be searched. For example, if you want to retrieve users from the Users container, enter CN=Users,DC=MYDOMAIN,DC=COM. </td>
 </tr>
 <tr>
-<td class="confluenceTd"> Create Home Directory </td>
-<td class="confluenceTd"> Boolean </td>
-<td class="confluenceTd"> </td>
-<td class="confluenceTd"> Specifes whether or not the home directory for the user will be created. </td>
+<td> Create Home Directory </td>
+<td> Boolean </td>
+<td> </td>
+<td> Specifes whether or not the home directory for the user will be created. </td>
 </tr>
 <tr>
-<td class="confluenceTd"> Directory Administrator's Account </td>
-<td class="confluenceTd"> String </td>
-<td class="confluenceTd"> X </td>
-<td class="confluenceTd"> The administrator's user name with which the system should authenticate. The setting can be either a username or a combination of domain name and user name in the form of 'domainname'\'username'.</td>
+<td> Directory Administrator's Account </td>
+<td> String </td>
+<td> X </td>
+<td> The administrator's user name with which the system should authenticate. The setting can be either a username or a combination of domain name and user name in the form of 'domainname'\'username'.</td>
 </tr>
 <tr>
-<td class="confluenceTd"> Directory Administrator's Password </td>
-<td class="confluenceTd"> String </td>
-<td class="confluenceTd"> X </td>
-<td class="confluenceTd"> The password that should be used when authenticating. </td>
+<td> Directory Administrator's Password </td>
+<td> String </td>
+<td> X </td>
+<td> The password that should be used when authenticating. </td>
 </tr>
 <tr>
-<td class="confluenceTd"> Domain Name </td>
-<td class="confluenceTd"> String </td>
-<td class="confluenceTd"> X </td>
-<td class="confluenceTd"> Name of the windows domain (e.g. windowsdomain.mycompany.com). </td>
+<td> Domain Name </td>
+<td> String </td>
+<td> X </td>
+<td> Name of the windows domain (e.g. windowsdomain.mycompany.com). </td>
 </tr>
 <tr>
-<td class="confluenceTd"> Object Class for User Objects </td>
-<td class="confluenceTd"> String </td>
-<td class="confluenceTd"> </td>
-<td class="confluenceTd"> The Active Directory object class for user objects that will be managed on the specified resource. The default is User, and for most situations, this should be fine. </td>
+<td> Object Class for User Objects </td>
+<td> String </td>
+<td> </td>
+<td> The Active Directory object class for user objects that will be managed on the specified resource. The default is User, and for most situations, this should be fine. </td>
 </tr>
 <tr>
-<td class="confluenceTd"> Search Child Domains </td>
-<td class="confluenceTd"> Boolean </td>
-<td class="confluenceTd"> </td>
-<td class="confluenceTd"> Set if you want searches of Active Directory to include child domains. In addition, the Search Container and Sync Search Context (see sync settings) attributes must be set to the top of the parent domain, e.g. DC=mydomain,DC=com. </td>
+<td> Search Child Domains </td>
+<td> Boolean </td>
+<td> </td>
+<td> Set if you want searches of Active Directory to include child domains. In addition, the Search Container and Sync Search Context (see sync settings) attributes must be set to the top of the parent domain, e.g. DC=mydomain,DC=com. </td>
 </tr>
 <tr>
-<td class="confluenceTd"> Search Context </td>
-<td class="confluenceTd"> String </td>
-<td class="confluenceTd"> </td>
-<td class="confluenceTd"> Reserved for future use. </td>
+<td> Search Context </td>
+<td> String </td>
+<td> </td>
+<td> Reserved for future use. </td>
 </tr>
 <tr>
-<td class="confluenceTd"> Sync Domain Controller </td>
-<td class="confluenceTd"> String </td>
-<td class="confluenceTd"></td>
-<td class="confluenceTd"> Domain controller to use during sync. Only used if not searching child domains. </td>
+<td> Sync Domain Controller </td>
+<td> String </td>
+<td></td>
+<td> Domain controller to use during sync. Only used if not searching child domains. </td>
 </tr>
 <tr>
-<td class="confluenceTd"> Sync Global Catalog Server </td>
-<td class="confluenceTd"> String </td>
-<td class="confluenceTd"> </td>
-<td class="confluenceTd"> Name of the global catalog server. This is needed only if searching child domains. </td>
+<td> Sync Global Catalog Server </td>
+<td> String </td>
+<td> </td>
+<td> Name of the global catalog server. This is needed only if searching child domains. </td>
 </tr>
 </tbody></table>
 
@@ -115,3 +115,334 @@ Unless specifically noted otherwise, all of the attributes listed in this table 
  * Single-valued
  * Optional
  * Can be created, updated, and read.
+
+<table border="1">
+  <tbody>
+    <tr>
+      <th> Attribute Name </th>
+      <th> Description </th>
+    </tr>
+    <tr>
+      <td> <tt>sAMAccountName</tt> </td>
+      <td> Cannot be updated </td>
+    </tr>
+    <tr>
+      <td> <tt>givenName</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>sn</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>displayName</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>mail</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>telephoneNumber</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>employeeID</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>division</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>mobile</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>middleName</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>description</tt> </td>
+      <td> Multi-valued attribute </td>
+    </tr>
+    <tr>
+      <td> <tt>department</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>manager</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>title</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>initials</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>co</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>company</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>facsimileTelephoneNumber</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>homePhone</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>streetAddress</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>l</tt></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>st</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>postalCode</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>TerminalServicesInitialProgram</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>TerminalServicesWorkDirectory</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>AllowLogon</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>MaxConnectionTime</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>MaxDisconnectionTime</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>MaxIdleTime</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>ConnectClientDrivesAtLogon</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>ConnectClientPrintersAtLogon</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>DefaultToMainPrinter</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>BrokenConnectionAction</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>ReconnectionAction</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>EnableRemoteControl</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>TerminalServicesProfilePath</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>TerminalServicesHomeDirectory</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>TerminalServicesHomeDrive</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>uSNChanged</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>ad_container</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>otherHomePhone</tt> </td>
+      <td> Multi-valued attribute </td>
+    </tr>
+    <tr>
+      <td> <tt>distinguishedName</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>objectClass</tt> </td>
+      <td>  Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>homeDirectory</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>PasswordNeverExpires</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>ENABLE</em>_</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>LOCK_OUT</em>_</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>PASSWORD_EXPIRED</em>_</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>CURRENT_PASSWORD</em>_</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>PASSWORD</em>_</tt> </td>
+      <td> Multi-valued attribute that is not readable and not returned by default </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>GROUPS</em>_</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>DESCRIPTION</em>_</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>SHORT_NAME</em>_</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>NAME</em>_</tt> </td>
+      <td> Not readable </td>
+    </tr>
+  </tbody>
+</table>
+
+==Attributes Supported for the Group Objectclass==
+
+Unless specifically noted otherwise, all of the attributes listed in this table are
+
+* Single-valued
+* Optional
+*  Can be created, updated, and read.
+
+<table border="1">
+  <tbody>
+    <tr>
+      <th> Attribute Name </th>
+      <th> Description </th>
+    </tr>
+    <tr>
+      <td> <tt>cn</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>samAccountName</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>description</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>displayName</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>managedby</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>mail</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>groupType</tt> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> <tt>objectClass</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>member</tt></td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>ad_container</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>DESCRIPTION</em>_</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>SHORT_NAME</em>_</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>NAME</em>_</tt> </td>
+      <td> Required </td>
+    </tr>
+  </tbody>
+</table>
+
+==Attributes Supported for the organizationalUnit Objectclass==
+
+Unless specifically noted otherwise, all of the attributes listed in this table are
+
+* Single-valued
+* Optional
+* Can be created, updated, and read.
+
+<table border="1">
+  <tbody>
+    <tr>
+      <th> Attribute Name </th>
+      <th> Description </th>
+    </tr>
+    <tr>
+      <td> <tt>ou</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>displayName</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>DESCRIPTION</em>_</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>SHORT_NAME</em>_</tt> </td>
+      <td> Cannot be created or updated </td>
+    </tr>
+    <tr>
+      <td> <tt>_<em>NAME</em>_</tt> </td>
+      <td> Required  </td>
+    </tr>
+  </tbody>
+</table>
