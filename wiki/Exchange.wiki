@@ -33,8 +33,8 @@ Unless otherwise noted, the following attributes are single-valued and can be cr
 <th class="confluenceTh"> Description </th>
 </tr>
 <tr>
-<td class="confluenceTd"> <tt>RecipientType</tt> </td>
-<td class="confluenceTd"> Required attribute (Possible values: <tt>User</tt>, <tt>MailUser</tt>, <tt>UserMailbox</tt>) </td>
+<td class="confluenceTd"> <tt>!RecipientType</tt> </td>
+<td class="confluenceTd"> Required attribute (Possible values: <tt>User</tt>, <tt>!MailUser</tt>, <tt>!UserMailbox</tt>) </td>
 </tr>
 <tr>
 <td class="confluenceTd"> <tt>!ExternalEmailAddress</tt> </td>
