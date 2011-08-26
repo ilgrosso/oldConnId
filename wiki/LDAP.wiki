@@ -1,5 +1,7 @@
 #summary LDAP connector
 
+<wiki:toc max_depth="2"/>
+
 =Overview=
 
 The LDAP connector enables identity provisioning to LDAP v3 servers.
