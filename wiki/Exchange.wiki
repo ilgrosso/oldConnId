@@ -6,7 +6,7 @@ The Exchange Connector supports provisioning to Windows servers running Active D
 
 =Installation=
 
- # Install Microsoft Windows PowerShell v1.0 and the Exchange Management Shell PowerShell extension.
+ # Install Microsoft Windows !PowerShell v1.0 and the Exchange Management Shell !PowerShell extension.
  # Extract the Exchange Connector zip file to the directory where the connector server resides.
     The default path is C:\Program Files\Identity Connectors\Connector Server; however, you can change this path if more than one connector server is running on the same machine.
     <b>Note</b>: The Exchange connector is built on top of the Active Directory connector and the Exchange connector's zip file contains the Active Directory version with which it can cooperate. If you already have an Active Directory connector installed, extracting the Exchange connector's zip file will overwrite your existing connector. Be sure that the Active Directory connector version contained in the zip file is appropriate for you before extracting the compressed file. If not, you might have to install a new connector server for hosting the Exchange connector.
@@ -14,7 +14,7 @@ The Exchange Connector supports provisioning to Windows servers running Active D
 
 =Supported operations=
 
-The Exchange Connector supports the same operations as those supported by the Active Directory connector. See the Active Directory connector [ActiveDirectory#Supported_operations Supported Operations] section for more information.
+The Exchange Connector supports the same operations as those supported by the Active Directory connector. See the Active Directory connector [ActiveDirectory#Supported_operations Supported operations] section for more information.
 
 =Configuration=
 
