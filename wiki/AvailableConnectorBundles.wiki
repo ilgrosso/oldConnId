@@ -4,16 +4,16 @@
 =Java Connector Bundles=
 
  # [#CSV_directory CSV directory]
- # Database table
- # Flat file
- # !GoogleApps
- # LDAP
- # SOAP
+ # [#Database_table Database table]
+ # [#Flat_file Flat file]
+ # [#GoogleApps GoogleApps]
+ # [#LDAP LDAP]
+ # [#SOAP SOAP]
 
 =.NET Connector Bundles=
 
- # Active Directory
- # Exchange
+ # [#Active_Directory Active Directory]
+ # [#Exchange Exchange]
 
 ==CSV directory==
 
@@ -28,5 +28,121 @@
 ==SOAP==
 
 ==Active Directory==
+
+The Active Directory Connector supports provisioning to Windows servers 2003 / 2008 running Active Directory.
+
+===Installation===
+
+ # Extract the Active Directory Connector zip file to the same directory where the connector server resides.
+    The default path is C:\Program Files\Identity Connectors\Connector Server.
+    You can change this path if you are running more than one connector server on the same machine.
+ # Restart the connector server.
+
+===Supported operations===
+
+ * Authenticate
+ * Create
+ * Delete
+ * Update
+ * Search
+ * Schema
+ * Test
+
+===Configuration===
+
+The following table describes all of the configuration properties that you can specify on the Configuration object when you are setting up an Active Directory connector.
+
+<table class="confluenceTable" border="1"><tbody>
+<tr>
+<th class="confluenceTh"> Configuration Property </th>
+<th class="confluenceTh"> Type </th>
+<th class="confluenceTh"> Required </th>
+<th class="confluenceTh"> Definition </th>
+</tr>
+<tr>
+<td class="confluenceTd"> Active Directory Domain Controller Hostname </td>
+<td class="confluenceTd"> String </td>
+<td class="confluenceTd"> </td>
+<td class="confluenceTd"> Specifies a particular domain controller, enter the hostname, IP address, or domain name of the LDAP server. If it is not supplied, serverless bind is used. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> Container </td>
+<td class="confluenceTd"> String </td>
+<td class="confluenceTd"> X </td>
+<td class="confluenceTd"> A container object which will be the default root of all searches. Unless a search explicitly passes in other criteria, only objects under this container will be searched. For example, if you want to retrieve users from the Users container, enter CN=Users,DC=MYDOMAIN,DC=COM. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> Create Home Directory </td>
+<td class="confluenceTd"> Boolean </td>
+<td class="confluenceTd"> </td>
+<td class="confluenceTd"> Specifes whether or not the home directory for the user will be created. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> Directory Administrator's Account </td>
+<td class="confluenceTd"> String </td>
+<td class="confluenceTd"> X </td>
+<td class="confluenceTd"> The administrator's user name with which the system should authenticate. The setting can be either a username or a combination of domain name and user name in the form of 'domainname'\'username'.</td>
+</tr>
+<tr>
+<td class="confluenceTd"> Directory Administrator's Password </td>
+<td class="confluenceTd"> String </td>
+<td class="confluenceTd"> X </td>
+<td class="confluenceTd"> The password that should be used when authenticating. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> Domain Name </td>
+<td class="confluenceTd"> String </td>
+<td class="confluenceTd"> X </td>
+<td class="confluenceTd"> Name of the windows domain (e.g. windowsdomain.mycompany.com). </td>
+</tr>
+<tr>
+<td class="confluenceTd"> Object Class for User Objects </td>
+<td class="confluenceTd"> String </td>
+<td class="confluenceTd"> </td>
+<td class="confluenceTd"> The Active Directory object class for user objects that will be managed on the specified resource. The default is User, and for most situations, this should be fine. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> Search Child Domains </td>
+<td class="confluenceTd"> Boolean </td>
+<td class="confluenceTd"> </td>
+<td class="confluenceTd"> Set if you want searches of Active Directory to include child domains. In addition, the Search Container and Sync Search Context (see sync settings) attributes must be set to the top of the parent domain, e.g. DC=mydomain,DC=com. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> Search Context </td>
+<td class="confluenceTd"> String </td>
+<td class="confluenceTd"> </td>
+<td class="confluenceTd"> Reserved for future use. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> Sync Domain Controller </td>
+<td class="confluenceTd"> String </td>
+<td class="confluenceTd"></td>
+<td class="confluenceTd"> Domain controller to use during sync. Only used if not searching child domains. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> Sync Global Catalog Server </td>
+<td class="confluenceTd"> String </td>
+<td class="confluenceTd"> </td>
+<td class="confluenceTd"> Name of the global catalog server. This is needed only if searching child domains. </td>
+</tr>
+</tbody></table>
+
+===Schema===
+
+The Active Directory connector supports three objectclasses:
+
+ * ACCOUNT
+ * Group
+ * organizationalUnit
+
+The following tables list all explicitly supported attributes in the schema, according to objectclass (type of object to manage). 
+
+====Attributes Supported for the ACCOUNT Objectclass====
+
+Unless specifically noted otherwise, all of the attributes listed in this table are
+
+ * Single-valued
+ * Optional
+ * Can be created, updated, and read.
 
 ==Exchange==
