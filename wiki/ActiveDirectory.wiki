@@ -1,5 +1,7 @@
 #summary Active Directory connector
 
+<wiki:toc max_depth="2"/>
+
 =Overview=
 
 The Active Directory Connector supports provisioning to Windows servers 2003 / 2008 running Active Directory.
