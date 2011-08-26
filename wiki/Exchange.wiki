@@ -14,7 +14,7 @@ The Exchange Connector supports provisioning to Windows servers running Active D
 
 =Supported operations=
 
-The Exchange Connector supports the same operations as those supported by the Active Directory connector. See the Active Directory connector [ActiveDirectory#Supported_Operations Supported Operations] section for more information.
+The Exchange Connector supports the same operations as those supported by the Active Directory connector. See the Active Directory connector [ActiveDirectory#Supported_operations Supported Operations] section for more information.
 
 =Configuration=
 
