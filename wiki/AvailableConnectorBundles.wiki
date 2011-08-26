@@ -3,7 +3,7 @@
 
 =Java Connector Bundles=
 
- # CSV directory
+ # [#CSV_directory CSV directory]
  # Database table
  # Flat file
  # !GoogleApps
