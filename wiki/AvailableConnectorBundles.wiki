@@ -1,1 +1,32 @@
 #summary Connector bundles available for ConnId.
+#labels Featured
+
+=Java Connector Bundles=
+
+ # CSV directory
+ # Database table
+ # Flat file
+ # !GoogleApps
+ # LDAP
+ # SOAP
+
+=.NET Connector Bundles=
+
+ # Active Directory
+ # Exchange
+
+==CSV directory==
+
+==Database table==
+
+==Flat file==
+
+==!GoogleApps==
+
+==LDAP==
+
+==SOAP==
+
+==Active Directory==
+
+==Exchange==
