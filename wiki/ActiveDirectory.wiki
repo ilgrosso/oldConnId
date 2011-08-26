@@ -215,63 +215,63 @@ Unless specifically noted otherwise, all of the attributes listed in this table 
       <td> </td>
     </tr>
     <tr>
-      <td> <tt>TerminalServicesInitialProgram</tt> </td>
+      <td> <tt>!TerminalServicesInitialProgram</tt> </td>
       <td> Cannot be created or updated </td>
     </tr>
     <tr>
-      <td> <tt>TerminalServicesWorkDirectory</tt> </td>
+      <td> <tt>!TerminalServicesWorkDirectory</tt> </td>
       <td> </td>
     </tr>
     <tr>
-      <td> <tt>AllowLogon</tt> </td>
+      <td> <tt>!AllowLogon</tt> </td>
       <td> </td>
     </tr>
     <tr>
-      <td> <tt>MaxConnectionTime</tt> </td>
+      <td> <tt>!MaxConnectionTime</tt> </td>
       <td> </td>
     </tr>
     <tr>
-      <td> <tt>MaxDisconnectionTime</tt> </td>
+      <td> <tt>!MaxDisconnectionTime</tt> </td>
       <td>  Cannot be created or updated </td>
     </tr>
     <tr>
-      <td> <tt>MaxIdleTime</tt> </td>
+      <td> <tt>!MaxIdleTime</tt> </td>
       <td> </td>
     </tr>
     <tr>
-      <td> <tt>ConnectClientDrivesAtLogon</tt> </td>
+      <td> <tt>!ConnectClientDrivesAtLogon</tt> </td>
       <td>  Cannot be created or updated </td>
     </tr>
     <tr>
-      <td> <tt>ConnectClientPrintersAtLogon</tt> </td>
+      <td> <tt>!ConnectClientPrintersAtLogon</tt> </td>
       <td>  Cannot be created or updated </td>
     </tr>
     <tr>
-      <td> <tt>DefaultToMainPrinter</tt> </td>
+      <td> <tt>!DefaultToMainPrinter</tt> </td>
       <td>  Cannot be created or updated </td>
     </tr>
     <tr>
-      <td> <tt>BrokenConnectionAction</tt> </td>
+      <td> <tt>!BrokenConnectionAction</tt> </td>
       <td>  Cannot be created or updated </td>
     </tr>
     <tr>
-      <td> <tt>ReconnectionAction</tt> </td>
+      <td> <tt>!ReconnectionAction</tt> </td>
       <td>  Cannot be created or updated </td>
     </tr>
     <tr>
-      <td> <tt>EnableRemoteControl</tt> </td>
+      <td> <tt>!EnableRemoteControl</tt> </td>
       <td>  Cannot be created or updated </td>
     </tr>
     <tr>
-      <td> <tt>TerminalServicesProfilePath</tt> </td>
+      <td> <tt>!TerminalServicesProfilePath</tt> </td>
       <td>  Cannot be created or updated </td>
     </tr>
     <tr>
-      <td> <tt>TerminalServicesHomeDirectory</tt> </td>
+      <td> <tt>!TerminalServicesHomeDirectory</tt> </td>
       <td>  Cannot be created or updated </td>
     </tr>
     <tr>
-      <td> <tt>TerminalServicesHomeDrive</tt> </td>
+      <td> <tt>!TerminalServicesHomeDrive</tt> </td>
       <td>  Cannot be created or updated </td>
     </tr>
     <tr>
