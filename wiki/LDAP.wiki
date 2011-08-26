@@ -70,7 +70,8 @@ The following table lists all the configuration properties you can specify when 
       <td></td>
       <td> <tt>String[]</tt> </td>
       <td></td>
-      <td> An array of <span class="nobr"><a rel="nofollow" class="external-link" href="http://java.sun.com/j2se/1.5.0/docs/guide/jndi/jndi-ldap-gl.html#URLS">LDAP URLs<sup><img width="7" height="7" border="0" align="absmiddle" alt="" src="/images/icons/linkext7.gif" class="rendericon"></sup></a></span> specifying failover servers. <br class="atl-forced-newline"> If the connector cannot make a connection to the server specified in the <tt>host</tt> property, it will try connecting to these failover servers in the specified order. </td>
+      <td> An array of <span class="nobr"><a rel="nofollow" class="external-link" href="http://java.sun.com/j2se/1.5.0/docs/guide/jndi/jndi-ldap-gl.html#URLS">LDAP URLs</a></span> specifying failover servers.
+If the connector cannot make a connection to the server specified in the <tt>host</tt> property, it will try connecting to these failover servers in the specified order. </td>
     </tr>
     <tr>
       <td> <tt>principal</tt> </td>
@@ -104,7 +105,7 @@ The following table lists all the configuration properties you can specify when 
       <td> <tt>accountObjectClasses</tt> </td>
       <td>  X </td>
       <td> <tt>String[]</tt> </td>
-      <td> { <tt>"top"</tt>, <br class="atl-forced-newline"> <tt>"person"</tt>, <br class="atl-forced-newline"> <tt>"organizationalPerson"</tt>, <br class="atl-forced-newline"> <tt>"inetOrgPerson"</tt> } </td>
+      <td> { <tt>"top"</tt>, <br/> <tt>"person"</tt>, <br/> <tt>"organizationalPerson"</tt>, <br/> <tt>"inetOrgPerson"</tt> } </td>
       <td> Object classes to which the <tt>ACCOUNT</tt> object class is mapped. </td>
     </tr>
     <tr>
@@ -175,7 +176,7 @@ The following table lists all the configuration properties you can specify when 
       <td></td>
       <td> <tt>boolean</tt> </td>
       <td> <tt>false</tt> </td>
-      <td> Use the Simple Paged Results control for search operations. <br class="atl-forced-newline">If <tt>false</tt>, the connector uses VLV Index control. This property is meaningful only when the <tt>useBlocks</tt> property is <tt>true</tt>. </td>
+      <td> Use the Simple Paged Results control for search operations. <br/>If <tt>false</tt>, the connector uses VLV Index control. This property is meaningful only when the <tt>useBlocks</tt> property is <tt>true</tt>. </td>
     </tr>
     <tr>
       <td> <tt>vlvSortAttribute</tt> </td>
@@ -271,14 +272,14 @@ The following table lists all the configuration properties you can specify when 
     <tr>
       <td> <tt>passwordDecryptionKey</tt> </td>
       <td></td>
-      <td> <tt>GuardedByteArray</tt> </td>
+      <td> <tt>!GuardedByteArray</tt> </td>
       <td></td>
       <td> Decryption key used to decrypt passwords during password synchronization. This property is meaningful only when the <tt>synchronizePasswords</tt> property is <tt>true</tt>. </td>
     </tr>
     <tr>
       <td> <tt>passwordDecryptionInitializationVector</tt> </td>
       <td></td>
-      <td> <tt>GuardedByteArray</tt> </td>
+      <td> <tt>!GuardedByteArray</tt> </td>
       <td></td>
       <td> Initialization key used when decrypting passwords during password synchronization. This property is meaningful only when the <tt>synchronizePasswords</tt> property is <tt>true</tt>. </td>
     </tr>
@@ -291,7 +292,7 @@ The LDAP connector supports the following objectclasses:
 
  *   *ACCOUNT* objectclass: Mapped to the LDAP objectclasses specified in the accountObjectClasses configuration property. This objectclass has the following attributes:
 
-<table>
+<table border="1">
   <tbody>
     <tr>
       <th> Attribute Name </th>
@@ -314,7 +315,7 @@ The LDAP connector supports the following objectclasses:
 
  *   *GROUP* objectclass: Mapped to the LDAP objectclass groupOfUniqueNames. This objectclass has the following attributes:
 
-<table>
+<table border="1">
   <tbody>
     <tr>
       <th> Attribute Name </th>
