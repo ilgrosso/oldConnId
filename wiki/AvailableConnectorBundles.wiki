@@ -9,6 +9,7 @@
  # [GoogleApps GoogleApps]
  # [LDAP LDAP]
  # [SOAP SOAP]
+ # [ActiveDirectoryJava Active Directory]
 
 =.NET Connector Bundles=
 
