@@ -1,0 +1,9 @@
+#summary Active Directory connector (JNDI implementation)
+
+<wiki:toc max_depth="2"/>
+
+= Overview =
+
+The Active Directory Connector supports provisioning to Windows servers 2003 / 2008 running Active Directory.
+
+This bundle is fully implemented in Java and makes use of JNDI to communicate to Active Directory, hence it does not require any additional module.
