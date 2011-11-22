@@ -8,12 +8,14 @@ The Database Table connector is designed to manage users stored in a single data
 
 = Supported Resource Versions =
 
- * DB2 Express 9.5 installation
- * MySQL 4.1 - GA release
- * MySQL 5.0 - GA release
- * MySQL 5.1 - GA release
- * Oracle 10g Express
- * SQL Server 2008 Express
+ * PostgreSQL
+ * MySQL
+ * Oracle 11g
+
+= Not Fully Tested Resource Versions =
+
+ * DB2
+ * SQL Server
 
 = Installation =
 
