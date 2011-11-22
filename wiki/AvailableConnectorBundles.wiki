@@ -5,6 +5,7 @@
 
  # [CSVDirectory CSV directory]
  # [DatabaseTable Database table]
+ # [DatabaseTableLegacy Database table (legacy)]
  # [FlatFile Flat file]
  # [GoogleApps GoogleApps]
  # [LDAP LDAP]
