@@ -2,7 +2,7 @@
 
 = Overview =
 
-This wiki page refers to bundle <b>version 1.2.X</b>.
+This wiki page refers to bundle <b>version 1.2.X</b>. Fpr newer versions, check [DatabaseTable this page].
 
 The Database Table connector is designed to manage users stored in a single database table that uses any relational database with an SQL92 standard compliant JDBC driver.
 
