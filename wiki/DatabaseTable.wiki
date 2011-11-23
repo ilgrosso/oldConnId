@@ -24,7 +24,7 @@ Follow these steps to run the stand-alone connector server:
  # Download the connector server jar file and store it in the connector server directory (any directory).
  # Download the Database Table connector jar file and store it in the bundles subdirectory.
  # Add the resource-related third-party JDBC driver jar file to the lib directory.
- # Start the connector server. For more information, see [ConnectorServer Connector Servers].
+ # Start the connector server. For more information, see [ConnectorServers Connector Servers].
 
 =Supported operations=
 
