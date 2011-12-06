@@ -7,3 +7,141 @@
 The Active Directory Connector supports provisioning to Windows servers 2003 / 2008 running Active Directory.
 
 This bundle is fully implemented in Java and makes use of JNDI to communicate to Active Directory, hence it does not require any additional module.
+
+=Installation=
+
+To install the Active Directory connector, add the bundle JAR file to a directory on your disk. If your application has a dedicated directory for connector bundles, put the file in that directory. For example, Syncope looks for connector bundles in the configured bundles directory.
+
+=Supported Operations=
+
+The Active Directory connector supports the following operations:
+
+ * Authentication
+ * Create
+ * Update
+ * Delete
+ * Get (read)
+ * Schema (ask for schema)
+ * Search
+ * Sync
+ * Test
+ * Validate
+
+=Configuration=
+
+The following table lists all the configuration properties you can specify when setting up the LDAP connector:
+
+<table border="1">
+  <tbody>
+    <tr>
+      <th> Configuration Property </th>
+      <th> Required </th>
+      <th> Type </th>
+      <th> Default Value </th>
+      <th> Description </th>
+    </tr>
+<tr>
+      <td> <tt>host</tt> </td>
+      <td>  X </td>
+      <td> <tt>String</tt> </td>
+      <td></td>
+      <td> Active Directory server on which to connect </td>
+    </tr>
+    <tr>
+      <td> <tt>port</tt> </td>
+      <td>  X </td>
+      <td> <tt>int</tt> </td>
+      <td></td>
+      <td> LDAPs port on which to connect </td>
+    </tr>
+    <tr>
+      <td> <tt>failover</tt> </td>
+      <td></td>
+      <td> <tt>String[]</tt> </td>
+      <td></td>
+      <td> An array of <span class="nobr"><a rel="nofollow" class="external-link" href="http://java.sun.com/j2se/1.5.0/docs/guide/jndi/jndi-ldap-gl.html#URLS">LDAP URLs</a></span> specifying failover servers.
+If the connector cannot make a connection to the server specified in the <tt>host</tt> property, it will try connecting to these failover servers in the specified order. </td>
+    </tr>
+    <tr>
+      <td> <tt>principal</tt> </td>
+      <td></td>
+      <td> <tt>String</tt> </td>
+      <td></td>
+      <td> Distinguished name (DN) of the Active Directory entry under to perform provisioning operations </td>
+    </tr>
+    <tr>
+      <td> <tt>credentials</tt> </td>
+      <td></td>
+      <td> <tt>GuardedString</tt> </td>
+      <td></td>
+      <td> Password corresponding to the entry specified in the <tt>principal</tt> property </td>
+    </tr>
+    <tr>
+      <td> <tt>baseContexts</tt> </td>
+      <td>  X </td>
+      <td> <tt>String[]</tt> </td>
+      <td></td>
+      <td> Base context DNs for provisioning operations. The connector ignores any entries outside these base contexts. </td>
+    </tr>
+    <tr>
+      <td> <tt>accountObjectClasses</tt> </td>
+      <td>  X </td>
+      <td> <tt>String[]</tt> </td>
+      <td> { <tt>"top"</tt>, <br/> <tt>"person"</tt>, <br/> <tt>"organizationalPerson"</tt>, <br/> <tt>"user"</tt> } </td>
+      <td> Object classes to which the <tt>ACCOUNT</tt> object class is mapped. </td>
+    </tr>
+    <tr>
+      <td> <tt>accountSearchFilter</tt> </td>
+      <td></td>
+      <td> <tt>String</tt> </td>
+      <td></td>
+      <td> LDAP search filter for accounts. When searching for accounts, the connector only considers those accounts that match the specified filter. </td>
+    </tr>
+    <tr>
+      <td> <tt>baseContextsToSynchronize</tt> </td>
+      <td></td>
+      <td> <tt>String[]</tt> </td>
+      <td></td>
+      <td> Base context DNs to use for synchronization. The connector ignores any changes outside of  these base contexts. </td>
+    </tr>
+    <tr>
+      <td> <tt>objectClassesToSynchronize</tt> </td>
+      <td>  X </td>
+      <td> <tt>String[]</tt> </td>
+      <td> <tt>"user"</tt> </td>
+      <td> LDAP object classes to synchronize. The connector ignores any changes if it cannot find any of the modified entry's object classes in this property. </td>
+    </tr>
+    <tr>
+      <td> <tt>memberships</tt> </td>
+      <td>  X </td>
+      <td> <tt>String</tt> </td>
+      <td> </td>
+      <td> Groups to identify users to synchronize. The connector ignores any changes about users not member of indicated groups </td>
+    </tr>
+    <tr>
+      <td> <tt>retrieveDeletedUsers</tt> </td>
+      <td>  X </td>
+      <td> <tt>String</tt> </td>
+      <td> </td>
+      <td> Indicate if must be synchronized deleted users also. </td>
+    </tr>
+    <tr>
+      <td> <tt>trustAllCerts</tt> </td>
+      <td>  X </td>
+      <td> <tt>String</tt> </td>
+      <td> </td>
+      <td> Indicate if all server certificates must be trusted. </td>
+    </tr>
+    <tr>
+      <td> <tt>latestSyncToken</tt> </td>
+      <td> </td>
+      <td> <tt>String</tt> </td>
+      <td> </td>
+      <td> Latest Synchronization Token. </td>
+    </tr>
+  </tbody>
+</table>
+
+*Note*:
+Acvtive Directory connector works using a secure connection only. 
+LDAPs port must be always provided.
