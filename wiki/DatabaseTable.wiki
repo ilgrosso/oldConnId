@@ -1,10 +1,10 @@
 #summary Database Table connector
 
+<wiki:toc max_depth="2"/>
+
 = Overview =
 
 The Database Table connector is designed to manage users stored in a single database table that uses any relational database with an SQL92 standard compliant JDBC driver.
-
-<wiki:toc max_depth="2"/>
 
 = Supported Resource Versions =
 
