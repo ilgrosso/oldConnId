@@ -1,0 +1,25 @@
+
+<wiki:toc max_depth="2"/>
+
+=Framework=
+
+=Bundles=
+
+== Active Directory (JNDI implementation) ==
+
+=== 0.9 (December 7th, 2011) ===
+With great pleasure we announce the availability of the new Active Directory connector's 0.9 release (JNDI implementation).
+
+The most important new features are:
+
+ 1. User create/update/delete
+ 1. User change password
+ 1. User Enable/Disable
+ 1. User search/read
+ 1. User authentication
+ 1. Schema retrieving based on configured entry object classes ([http://code.google.com/p/connid/issues/detail?id=17&can=1 #17])
+ 1. Hide obvious configuration from users ([http://code.google.com/p/connid/issues/detail?id=16&can=1 #16])
+ 1. Possibility to trust all server certificates without any specified certification authority 
+
+
+Alongside with these new features, a documentation wiki page has been provided ( [http://code.google.com/p/connid/wiki/ActiveDirectoryJava Active Directory connector (JNDI implementation) ]).
