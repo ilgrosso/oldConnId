@@ -120,28 +120,28 @@ If the connector cannot make a connection to the server specified in the <tt>hos
     </tr>
     <tr>
       <td> <tt>Retrieve deleted users</tt> </td>
-      <td>  X </td>
+      <td> </td>
       <td> <tt>Boolean</tt> </td>
       <td> </td>
       <td> Indicate if must be synchronized deleted users also. </td>
     </tr>
     <tr>
       <td> <tt>Trust all certs</tt> </td>
-      <td>  X </td>
+      <td>  </td>
       <td> <tt>Boolean</tt> </td>
       <td> </td>
       <td> Indicate if all server certificates must be trusted. </td>
     </tr>
     <tr>
       <td> <tt>Initial loading</tt> </td>
-      <td> X </td>
+      <td> </td>
       <td> <tt>Boolean</tt> </td>
       <td> </td>
       <td> Indicate if synchronization must be a simple initial loading. If 'TRUE' memberships modifications will be ignored. </td>
     </tr>
     <tr>
       <td> <tt>Verify memberships in 'OR'</tt> </td>
-      <td> X </td>
+      <td> </td>
       <td> <tt>Boolean</tt> </td>
       <td> </td>
       <td> Indicate if specified memberships must be verified using 'OR' logical operator. </td>
