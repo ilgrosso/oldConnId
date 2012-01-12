@@ -1,4 +1,3 @@
-
 <wiki:toc max_depth="2"/>
 
 =Framework=
@@ -21,5 +20,14 @@ The most important new features are:
  1. Hide obvious configuration from users ([http://code.google.com/p/connid/issues/detail?id=16&can=1 #16])
  1. Possibility to trust all server certificates without any specified certification authority 
 
-
 Alongside with these new features, a documentation wiki page has been provided ( [http://code.google.com/p/connid/wiki/ActiveDirectoryJava Active Directory connector (JNDI implementation) ]).
+
+== Database Table ==
+=== 2.1 (January 12th, 2012) ===
+With great pleasure we announce the availability of the new Database Table connector's 2.1 release.
+
+The most important new features are:
+
+ 1. Possibility to cipher the password using MD5, AES, SHA-1, SHA-256 or a custom algorithm implementation.
+ 1. Possibility to specify a cipher key to decrypt password encrypted by using a reversible algorithm (AES or a custom one).
+ 1. Possibility to choose to retrieve password by default during sync or search query.
