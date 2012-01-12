@@ -249,6 +249,27 @@ The following table describes all of the properties that you can specify for the
       <td></td>
       <td> If <tt>false</tt> (default), the connection is validated by switching the auto commit mode. For example, you might have <em><tt>select 1 from dummy</tt></em>, which might be more efficient on some databases. </td>
     </tr>
+    <tr>
+      <td> Password cipher algorithm </td>
+      <td> String </td>
+      <td></td>
+      <td></td>
+      <td> Cipher algorithm used to encode password before to store it onto the database table. Specify one of the values among AES, MD5, SHA1, SHA256 or a custom implementation identified by its class name. </td>
+    </tr>
+    <tr>
+      <td> Password cipher key </td>
+      <td> String </td>
+      <td></td>
+      <td></td>
+      <td> Specify key in case of reversible algorithm. </td>
+    </tr>
+    <tr>
+      <td> Retrieve password </td>
+      <td> Boolean </td>
+      <td></td>
+      <td></td>
+      <td> Specify if password must be retrieved by default. </td>
+    </tr>
   </tbody>
 </table>
 
