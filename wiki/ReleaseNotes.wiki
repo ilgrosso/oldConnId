@@ -28,6 +28,6 @@ With great pleasure we announce the availability of the new Database Table conne
 
 The most important new features are:
 
- 1. Possibility to cipher the password using MD5, AES, SHA-1, SHA-256 or a custom algorithm implementation.
+ 1. Possibility to cipher the password using MD5, AES, SHA-1, SHA-256 or a custom algorithm implementation ([http://code.google.com/p/connid/issues/detail?id=23&can=1 #23]).
  1. Possibility to specify a cipher key to decrypt password encrypted by using a reversible algorithm (AES or a custom one).
  1. Possibility to choose to retrieve password by default during sync or search query.
