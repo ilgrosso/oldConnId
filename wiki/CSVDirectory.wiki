@@ -4,7 +4,9 @@
 
 = Overview =
 
-The CSV Directory Connector supports provisioning to and from a directory of files in CSV format. It main function, maybe, is to load an awful lot of users.
+The CSV Directory Connector supports provisioning to and from a directory of files in CSV format.
+
+Its typical usage should be bulk-loading.
 
 = Installation =
 
