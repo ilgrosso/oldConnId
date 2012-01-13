@@ -100,14 +100,14 @@ The following table describes all of the properties that you can specify for the
     </tr>
     <tr>
       <td> Ignore header </td>
-      <td> >Boolean </td>
+      <td> Boolean </td>
       <td></td>
       <td> Specify it first line file must be ignored </td>
     </tr>
     <tr>
       <td> Key separator </td>
       <td> String </td>
-      <td></td>
+      <td> X </td>
       <td> Character used to separate keys in a multi-key scenario </td>
     </tr>
   </tbody>
