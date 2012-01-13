@@ -13,8 +13,7 @@ Its typical usage should be bulk-loading.
 Follow these steps to run the stand-alone connector server:
 
  # Download the connector server jar file and store it in the connector server directory (any directory).
- # Download the Database Table connector jar file and store it in the bundles subdirectory.
- # Add the resource-related third-party JDBC driver jar file to the lib directory.
+ # Download the CSV directory connector jar file and store it in the bundles subdirectory.
  # Start the connector server. For more information, see [ConnectorServers Connector Servers].
 
 =Supported operations=
@@ -43,7 +42,7 @@ The following table describes all of the properties that you can specify for the
     <tr>
       <td> Source Path </td>
       <td> String </td>
-      <td> X <br/> </td>
+      <td> X </td>
       <td> Absolute path of a directory where are located CSV files to be processed </td>
     </tr>
     <tr>
