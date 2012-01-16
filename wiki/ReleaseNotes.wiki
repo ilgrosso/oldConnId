@@ -22,6 +22,15 @@ The most important new features are:
 
 Alongside with these new features, a documentation wiki page has been provided ( [http://code.google.com/p/connid/wiki/ActiveDirectoryJava Active Directory connector (JNDI implementation) ]).
 
+=== 1.0 (December 22nd, 2011) ===
+With great pleasure we announce the availability of the new Active Directory connector's 1.0 release (JNDI implementation).
+
+The most important new features are:
+
+	1. Possibility to verify membership using OR/AND logical operator
+	2. Possibility to perform an initial loading based on sync operation
+	3. DirSync search extended to all the existent groups (#25) in order to catch all memberOf attribute updates
+
 == Database Table ==
 === 2.1 (January 12th, 2012) ===
 With great pleasure we announce the availability of the new Database Table connector's 2.1 release.
