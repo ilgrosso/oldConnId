@@ -285,6 +285,13 @@ If the connector cannot make a connection to the server specified in the <tt>hos
       <td></td>
       <td> Initialization key used when decrypting passwords during password synchronization. This property is meaningful only when the <tt>synchronizePasswords</tt> property is <tt>true</tt>. </td>
     </tr>
+    <tr>
+      <td> <tt>statusManagementClass</tt> </td>
+      <td></td>
+      <td> <tt>String</tt> </td>
+      <td></td>
+      <td> Java class to be used to enable/disable identities.<br /> This class must extends <tt>org.identityconnectors.ldap.commons.StatusManagement</tt> class and implement all the required methods to manage enable/disable requests.</td>
+    </tr>
   </tbody>
 </table>
 
