@@ -290,7 +290,7 @@ If the connector cannot make a connection to the server specified in the <tt>hos
       <td></td>
       <td> <tt>String</tt> </td>
       <td></td>
-      <td> Java class to be used to enable/disable identities.<br /> This class must extends org.identityconnectors.ldap.commons.StatusManagement class to implement all the required methods to manage enable/disable requests.</td>
+      <td> Java class to be used to enable/disable identities.<br /> This class must extends <tt>org.identityconnectors.ldap.commons.StatusManagement</tt> class to implement all the required methods to manage enable/disable requests.</td>
     </tr>
   </tbody>
 </table>
