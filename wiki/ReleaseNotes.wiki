@@ -26,10 +26,9 @@ Alongside with these new features, a documentation wiki page has been provided (
 With great pleasure we announce the availability of the new Active Directory connector's 1.0 release (JNDI implementation).
 
 The most important new features are:
-
-	1. Possibility to verify membership using OR/AND logical operator
-	2. Possibility to perform an initial loading based on sync operation
-	3. DirSync search extended to all the existent groups (#25) in order to catch all memberOf attribute updates
+ 1. Possibility to verify membership using OR/AND logical operator
+ 1. Possibility to perform an initial loading based on sync operation
+ 1. DirSync search extended to all the existent groups (#25) in order to catch all memberOf attribute updates
 
 == Database Table ==
 === 2.1 (January 12th, 2012) ===
