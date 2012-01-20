@@ -35,16 +35,16 @@
 
     <groupId>org.connid.bundles.soap</groupId>
     <artifactId>soap</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
 
     <name>ConnId Bundles: SOAP</name>
 
     <packaging>pom</packaging>
 
     <scm>
-        <connection>scm:svn:http://connid.googlecode.com/svn/bundles/soap/trunk/</connection>
-        <developerConnection>scm:svn:https://connid.googlecode.com/svn/bundles/soap/trunk/</developerConnection>
-        <url>http://connid.googlecode.com/svn/bundles/soap/trunk/</url>
+        <connection>scm:svn:http://connid.googlecode.com/svn/bundles/soap/tags/soap-1.2</connection>
+        <developerConnection>scm:svn:http://connid.googlecode.com/svn/bundles/soap/tags/soap-1.2</developerConnection>
+        <url>scm:svn:http://connid.googlecode.com/svn/bundles/soap/tags/soap-1.2</url>
     </scm>
 
     <properties>
