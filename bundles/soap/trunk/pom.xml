@@ -35,16 +35,16 @@
 
     <groupId>org.connid.bundles.soap</groupId>
     <artifactId>soap</artifactId>
-    <version>1.2</version>
+    <version>1.2-SNAPSHOT</version>
 
     <name>ConnId Bundles: SOAP</name>
 
     <packaging>pom</packaging>
 
     <scm>
-        <connection>scm:svn:https://connid.googlecode.com/svn/bundles/soap/tags/soap-1.2</connection>
-        <developerConnection>scm:svn:https://connid.googlecode.com/svn/bundles/soap/tags/soap-1.2</developerConnection>
-        <url>https://connid.googlecode.com/svn/bundles/soap/tags/soap-1.2</url>
+        <connection>scm:svn:http://connid.googlecode.com/svn/bundles/soap/trunk/</connection>
+        <developerConnection>scm:svn:https://connid.googlecode.com/svn/bundles/soap/trunk/</developerConnection>
+        <url>http://connid.googlecode.com/svn/bundles/soap/trunk/</url>
     </scm>
 
     <properties>
@@ -215,7 +215,7 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.2.2</version>
                     <configuration>
-                        <tagBase>https://connid.googlecode.com/svn/bundles/soap/tags</tagBase>
+                        <tagBase>http://connid.googlecode.com/svn/bundles/soap/tags</tagBase>
                     </configuration>
                 </plugin>
             </plugins>
