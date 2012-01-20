@@ -43,7 +43,7 @@
 
     <scm>
         <connection>scm:svn:http://connid.googlecode.com/svn/bundles/soap/trunk/</connection>
-        <developerConnection>scm:svn:https://connid.googlecode.com/svn/bundles/soap/trunk/</developerConnection>
+        <developerConnection>scm:svn:http://connid.googlecode.com/svn/bundles/soap/trunk/</developerConnection>
         <url>http://connid.googlecode.com/svn/bundles/soap/trunk/</url>
     </scm>
 
