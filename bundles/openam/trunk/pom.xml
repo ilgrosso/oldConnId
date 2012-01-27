@@ -145,6 +145,56 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     </includes>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+
+                    <appendAssemblyId>false</appendAssemblyId>
+
+                    <descriptors>
+                        <descriptor>src/assemble/connector.xml</descriptor>
+                    </descriptors>
+
+                    <archive>
+                        <index>true</index>
+                        <manifestEntries>
+
+                            <ConnectorBundle-FrameworkVersion>
+                                ${base.version}
+                            </ConnectorBundle-FrameworkVersion>
+
+                            <ConnectorBundle-Name>
+                                ${project.artifactId}
+                            </ConnectorBundle-Name>
+
+                            <ConnectorBundle-Version>
+                                ${project.version}
+                            </ConnectorBundle-Version>
+
+                        </manifestEntries>
+                    </archive>
+                    
+                </configuration>
+                
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <tagBase>https://connid.googlecode.com/svn/bundles/openam/tags</tagBase>
+                </configuration>
+            </plugin>
         </plugins>
         
         <testResources>

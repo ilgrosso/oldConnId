@@ -79,8 +79,8 @@ public class OpenAMConnection {
         return httpClientMethods.get(
                 urlFactory.searchUrl(parameters));
     }
-    
-    public String read(String parameters) {
+
+    public String read(final String parameters) {
         return restfulClient.getMethod(
                 urlFactory.readUrl(parameters));
     }
