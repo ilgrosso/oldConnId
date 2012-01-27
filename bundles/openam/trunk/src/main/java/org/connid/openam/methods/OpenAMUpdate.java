@@ -25,6 +25,7 @@ package org.connid.openam.methods;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.connid.openam.OpenAMConfiguration;
@@ -65,14 +66,9 @@ public class OpenAMUpdate extends CommonMethods {
     }
 
     private Uid executeImpl() throws IOException {
-
+        
         StringBuilder parameters = new StringBuilder();
-        if (AttributeUtil.getNameFromAttributes(attrs) == null) {
-            LOG.error("No Name attribute provided in the attributes");
-            throw new IllegalArgumentException("No Name attribute provided"
-                    + "in the attributes");
-        }
-
+        
         parameters.append("&identity_name=")
                 .append(uid.getUidValue());
 

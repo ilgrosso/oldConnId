@@ -15,8 +15,9 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
+import org.identityconnectors.framework.common.objects.Uid;
 
-public class OpenAMExecuteQuery extends CommonMethods{
+public class OpenAMExecuteQuery extends CommonMethods {
 
     private static final Log LOG = Log.getLog(OpenAMSearch.class);
     private OpenAMConfiguration openAMConfiguration = null;
@@ -46,12 +47,12 @@ public class OpenAMExecuteQuery extends CommonMethods{
 
     private void executeImpl() throws IOException {
         String[] uidResults = null;
-        
+
         final ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         if (isAlive(connection)) {
             uidResults =
-                    connection.search(searchParameters(cleanLdapFilter()))
-                    .split("string=");
+                    connection.search(searchParameters(
+                    cleanLdapFilter())).split("string=");
             LOG.ok("Search committed");
         }
 
@@ -66,8 +67,8 @@ public class OpenAMExecuteQuery extends CommonMethods{
         for (int i = 1; i < uidResults.length; i++) {
             if (!uidResults[i].startsWith("anonymous")
                     && !uidResults[i].startsWith("amAdmin")) {
-                usersList.add(connection.read(readParameters(uidResults[i]))
-                        .split("identitydetails."));
+                usersList.add(connection.read(readParameters(
+                        uidResults[i])).split("identitydetails."));
             }
         }
         String name = "";
@@ -76,6 +77,7 @@ public class OpenAMExecuteQuery extends CommonMethods{
             String[] userDetails = it.next();
             for (int i = 0; i < userDetails.length; i++) {
                 if (userDetails[i].contains("name")) {
+                    attributesList.clear();
                     String[] names = userDetails[i].split("=");
                     name = names[1];
                     for (int j = i + 1; j < userDetails.length; j++) {
@@ -104,14 +106,15 @@ public class OpenAMExecuteQuery extends CommonMethods{
                     bld.addAttribute(name, attributesList);
                 }
             }
+            handler.handle(bld.build());
         }
-        handler.handle(bld.build());
     }
 
     private boolean cleanLdapFilter() {
         boolean searchForUid = false;
-        if (ldapFilter.startsWith("uid")) {
+        if (ldapFilter.contains(Uid.NAME)) {
             ldapFilter = ldapFilter.split("=")[1];
+            ldapFilter = ldapFilter.substring(0, ldapFilter.length() - 1);
             searchForUid = true;
         } else if (ldapFilter.contains("&")) {
             ldapFilter = ldapFilter.replace("&", "%26");
@@ -133,23 +136,20 @@ public class OpenAMExecuteQuery extends CommonMethods{
             }
         }
         parameters.append("&attributes_names=realm&attributes_values_realm=")
-                .append(openAMConfiguration.getOpenamRealm())
-                .append("&admin=")
+                .append(openAMConfiguration.getOpenamRealm()).append("&admin=")
                 .append(URLEncoder.encode(
-                    token, Constants.ENCODING));
+                token, Constants.ENCODING));
         return parameters.toString();
     }
 
     private String readParameters(final String name)
             throws UnsupportedEncodingException {
         StringBuilder readParameters = new StringBuilder();
-        readParameters.append("&name=")
-                .append(name)
+        readParameters.append("&name=").append(name)
                 .append("&attributes_names=realm&attributes_values_realm=")
-                .append(openAMConfiguration.getOpenamRealm())
-                .append("&admin=")
+                .append(openAMConfiguration.getOpenamRealm()).append("&admin=")
                 .append(URLEncoder.encode(
-                    token, Constants.ENCODING));
+                token, Constants.ENCODING));
         return readParameters.toString();
     }
 }

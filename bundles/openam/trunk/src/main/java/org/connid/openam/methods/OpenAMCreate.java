@@ -33,6 +33,7 @@ import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
 import org.connid.openam.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
@@ -86,7 +87,8 @@ public class OpenAMCreate extends CommonMethods{
                         .append(configuration.getOpenamPasswordAttribute())
                         .append("&identity_attribute_values_")
                         .append(configuration.getOpenamPasswordAttribute())
-                        .append("=").append((String) attr.getValue().get(0));
+                        .append("=").append(getPlainPassword(
+                        (GuardedString) attr.getValue().get(0)));
             } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
                 boolean status = false;
                 // manage enable/disable status
@@ -130,5 +132,18 @@ public class OpenAMCreate extends CommonMethods{
             LOG.ok("Creation commited");
         }
         return new Uid(uidString);
+    }
+
+    public final String getPlainPassword(final GuardedString password) {
+        final StringBuffer buf = new StringBuffer();
+
+        password.access(new GuardedString.Accessor() {
+
+            @Override
+            public void access(final char[] clearChars) {
+                buf.append(clearChars);
+            }
+        });
+        return buf.toString();
     }
 }
