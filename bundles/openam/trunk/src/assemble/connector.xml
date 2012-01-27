@@ -29,8 +29,11 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/lib</outputDirectory>
-            <useProjectArtifact>false</useProjectArtifact>
+            <includes>
+                <include>commons-httpclient:commons-httpclient</include>
+                <include>org.springframework:spring-web</include>
+            </includes>
+            <outputDirectory>lib</outputDirectory>
         </dependencySet>
     </dependencySets>
     
