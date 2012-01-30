@@ -84,12 +84,12 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
                 "(&(cn=" + name.getNameValue() + ")(sn=" + name.getNameValue()
                 + ")", new ResultsHandler() {
 
-                    @Override
-                    public boolean handle(final ConnectorObject co) {
-                        actual.add(co);
-                        return true;
-                    }
-                }, null);
+            @Override
+            public boolean handle(final ConnectorObject co) {
+                actual.add(co);
+                return true;
+            }
+        }, null);
         for (Iterator it = actual.iterator(); it.hasNext();) {
             Object object = it.next();
             ConnectorObject co = (ConnectorObject) object;
@@ -115,12 +115,12 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
                 "(|(cn=" + name.getNameValue() + ")(sn=" + name.getNameValue()
                 + ")", new ResultsHandler() {
 
-                    @Override
-                    public boolean handle(final ConnectorObject co) {
-                        actual.add(co);
-                        return true;
-                    }
-                }, null);
+            @Override
+            public boolean handle(final ConnectorObject co) {
+                actual.add(co);
+                return true;
+            }
+        }, null);
         for (Iterator it = actual.iterator(); it.hasNext();) {
             Object object = it.next();
             ConnectorObject co = (ConnectorObject) object;
@@ -138,7 +138,7 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
         final Set actual = new HashSet();
         connector.init(createConfiguration());
         connector.executeQuery(ObjectClass.ACCOUNT,
-                "uid=notexistsuser", new ResultsHandler() {
+                "(" + Uid.NAME + "=notexistsuser)", new ResultsHandler() {
 
             @Override
             public boolean handle(final ConnectorObject co) {

@@ -50,7 +50,7 @@ public class OpenAMDelete extends CommonMethods {
         token = AdminToken.getAdminToken(configuration).token;
     }
 
-    public void execute() {
+    public final void execute() {
         try {
             executeImpl();
         } catch (Exception e) {

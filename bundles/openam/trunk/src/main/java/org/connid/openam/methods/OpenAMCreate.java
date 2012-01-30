@@ -105,7 +105,7 @@ public class OpenAMCreate extends CommonMethods{
                 }
             } else {
                 List<Object> values = attr.getValue();
-                if ((values != null) || (!values.isEmpty())) {
+                if ((values != null) && (!values.isEmpty())) {
                     parameters.append("&identity_attribute_names=")
                             .append(attr.getName())
                             .append("&identity_attribute_values_")
@@ -134,7 +134,7 @@ public class OpenAMCreate extends CommonMethods{
         return new Uid(uidString);
     }
 
-    public final String getPlainPassword(final GuardedString password) {
+    private String getPlainPassword(final GuardedString password) {
         final StringBuffer buf = new StringBuffer();
 
         password.access(new GuardedString.Accessor() {
