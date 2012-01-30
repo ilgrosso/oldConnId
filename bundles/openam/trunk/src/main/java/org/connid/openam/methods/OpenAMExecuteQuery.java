@@ -56,8 +56,6 @@ public class OpenAMExecuteQuery extends CommonMethods {
             LOG.ok("Search committed");
         }
 
-        System.out.println("uidresult " + uidResults);
-        System.out.println("uidresult " + uidResults.length);
         List<String[]> usersList = new ArrayList<String[]>();
 
         if (uidResults == null || uidResults.length == 1) {
@@ -123,7 +121,6 @@ public class OpenAMExecuteQuery extends CommonMethods {
         } else if (ldapFilter.contains("|")) {
             ldapFilter = ldapFilter.replace("|", "%7C");
         }
-        System.out.println("AAAAAAAA" + ldapFilter);
         return searchForUid;
     }
 
