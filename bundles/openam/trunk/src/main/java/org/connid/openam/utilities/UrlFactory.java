@@ -29,7 +29,7 @@ public class UrlFactory {
 
     private OpenAMConfiguration openAMConfiguration = null;
 
-    public UrlFactory(OpenAMConfiguration openAMConfiguration) {
+    public UrlFactory(final OpenAMConfiguration openAMConfiguration) {
         this.openAMConfiguration = openAMConfiguration;
     }
 

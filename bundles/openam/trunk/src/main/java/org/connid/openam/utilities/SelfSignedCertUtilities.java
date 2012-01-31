@@ -38,17 +38,16 @@ public class SelfSignedCertUtilities {
 
     public static void trustSelfSignedSSL() {
         try {
-            SSLContext ctx = SSLContext.getInstance("TLS");
             X509TrustManager tm = new X509TrustManager() {
 
                 @Override
                 public void checkClientTrusted(final X509Certificate[] xcs,
-                final String string) throws CertificateException {
+                        final String string) throws CertificateException {
                 }
 
                 @Override
                 public void checkServerTrusted(final X509Certificate[] xcs,
-                final String string) throws CertificateException {
+                        final String string) throws CertificateException {
                 }
 
                 @Override
@@ -56,6 +55,7 @@ public class SelfSignedCertUtilities {
                     return null;
                 }
             };
+            SSLContext ctx = SSLContext.getInstance("TLS");
             ctx.init(null, new TrustManager[]{tm}, null);
             SSLContext.setDefault(ctx);
         } catch (KeyManagementException kme) {

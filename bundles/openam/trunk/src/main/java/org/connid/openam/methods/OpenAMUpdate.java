@@ -24,6 +24,7 @@
 package org.connid.openam.methods;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Set;
@@ -57,20 +58,36 @@ public class OpenAMUpdate extends CommonMethods {
 
     public Uid update() {
         try {
-            return executeImpl();
+            return doUpdate();
         } catch (Exception e) {
             LOG.error(e, "error during update operation");
             throw new ConnectorException(e);
         }
     }
 
-    private Uid executeImpl() throws IOException {
-        
+    private Uid doUpdate() throws IOException {
+
+        if (!userExists(uid.getUidValue(), configuration.getOpenamRealm(),
+                token, connection)) {
+            LOG.error("User do not exists");
+            throw new ConnectorException("User do not exists");
+        }
+
+        if (isAlive(connection)) {
+            try {
+                connection.update(updateQueryString());
+                LOG.ok("Update values commited");
+            } catch (HttpClientErrorException hcee) {
+                throw hcee;
+            }
+        }
+        return uid;
+    }
+
+    private String updateQueryString() throws UnsupportedEncodingException {
         StringBuilder parameters = new StringBuilder();
-        
         parameters.append("&identity_name=")
                 .append(uid.getUidValue());
-
         for (Attribute attr : attrs) {
             List<Object> values = attr.getValue();
             if (values != null && !values.isEmpty()) {
@@ -81,24 +98,9 @@ public class OpenAMUpdate extends CommonMethods {
                         .append((String) values.get(0));
             }
         }
-
         parameters.append("&admin=")
                 .append(URLEncoder.encode(
                     token, Constants.ENCODING));
-
-        if (!userExists(uid.getUidValue(), configuration.getOpenamRealm(),
-                token, connection)) {
-            throw new ConnectorException("User do not exists");
-        }
-
-        if (isAlive(connection)) {
-            try {
-                connection.update(parameters.toString());
-                LOG.ok("Update values commited");
-            } catch (HttpClientErrorException hcee) {
-                throw hcee;
-            }
-        }
-        return uid;
+        return parameters.toString();
     }
 }

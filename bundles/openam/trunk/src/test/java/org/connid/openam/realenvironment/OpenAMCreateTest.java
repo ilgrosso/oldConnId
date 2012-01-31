@@ -25,7 +25,6 @@ package org.connid.openam.realenvironment;
 
 import org.connid.openam.OpenAMConnector;
 import org.connid.openam.utilities.SharedMethodsForTests;
-import org.connid.openam.utilities.Utilities;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Name;
@@ -41,7 +40,7 @@ public class OpenAMCreateTest extends SharedMethodsForTests {
     public final void createAndDeleteTest() {
         final OpenAMConnector connector = new OpenAMConnector();
         connector.init(createConfiguration());
-        Name name = new Name("createtest" + Utilities.randomNumber());
+        Name name = new Name("createtest" + randomNumber());
         Uid newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
@@ -53,13 +52,13 @@ public class OpenAMCreateTest extends SharedMethodsForTests {
         Assert.assertFalse(connector.existsUser(newAccount.getUidValue()));
         connector.dispose();
     }
-    
+
     @Test(expected = ConnectorException.class)
     @Ignore
     public final void createExistingUserTest() {
         final OpenAMConnector connector = new OpenAMConnector();
         connector.init(createConfiguration());
-        Name name = new Name("createtest" + Utilities.randomNumber());
+        Name name = new Name("createtest" + randomNumber());
         Uid newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name), null);
         connector.create(ObjectClass.ACCOUNT,

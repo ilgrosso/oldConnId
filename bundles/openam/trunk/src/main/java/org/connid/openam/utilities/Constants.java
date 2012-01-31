@@ -24,8 +24,7 @@
 package org.connid.openam.utilities;
 
 public class Constants {
-    
+
     public static final String MEDIA_TYPE = "text/xml";
     public static final String ENCODING = "UTF-8";
-    
 }

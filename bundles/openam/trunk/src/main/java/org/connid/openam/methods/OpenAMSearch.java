@@ -32,7 +32,7 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMSearch extends CommonMethods {
-    
+
     private static final Log LOG = Log.getLog(OpenAMSearch.class);
     private OpenAMConfiguration openAMConfiguration = null;
     private OpenAMConnection connection = null;

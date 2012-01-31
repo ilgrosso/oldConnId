@@ -41,14 +41,14 @@ public class OpenAMTest extends CommonMethods {
 
     public void test() {
         try {
-            executeImpl();
+            execute();
         } catch (Exception e) {
             LOG.error(e, "error during test connection");
             throw new ConnectorException(e);
         }
     }
 
-    private void executeImpl() throws IOException {
+    private void execute() throws IOException {
         int statusCode = connection.isAlive();
         if (statusCode != HttpStatus.SC_OK) {
             LOG.error("Connection error");

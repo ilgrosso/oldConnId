@@ -40,7 +40,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     
     <groupId>org.connid.bundles</groupId>
     <artifactId>org.connid.bundles.openam</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
     
     <packaging>jar</packaging>
     

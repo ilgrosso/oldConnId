@@ -28,7 +28,6 @@ import java.util.Set;
 import org.connid.openam.OpenAMConnector;
 import org.connid.openam.utilities.SharedMethodsForTests;
 import org.connid.openam.utilities.TestAccountsValue;
-import org.connid.openam.utilities.Utilities;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
@@ -44,7 +43,7 @@ public class OpenAMUpdateTest extends SharedMethodsForTests {
     public final void updateTest() {
         final OpenAMConnector connector = new OpenAMConnector();
         connector.init(createConfiguration());
-        Name name = new Name("createtest" + Utilities.randomNumber());
+        Name name = new Name("createtest" + randomNumber());
         Uid newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());

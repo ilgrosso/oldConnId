@@ -39,7 +39,7 @@ public class OpenAMProperties {
     public static String OPENAM_STATUS_ATTRIBUTE;
 
     static {
-        
+
         ResourceBundle openamProperties = ResourceBundle.getBundle("openam");
 
         OPENAM_SERVER_PROTOCOL =

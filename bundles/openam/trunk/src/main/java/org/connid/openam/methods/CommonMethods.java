@@ -39,9 +39,8 @@ public class CommonMethods {
             throws IOException {
         boolean result = false;
         if (isAlive(connection)) {
-            result = !connection.userSearch(
-                    searchParameters(uidString, realm, token))
-                .equalsIgnoreCase("NULL");
+            result = !"NULL".equalsIgnoreCase(connection.userSearch(
+                    searchParameters(uidString, realm, token)));
         }
         return result;
     }

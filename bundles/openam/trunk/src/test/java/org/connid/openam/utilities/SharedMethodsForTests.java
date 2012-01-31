@@ -67,4 +67,8 @@ public class SharedMethodsForTests {
                 "password"));
         return attributes;
     }
+
+    protected int randomNumber() {
+        return (int) (Math.random() * 100000);
+    }
 }

@@ -38,17 +38,16 @@ public class OpenAMExecuteQuery extends CommonMethods {
 
     public final void executeQuery() {
         try {
-            executeImpl();
+            doExecuteQuery();
         } catch (Exception e) {
             LOG.error(e, "error during execute query operation");
             throw new ConnectorException(e);
         }
     }
 
-    private void executeImpl() throws IOException {
+    private void doExecuteQuery() throws IOException {
         String[] uidResults = null;
 
-        final ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         if (isAlive(connection)) {
             uidResults =
                     connection.search(searchParameters(
@@ -56,13 +55,13 @@ public class OpenAMExecuteQuery extends CommonMethods {
             LOG.ok("Search committed");
         }
 
-        List<String[]> usersList = new ArrayList<String[]>();
-
         if (uidResults == null || uidResults.length == 1) {
             LOG.error("User " + ldapFilter + " not exists");
             throw new IllegalArgumentException("User "
                     + ldapFilter + " not exists");
         }
+
+        List<String[]> usersList = new ArrayList<String[]>();
 
         for (int i = 1; i < uidResults.length; i++) {
             if (!uidResults[i].startsWith("anonymous")
@@ -71,8 +70,10 @@ public class OpenAMExecuteQuery extends CommonMethods {
                         uidResults[i])).split("identitydetails."));
             }
         }
-        String name = "";
+
         List<String> attributesList = new ArrayList<String>();
+        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
+        String name = "";
         for (Iterator<String[]> it = usersList.iterator(); it.hasNext();) {
             String[] userDetails = it.next();
             for (int i = 0; i < userDetails.length; i++) {

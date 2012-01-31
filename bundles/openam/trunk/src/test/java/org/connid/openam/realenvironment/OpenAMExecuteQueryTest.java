@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.Set;
 import org.connid.openam.OpenAMConnector;
 import org.connid.openam.utilities.SharedMethodsForTests;
-import org.connid.openam.utilities.Utilities;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.Name;
@@ -45,7 +44,7 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
         final OpenAMConnector connector = new OpenAMConnector();
         final Set actual = new HashSet();
         connector.init(createConfiguration());
-        Name name = new Name("createtest" + Utilities.randomNumber());
+        Name name = new Name("createtest" + randomNumber());
         Uid newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
@@ -75,7 +74,7 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
         final OpenAMConnector connector = new OpenAMConnector();
         final Set actual = new HashSet();
         connector.init(createConfiguration());
-        Name name = new Name("createtest" + Utilities.randomNumber());
+        Name name = new Name("createtest" + randomNumber());
         Uid newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
@@ -106,7 +105,7 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
         final OpenAMConnector connector = new OpenAMConnector();
         final Set actual = new HashSet();
         connector.init(createConfiguration());
-        Name name = new Name("createtest" + Utilities.randomNumber());
+        Name name = new Name("createtest" + randomNumber());
         Uid newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());

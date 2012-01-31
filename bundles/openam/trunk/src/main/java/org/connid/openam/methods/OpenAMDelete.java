@@ -53,14 +53,14 @@ public class OpenAMDelete extends CommonMethods {
 
     public final void delete() {
         try {
-            executeImpl();
+            doDelete();
         } catch (Exception e) {
             LOG.error(e, "error during delete operation");
             throw new ConnectorException(e);
         }
     }
 
-    private void executeImpl() throws IOException {
+    private void doDelete() throws IOException {
 
         if (!userExists(uid.getUidValue(), configuration.getOpenamRealm(),
                 token, connection)) {

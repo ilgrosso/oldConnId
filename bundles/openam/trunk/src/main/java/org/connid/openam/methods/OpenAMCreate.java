@@ -49,6 +49,7 @@ public class OpenAMCreate extends CommonMethods {
     private OpenAMConfiguration configuration = null;
     private OpenAMConnection connection = null;
     private String token = "";
+    private String uidString = null;
 
     public OpenAMCreate(final OpenAMConfiguration configuration,
             final Set<Attribute> attrs) {
@@ -60,23 +61,38 @@ public class OpenAMCreate extends CommonMethods {
 
     public Uid create() {
         try {
-            return executeImpl();
+            return doCreate();
         } catch (Exception e) {
             LOG.error(e, "error during creation");
             throw new ConnectorException(e);
         }
     }
 
-    private Uid executeImpl() throws UnsupportedEncodingException, IOException {
-        
-        StringBuilder parameters = new StringBuilder();
-        String uidString = "";
+    private Uid doCreate() throws IOException {
 
         if (AttributeUtil.getNameFromAttributes(attrs) == null) {
             throw new IllegalArgumentException("No Name attribute provided"
                     + "in the attributes");
         }
+  
+        if (userExists(uidString, configuration.getOpenamRealm(),
+                token, connection)) {
+            throw new ConnectorException("User Exists");
+        }
 
+        if (isAlive(connection)) {
+            try {
+                connection.create(createQueryString());
+                LOG.ok("Creation commited");
+            } catch (HttpClientErrorException hcee) {
+                throw hcee;
+            }
+        }
+        return new Uid(uidString);
+    }
+
+    private String createQueryString() throws UnsupportedEncodingException {
+        StringBuilder parameters = new StringBuilder();
         for (Attribute attr : attrs) {
             if (attr.is(Name.NAME) || attr.is(Uid.NAME)
                     && (!parameters.toString().contains("identity_name="))) {
@@ -115,27 +131,12 @@ public class OpenAMCreate extends CommonMethods {
                 }
             }
         }
-
         parameters.append("&identity_realm=")
                 .append(configuration.getOpenamRealm())
                 .append("&identity_type=user")
                 .append("&admin=")
                 .append(URLEncoder.encode(
                     token, Constants.ENCODING));
-
-        if (userExists(uidString, configuration.getOpenamRealm(),
-                token, connection)) {
-            throw new ConnectorException("User Exists");
-        }
-
-        if (isAlive(connection)) {
-            try {
-                connection.create(parameters.toString());
-                LOG.ok("Creation commited");
-            } catch (HttpClientErrorException hcee) {
-                throw hcee;
-            }
-        }
-        return new Uid(uidString);
+        return parameters.toString();
     }
 }
