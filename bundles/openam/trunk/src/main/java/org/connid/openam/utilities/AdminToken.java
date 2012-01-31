@@ -23,7 +23,6 @@
  */
 package org.connid.openam.utilities;
 
-import java.io.IOException;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 
