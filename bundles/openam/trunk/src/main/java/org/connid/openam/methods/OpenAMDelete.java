@@ -33,6 +33,7 @@ import org.connid.openam.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Uid;
+import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMDelete extends CommonMethods {
 
@@ -68,8 +69,12 @@ public class OpenAMDelete extends CommonMethods {
         }
 
         if (isAlive(connection)) {
-            connection.delete(deleteParameters());
-            LOG.ok("Delete committed");
+            try {
+                connection.delete(deleteParameters());
+                LOG.ok("Delete committed");
+            } catch (HttpClientErrorException hcee) {
+                throw hcee;
+            }
         }
     }
 

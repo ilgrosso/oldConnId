@@ -29,6 +29,7 @@ import java.net.URLEncoder;
 import org.apache.commons.httpclient.HttpStatus;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.Constants;
+import org.identityconnectors.common.security.GuardedString;
 
 public class CommonMethods {
 
@@ -58,7 +59,7 @@ public class CommonMethods {
                     token, Constants.ENCODING));
         return parameters.toString();
     }
-    
+
     protected final boolean isAlive(final OpenAMConnection openAMConnection)
             throws IOException {
         if (HttpStatus.SC_OK == openAMConnection.isAlive()) {
@@ -66,5 +67,18 @@ public class CommonMethods {
         } else {
             return false;
         }
+    }
+
+    protected final String getPlainPassword(final GuardedString password) {
+        final StringBuffer buf = new StringBuffer();
+
+        password.access(new GuardedString.Accessor() {
+
+            @Override
+            public void access(final char[] clearChars) {
+                buf.append(clearChars);
+            }
+        });
+        return buf.toString();
     }
 }

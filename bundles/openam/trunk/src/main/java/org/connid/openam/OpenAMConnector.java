@@ -24,6 +24,7 @@
 package org.connid.openam;
 
 import java.util.Set;
+import org.connid.openam.methods.OpenAMAuthenticate;
 import org.connid.openam.methods.OpenAMCreate;
 import org.connid.openam.methods.OpenAMDelete;
 import org.connid.openam.methods.OpenAMExecuteQuery;
@@ -32,6 +33,7 @@ import org.connid.openam.methods.OpenAMTest;
 import org.connid.openam.methods.OpenAMUpdate;
 import org.connid.openam.utilities.SelfSignedCertUtilities;
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
@@ -41,6 +43,7 @@ import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
+import org.identityconnectors.framework.spi.operations.AuthenticateOp;
 import org.identityconnectors.framework.spi.operations.CreateOp;
 import org.identityconnectors.framework.spi.operations.DeleteOp;
 import org.identityconnectors.framework.spi.operations.SearchOp;
@@ -50,7 +53,7 @@ import org.identityconnectors.framework.spi.operations.UpdateOp;
 @ConnectorClass(configurationClass = OpenAMConfiguration.class,
 displayNameKey = "openam.connector.display")
 public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
-        DeleteOp, TestOp, SearchOp<String> {
+        DeleteOp, TestOp, SearchOp<String>, AuthenticateOp {
 
     private static final Log LOG = Log.getLog(OpenAMConnector.class);
     private OpenAMConfiguration openAMConfiguration;
@@ -114,5 +117,12 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     public final void executeQuery(final ObjectClass oc, final String filter,
             final ResultsHandler rh, final OperationOptions oo) {
         new OpenAMExecuteQuery(openAMConfiguration, filter, rh).execute();
+    }
+
+    @Override
+    public final Uid authenticate(final ObjectClass oc, final String username,
+            final GuardedString password, final OperationOptions oo) {
+        return new OpenAMAuthenticate(
+                openAMConfiguration, username, password).execute();
     }
 }

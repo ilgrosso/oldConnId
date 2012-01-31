@@ -28,6 +28,7 @@ import org.connid.openam.http.HttpClientMethods;
 import org.connid.openam.restful.RestfulClientMethods;
 import org.connid.openam.utilities.UrlFactory;
 import org.identityconnectors.common.logging.Log;
+import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMConnection {
 
@@ -35,7 +36,7 @@ public class OpenAMConnection {
     private OpenAMConfiguration configuration = null;
     private final RestfulClientMethods restfulClient =
             new RestfulClientMethods();
-    private final HttpClientMethods httpClientMethods = 
+    private final HttpClientMethods httpClientMethods =
             new HttpClientMethods();
     private UrlFactory urlFactory = null;
 
@@ -50,27 +51,32 @@ public class OpenAMConnection {
         return new OpenAMConnection(configuration);
     }
 
-    public String authenticate(final String username, final String password) {
+    public String authenticate(final String username, final String password)
+            throws HttpClientErrorException {
         return restfulClient.getMethod(
-                urlFactory.authenticateUrl(username, password));
+                    urlFactory.authenticateUrl(username, password));
     }
 
-    public void create(final String parameters) {
+    public void create(final String parameters)
+            throws HttpClientErrorException {
         restfulClient.getMethod(
                 urlFactory.createUrl(parameters));
     }
 
-    public void update(final String parameters) {
+    public void update(final String parameters)
+            throws HttpClientErrorException {
         restfulClient.getMethod(
                 urlFactory.updateUrl(parameters));
     }
 
-    public void delete(final String parameters) {
+    public void delete(final String parameters)
+            throws HttpClientErrorException {
         restfulClient.getMethod(
                 urlFactory.deleteUrl(parameters));
     }
 
-    public String userSearch(final String parameters) {
+    public String userSearch(final String parameters)
+            throws HttpClientErrorException {
         return restfulClient.getMethod(
                 urlFactory.searchUrl(parameters));
     }
@@ -80,7 +86,8 @@ public class OpenAMConnection {
                 urlFactory.searchUrl(parameters));
     }
 
-    public String read(final String parameters) {
+    public String read(final String parameters)
+            throws HttpClientErrorException {
         return restfulClient.getMethod(
                 urlFactory.readUrl(parameters));
     }

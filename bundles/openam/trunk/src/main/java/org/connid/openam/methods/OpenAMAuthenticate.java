@@ -26,42 +26,41 @@ package org.connid.openam.methods;
 import java.io.IOException;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
-import org.connid.openam.utilities.AdminToken;
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.objects.Uid;
 import org.springframework.web.client.HttpClientErrorException;
 
-public class OpenAMSearch extends CommonMethods {
-    
-    private static final Log LOG = Log.getLog(OpenAMSearch.class);
-    private OpenAMConfiguration openAMConfiguration = null;
-    private OpenAMConnection connection = null;
-    private String uid = "";
-    private String token = "";
+public class OpenAMAuthenticate extends CommonMethods {
 
-    public OpenAMSearch(final OpenAMConfiguration configuration,
-            final String uid) {
-        this.openAMConfiguration = configuration;
-        connection = OpenAMConnection.openConnection(configuration);
-        this.uid = uid;
-        token = AdminToken.getAdminToken(configuration).token;
+    private static final Log LOG = Log.getLog(OpenAMAuthenticate.class);
+    private OpenAMConnection connection = null;
+    String username = "";
+    GuardedString password = null;
+
+    public OpenAMAuthenticate(final OpenAMConfiguration openAMConfiguration,
+            final String username, final GuardedString password) {
+        connection = OpenAMConnection.openConnection(openAMConfiguration);
+        this.username = username;
+        this.password = password;
     }
 
-    public final boolean existsUser() {
+    public Uid execute() {
         try {
-            return existsUserImpl();
+            return executeImpl();
         } catch (Exception e) {
-            LOG.error(e, "error during search user operation");
+            LOG.error(e, "error during authentication");
             throw new ConnectorException(e);
         }
     }
 
-    public final boolean existsUserImpl() throws IOException {
+    private Uid executeImpl() {
         try {
-            return userExists(uid, openAMConfiguration.getOpenamRealm(),
-                token, connection);
+            connection.authenticate(username, getPlainPassword(password));
         } catch (HttpClientErrorException hcee) {
             throw hcee;
         }
+        return new Uid(username);
     }
 }

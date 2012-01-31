@@ -25,7 +25,6 @@ package org.connid.openam.methods;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.connid.openam.OpenAMConfiguration;
@@ -35,8 +34,8 @@ import org.connid.openam.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.Uid;
+import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMUpdate extends CommonMethods {
 
@@ -93,8 +92,12 @@ public class OpenAMUpdate extends CommonMethods {
         }
 
         if (isAlive(connection)) {
-            connection.update(parameters.toString());
-            LOG.ok("Update values commited");
+            try {
+                connection.update(parameters.toString());
+                LOG.ok("Update values commited");
+            } catch (HttpClientErrorException hcee) {
+                throw hcee;
+            }
         }
         return uid;
     }

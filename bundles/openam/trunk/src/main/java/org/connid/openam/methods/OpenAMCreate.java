@@ -40,8 +40,9 @@ import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.OperationalAttributes;
 import org.identityconnectors.framework.common.objects.Uid;
+import org.springframework.web.client.HttpClientErrorException;
 
-public class OpenAMCreate extends CommonMethods{
+public class OpenAMCreate extends CommonMethods {
 
     private static final Log LOG = Log.getLog(OpenAMCreate.class);
     private Set<Attribute> attrs = null;
@@ -114,36 +115,27 @@ public class OpenAMCreate extends CommonMethods{
                 }
             }
         }
-        
+
         parameters.append("&identity_realm=")
                 .append(configuration.getOpenamRealm())
                 .append("&identity_type=user")
                 .append("&admin=")
                 .append(URLEncoder.encode(
                     token, Constants.ENCODING));
-        
+
         if (userExists(uidString, configuration.getOpenamRealm(),
                 token, connection)) {
             throw new ConnectorException("User Exists");
         }
-        
+
         if (isAlive(connection)) {
-            connection.create(parameters.toString());
-            LOG.ok("Creation commited");
+            try {
+                connection.create(parameters.toString());
+                LOG.ok("Creation commited");
+            } catch (HttpClientErrorException hcee) {
+                throw hcee;
+            }
         }
         return new Uid(uidString);
-    }
-
-    private String getPlainPassword(final GuardedString password) {
-        final StringBuffer buf = new StringBuffer();
-
-        password.access(new GuardedString.Accessor() {
-
-            @Override
-            public void access(final char[] clearChars) {
-                buf.append(clearChars);
-            }
-        });
-        return buf.toString();
     }
 }
