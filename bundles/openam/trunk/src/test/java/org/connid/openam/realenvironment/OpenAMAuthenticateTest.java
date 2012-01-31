@@ -39,5 +39,5 @@ public class OpenAMAuthenticateTest extends SharedMethodsForTests {
         connector.authenticate(ObjectClass.ACCOUNT,
                 "whois", new GuardedString("wrong".toCharArray()), null);
         connector.dispose();
-    }   
+    }
 }

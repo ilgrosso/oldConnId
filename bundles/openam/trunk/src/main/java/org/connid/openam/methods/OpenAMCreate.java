@@ -58,7 +58,7 @@ public class OpenAMCreate extends CommonMethods {
         token = AdminToken.getAdminToken(configuration).token;
     }
 
-    public Uid execute() {
+    public Uid create() {
         try {
             return executeImpl();
         } catch (Exception e) {

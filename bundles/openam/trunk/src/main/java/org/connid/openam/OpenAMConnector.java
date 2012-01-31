@@ -66,7 +66,7 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     @Override
     public final void init(final Configuration config) {
         openAMConfiguration = (OpenAMConfiguration) config;
-        if ("https".equalsIgnoreCase(openAMConfiguration.getOpenamProtocol())) {
+        if (openAMConfiguration.isSsl()) {
             SelfSignedCertUtilities.trustSelfSignedSSL();
         }
     }
@@ -79,19 +79,19 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     @Override
     public final Uid create(final ObjectClass oc, final Set<Attribute> set,
             final OperationOptions oo) {
-        return new OpenAMCreate(openAMConfiguration, set).execute();
+        return new OpenAMCreate(openAMConfiguration, set).create();
     }
 
     @Override
     public final Uid update(final ObjectClass oc, final Uid uid,
             final Set<Attribute> set, final OperationOptions oo) {
-        return new OpenAMUpdate(openAMConfiguration, uid, set).execute();
+        return new OpenAMUpdate(openAMConfiguration, uid, set).update();
     }
 
     @Override
     public final void delete(final ObjectClass oc, final Uid uid,
             final OperationOptions oo) {
-        new OpenAMDelete(openAMConfiguration, uid).execute();
+        new OpenAMDelete(openAMConfiguration, uid).delete();
     }
 
     public final boolean existsUser(final String uid) {
@@ -101,7 +101,7 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     @Override
     public final void test() {
         LOG.info("Connection test");
-        new OpenAMTest(openAMConfiguration).execute();
+        new OpenAMTest(openAMConfiguration).test();
     }
 
     @Override
@@ -116,13 +116,13 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     @Override
     public final void executeQuery(final ObjectClass oc, final String filter,
             final ResultsHandler rh, final OperationOptions oo) {
-        new OpenAMExecuteQuery(openAMConfiguration, filter, rh).execute();
+        new OpenAMExecuteQuery(openAMConfiguration, filter, rh).executeQuery();
     }
 
     @Override
     public final Uid authenticate(final ObjectClass oc, final String username,
             final GuardedString password, final OperationOptions oo) {
         return new OpenAMAuthenticate(
-                openAMConfiguration, username, password).execute();
+                openAMConfiguration, username, password).authenticate();
     }
 }

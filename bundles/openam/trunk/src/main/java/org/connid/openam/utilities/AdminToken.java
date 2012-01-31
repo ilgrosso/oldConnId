@@ -25,8 +25,9 @@ package org.connid.openam.utilities;
 
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
+import org.connid.openam.methods.CommonMethods;
 
-public final class AdminToken {
+public final class AdminToken extends CommonMethods {
 
     private OpenAMConnection openAMConnection = null;
     private OpenAMConfiguration openAMConfiguration =
@@ -38,7 +39,7 @@ public final class AdminToken {
         openAMConnection = OpenAMConnection.openConnection(configuration);
         token = openAMConnection.authenticate(
                 configuration.getOpenamAdminUser(),
-                configuration.getOpenamAdminPassword());
+                getPlainPassword(configuration.getOpenamAdminPassword()));
         token = token.substring(9, token.length() - 1);
     }
 

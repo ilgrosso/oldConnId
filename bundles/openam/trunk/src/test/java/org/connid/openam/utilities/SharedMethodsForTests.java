@@ -26,6 +26,7 @@ package org.connid.openam.utilities;
 import java.util.HashSet;
 import java.util.Set;
 import org.connid.openam.OpenAMConfiguration;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.Name;
@@ -35,15 +36,15 @@ public class SharedMethodsForTests {
     protected final OpenAMConfiguration createConfiguration() {
         // create the connector configuration..
         OpenAMConfiguration config = new OpenAMConfiguration();
-        config.setOpenamProtocol(OpenAMProperties.OPENAM_SERVER_PROTOCOL);
+        config.setSsl(Boolean.valueOf(OpenAMProperties.OPENAM_SERVER_PROTOCOL));
         config.setOpenamBaseUrl(OpenAMProperties.OPENAM_SERVER_BASEURL);
         config.setOpenamPort(OpenAMProperties.OPENAM_SERVER_PORT);
         config.setOpenamContext(OpenAMProperties.OPENAM_SERVER_CONTEXT);
 
         config.setOpenamRealm(OpenAMProperties.OPENAM_SERVER_REALM);
         config.setOpenamAdminUser(OpenAMProperties.OPENAM_SERVER_ADMIN_USER);
-        config.setOpenamAdminPassword(
-                OpenAMProperties.OPENAM_SERVER_ADMIN_PASSWORD);
+        config.setOpenamAdminPassword(new GuardedString(
+                OpenAMProperties.OPENAM_SERVER_ADMIN_PASSWORD.toCharArray()));
         config.setOpenamPasswordAttribute(
                 OpenAMProperties.OPENAM_PASSWORD_ATTRIBUTE);
         config.setOpenamStatusAttribute(

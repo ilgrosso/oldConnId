@@ -43,7 +43,7 @@ public class OpenAMProperties {
         ResourceBundle openamProperties = ResourceBundle.getBundle("openam");
 
         OPENAM_SERVER_PROTOCOL =
-                openamProperties.getString("openam.server.protocol");
+                openamProperties.getString("openam.server.ssl");
         OPENAM_SERVER_BASEURL =
                 openamProperties.getString("openam.server.baseurl");
         OPENAM_SERVER_PORT =

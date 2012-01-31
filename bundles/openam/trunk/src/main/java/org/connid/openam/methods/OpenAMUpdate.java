@@ -55,7 +55,7 @@ public class OpenAMUpdate extends CommonMethods {
         token = AdminToken.getAdminToken(configuration).token;
     }
 
-    public Uid execute() {
+    public Uid update() {
         try {
             return executeImpl();
         } catch (Exception e) {

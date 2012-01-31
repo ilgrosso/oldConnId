@@ -24,19 +24,20 @@
 package org.connid.openam;
 
 import org.identityconnectors.common.StringUtil;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.spi.AbstractConfiguration;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
 
 public class OpenAMConfiguration extends AbstractConfiguration {
 
-    private String openamProtocol = "";
+    private boolean ssl = false;
     private String openamBaseUrl = "";
     private String openamPort = "";
     private String openamContext = "";
     
     private String openamRealm = "";
     private String openamAdminUser = "";
-    private String openamAdminPassword = "";
+    private GuardedString openamAdminPassword = null;
     
     private String openamUidAttribute = "";
     private String openamPasswordAttribute = "";
@@ -44,12 +45,12 @@ public class OpenAMConfiguration extends AbstractConfiguration {
 
     @ConfigurationProperty(displayMessageKey = "openamprotocol.display",
     helpMessageKey = "openamprotocol.help", order = 1)
-    public final String getOpenamProtocol() {
-        return openamProtocol;
+    public final boolean isSsl() {
+        return ssl;
     }
 
-    public final void setOpenamProtocol(final String openamProtocol) {
-        this.openamProtocol = openamProtocol;
+    public final void setSsl(final boolean ssl) {
+        this.ssl = ssl;
     }
 
     @ConfigurationProperty(displayMessageKey = "openambaseurl.display",
@@ -104,11 +105,12 @@ public class OpenAMConfiguration extends AbstractConfiguration {
     
     @ConfigurationProperty(displayMessageKey = "openamadminpassword.display",
     helpMessageKey = "openamadminpassword.help", order = 7)
-    public final String getOpenamAdminPassword() {
+    public final GuardedString getOpenamAdminPassword() {
         return openamAdminPassword;
     }
 
-    public final void setOpenamAdminPassword(final String openamAdminPassword) {
+    public final void setOpenamAdminPassword(final GuardedString
+            openamAdminPassword) {
         this.openamAdminPassword = openamAdminPassword;
     }
 
@@ -147,11 +149,6 @@ public class OpenAMConfiguration extends AbstractConfiguration {
 
     @Override
     public final void validate() {
-        if (StringUtil.isBlank(this.openamProtocol)) {
-            throw new IllegalArgumentException(
-                    "OpenAM protocol must not be blank!");
-        }
-
         if (StringUtil.isBlank(this.openamBaseUrl)) {
             throw new IllegalArgumentException(
                     "OpenAM base url must not be blank!");
@@ -177,7 +174,7 @@ public class OpenAMConfiguration extends AbstractConfiguration {
                     "OpenAM admin user must not be blank!");
         }
 
-        if (StringUtil.isBlank(this.openamAdminPassword)) {
+        if (StringUtil.isBlank(this.openamAdminPassword.toString())) {
             throw new IllegalArgumentException(
                     "OpenAM admin password must not be blank!");
         }

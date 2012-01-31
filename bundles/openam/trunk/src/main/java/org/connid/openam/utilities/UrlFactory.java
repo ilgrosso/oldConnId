@@ -35,8 +35,12 @@ public class UrlFactory {
 
     public final String openAmUrl() {
         StringBuilder openAmRestfulServiceUrl = new StringBuilder();
-        openAmRestfulServiceUrl.append(openAMConfiguration.getOpenamProtocol())
-                .append("://")
+        if (openAMConfiguration.isSsl()) {
+            openAmRestfulServiceUrl.append("https");
+        } else {
+            openAmRestfulServiceUrl.append("http");
+        }
+        openAmRestfulServiceUrl.append("://")
                 .append(openAMConfiguration.getOpenamBaseUrl())
                 .append(":")
                 .append(openAMConfiguration.getOpenamPort())

@@ -39,7 +39,7 @@ public class OpenAMTest extends CommonMethods {
         connection = OpenAMConnection.openConnection(configuration);
     }
 
-    public void execute() {
+    public void test() {
         try {
             executeImpl();
         } catch (Exception e) {

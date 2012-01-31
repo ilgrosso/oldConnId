@@ -36,7 +36,7 @@ public class OpenAMExecuteQuery extends CommonMethods {
         token = AdminToken.getAdminToken(configuration).token;
     }
 
-    public final void execute() {
+    public final void executeQuery() {
         try {
             executeImpl();
         } catch (Exception e) {

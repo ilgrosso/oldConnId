@@ -46,7 +46,7 @@ public class OpenAMAuthenticate extends CommonMethods {
         this.password = password;
     }
 
-    public Uid execute() {
+    public Uid authenticate() {
         try {
             return executeImpl();
         } catch (Exception e) {
