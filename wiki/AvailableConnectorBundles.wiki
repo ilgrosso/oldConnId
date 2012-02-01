@@ -3,15 +3,15 @@
 
 =Java Connector Bundles=
 
+ # [ActiveDirectoryJava Active Directory]
  # [CSVDirectory CSV directory]
  # [DatabaseTable Database table]
  # [DatabaseTableLegacy Database table (legacy)]
  # [FlatFile Flat file]
  # [GoogleApps GoogleApps]
  # [LDAP LDAP]
- # [SOAP SOAP]
- # [ActiveDirectoryJava Active Directory]
  # [OpenAM OpenAM]
+ # [SOAP SOAP]
 
 =.NET Connector Bundles=
 
