@@ -11,6 +11,7 @@
  # [LDAP LDAP]
  # [SOAP SOAP]
  # [ActiveDirectoryJava Active Directory]
+ # [OpenAM OpenAM]
 
 =.NET Connector Bundles=
 
