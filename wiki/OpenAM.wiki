@@ -1,4 +1,4 @@
-#summary Database Table connector
+#summary OpenAM connector
 
 <wiki:toc max_depth="2"/>
 
