@@ -102,8 +102,5 @@ The following table describes all of the properties that you can specify for the
       <td> Uid Attribute </td>
       <td> String </td>
       <td> X </td>
-      <td> Uid attribute where user uid value will be stored</td>
+      <td> Uid attribute where user uid value will be stored </td>
     </tr>
-    
-  </tbody>
-</table>
