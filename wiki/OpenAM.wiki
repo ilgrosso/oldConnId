@@ -4,62 +4,34 @@
 
 = Overview =
 
-The Database Table connector is designed to manage users stored in a single database table that uses any relational database with an SQL92 standard compliant JDBC driver.
+The OpenAM connector is designed to manage users stored in a OpenAM server; the bundle intercats with OpenAM server by its REST service.
 
-= Supported Resource Versions =
+= Supported Versions =
 
- * PostgreSQL
- * MySQL
- * Oracle 11g
+ * Until OpenAM 9.5.4
 
-= Not Fully Tested Resource Versions =
+= Not Fully Tested Versions =
 
- * DB2
- * SQL Server
+ * Old version of OpenSSO
 
 = Installation =
 
 Follow these steps to run the stand-alone connector server:
 
  # Download the connector server jar file and store it in the connector server directory (any directory).
- # Download the Database Table connector jar file and store it in the bundles subdirectory.
- # Add the resource-related third-party JDBC driver jar file to the lib directory.
+ # Download the OpenAM connector jar file and store it in the bundles subdirectory.
  # Start the connector server. For more information, see [ConnectorServers Connector Servers].
 
 =Supported operations=
 
- * Authenticate (*_Optional_*) Specify the <tt>password column</tt> configuration property.
+ *   Authenticate
  *   Create
  *   Delete
  *   Update
  *   Search
- *   Schema
  *   Test
- *   Sync (*_Optional_*) Specify the <tt>Change Log Column</tt> configuration property.
 
 =Configuration=
-
-You must include the mandatory <tt>driver name</tt> configuration parameter as part of the configuration. The connector uses the existence of a driver on the classpath to validate the configuration.
-
-==Configuration methods==
-
-You can use one of the following methods to connect the JDBC driver to the resource:
-
- # Provide the <tt>user</tt>, <tt>password</tt>, <tt>host</tt>, <tt>port</tt>, and <tt>database name</tt> configuration properties.
-   The mandatory <tt>URL Template</tt> can contain wild cards such as %h, %p, and %d|%h, %p, and %d. These wild cards will be replaced by provided values such as <tt>host</tt>, <tt>port</tt>, and <tt>database</tt>. If the <tt>URL Template</tt> contains any of these wild cards, the connector considers the <tt>host</tt>, <tt>port</tt>, and <tt>database name</tt> to be required configuration properties and they are used accordingly.
- # Provide the <tt>user</tt> and <tt>password</tt> configuration properties and an exact <tt>URL Template</tt> with a JDBC connection URL (no wild-cards).
- # Provide a datasource name and the optional JNDI properties.
-    While the datasource name with JNDI properties is sufficient to connect to the resource, the configuration properties mentioned in the previous two methods will not be considered.
-
-See [#Supported_Resource_Versions Supported Resource Versions] to review the list of resource versions that have been tested with this connector.
-
-The Database Table connector manages users that are located in a single, custom database table. The database table name is a part of the required configuration.
-The Database Table connector also uses a required <tt>keyColumn name</tt> configuration property to store the account's names within the custom table.
-
-You can configure the optional <tt>passwordColumn name</tt> to activate the authentication capabilities.
-The adapter also supports Active Sync to poll for account changes. To allow Active Sync capabilities, specify the <tt>changeLogColumn</tt>.
-
-See [#Configuration_Properties Configuration Properties] for more information about additional optional connector capabilities.
 
 ==Configuration Properties==
 
@@ -70,237 +42,68 @@ The following table describes all of the properties that you can specify for the
     <tr>
       <th> Configuration Property </th>
       <th> Type </th>
-      <th> Required (Driver) </th>
-      <th> Required (Datasource) </th>
-      <th> Definition </th>
-    </tr>
-    <tr>
-      <td> JDBC Driver </td>
-      <td> String </td>
-      <td> X <br/> </td>
-      <td> X <br/> </td>
-      <td> The JDBC Driver class name. 
-	<ul>
-	  <li>Oracle is oracle.jdbc.driver.OracleDriver.</li>
-	  <li>MySQL is org.gjt.mm.mysql.Driver.</li>
-	</ul>
-      </td>
-    </tr>
-    <tr>
-      <td> JDBC URL Template </td>
-      <td> String </td>
-      <td> X <br/>(<tt>%h</tt>,<tt>%p</tt>, and <tt>%d</tt>) </td>
-      <td></td>
-      <td> The JDBC connection URL Template with <tt>%h</tt>, <tt>%p</tt>, and <tt>%d</tt> wild-cards. 
-	<ul>
-	  <Li>Oracle template is jdbc:oracle:thin:@<em>%h:%p:%d</em>.</li>
-	  <li>MySQL template is jdbc:mysql://<em>%h:%p/%d</em>. For more information, consult your JDBC driver documentation.</li>
-	</ul>
-      </td>
-    </tr>
-    <tr>
-      <td> Host </td>
-      <td> String </td>
-      <td> when <tt>%h</tt> </td>
-      <td></td>
-      <td> Resource host. Used in place of the <tt>%h</tt> wild card in the URL Template. </td>
-    </tr>
-    <tr>
-      <td> Port </td>
-      <td> String </td>
-      <td> when <tt>%p</tt> </td>
-      <td></td>
-      <td> Resource port. Used in place of the <tt>%p</tt> wild card in the URL Template. </td>
-    </tr>
-    <tr>
-      <td> Database </td>
-      <td> String </td>
-      <td> when <tt>%d</tt> </td>
-      <td></td>
-      <td> Resource database. Used in place of the <tt>%d</tt> wild card in the URL template. </td>
-    </tr>
-    <tr>
-      <td> User </td>
-      <td> String </td>
-      <td> X <br/> </td>
-      <td></td>
-      <td> Name of the resource admin user with rights to do <tt>SELECT</tt>, <tt>INSERT</tt>, <tt>UPDATE</tt>, or <tt>DELETE</tt>. </td>
-    </tr>
-    <tr>
-      <td> Password </td>
-      <td> String </td>
-      <td> X <br/> </td>
-      <td></td>
-      <td> Resource admin user's password. </td>
-    </tr>
-    <tr>
-      <td> Data-source </td>
-      <td> String </td>
-      <td></td>
-      <td> X </td>
-      <td> Datasource name for datasource-managed connections. </td>
-    </tr>
-    <tr>
-      <td> JNDI Properties </td>
-      <td> String </td>
-      <td></td>
-      <td></td>
-      <td> <em>Optional</em> naming of datasource look-up properties. </td>
-    </tr>
-    <tr>
-      <td> Table </td>
-      <td> String </td>
-      <td> X <br/> </td>
-      <td> X <br/> </td>
-      <td> Name of the single table where the accounts are stored. </td>
-    </tr>
-    <tr>
-      <td> Key Column </td>
-      <td> String </td>
-      <td> X <br/> </td>
-      <td> X <br/> </td>
-      <td> Name of the column where the account's names are stored. </td>
-    </tr>
-    <tr>
-      <td> Password Column </td>
-      <td> String </td>
-      <td></td>
-      <td></td>
-      <td> <em>Optional</em> name of the password column where the account's passwords are stored. </td>
-    </tr>
-
-    <tr>
-      <td> Status Column </td>
-      <td> String </td>
-      <td></td>
-      <td></td>
-      <td> <em>Optional</em> name of the status column where the account's status (enabled/disabled/...) are stored. </td>
-    </tr>
-    <tr>
-      <td> Disabled Status Value </td>
-      <td> String </td>
-      <td></td>
-      <td></td>
-      <td> <em>Optional</em> value of 'status column' indicating disabled users.</td>
-    </tr>
-    <tr>
-      <td> Enabled Status Value </td>
-      <td> String </td>
-      <td></td>
-      <td></td>
-      <td> <em>Optional</em> value of 'status column' indicating enabled users.</td>
-    </tr>
-
-    <tr>
-      <td> Default Status Value </td>
-      <td> String </td>
-      <td></td>
-      <td></td>
-      <td> <em>Optional</em> default value for 'status column' in case of value not provided.</td>
-    </tr>
-
-    <tr>
-      <td> Change Log Column </td>
-      <td> String </td>
-      <td></td>
-      <td></td>
-      <td> <em>Optional</em> name of the column where the last update-related, non-decreasing, value is stored. This value can be a number or a timestamp value. </td>
-    </tr>
-    <tr>
-      <td> Quoting </td>
-      <td> String </td>
-      <td></td>
-      <td></td>
-      <td> Column quoting property (such as <tt>None</tt>, <tt>Single</tt>, <tt>Double</tt>, <tt>Back</tt>, or <tt>Brackets</tt>) that best fits your resource. Default is <tt>None</tt>. <br/>
-	Column names display between single quotes, double quotes, back quotes, or brackets in the generated SQL when access the database. </td>
-    </tr>
-    <tr>
-      <td> Enable Empty String </td>
-      <td> Boolean </td>
-      <td></td>
-      <td></td>
-      <td> Select to enable support for writing an empty string instead of a NULL value. By default empty strings are written as a NULL values. </td>
-    </tr>
-    <tr>
-      <td> Rethrow All SQL Exceptions </td>
-      <td> Boolean </td>
-      <td></td>
-      <td></td>
-      <td> If <tt>false</tt> (default), the SQLExceptions with a <tt>0</tt> !ErrorCode are considered a success, or not an error, and they are caught and suppressed by the connector. For example, some databases return an exception for an empty result set. Select to throw exceptions when the !ErrorCode is <tt>0</tt>. <b>Note</b>: No other SQLExceptions are influenced by this property. </td>
-    </tr>
-    <tr>
-      <td> Native Timestamps </td>
-      <td> Boolean </td>
-      <td></td>
-      <td></td>
-      <td> If <tt>false</tt> (default), timestamp data are read as Strings, which can cause the loss of time milliseconds. Select to retrieve the data as <tt>java.sql.Timestamp</tt> type, and have the connector perform the conversion. </td>
-    </tr>
-    <tr>
-      <td> All Native </td>
-      <td> Boolean </td>
-      <td></td>
-      <td></td>
-      <td> If <tt>false</tt> (default), the attribute data are converted to Strings using the JDBC driver. Select to use the appropriate JDBC types and force the connector perform the conversion as needed. </td>
-    </tr>
-    <tr>
-      <td> Valid Connection Query </td>
-      <td> String </td>
-      <td></td>
-      <td></td>
-      <td> If <tt>false</tt> (default), the connection is validated by switching the auto commit mode. For example, you might have <em><tt>select 1 from dummy</tt></em>, which might be more efficient on some databases. </td>
-    </tr>
-    <tr>
-      <td> Password cipher algorithm </td>
-      <td> String </td>
-      <td></td>
-      <td></td>
-      <td> Cipher algorithm used to encode password before to store it onto the database table. Specify one of the values among AES, MD5, SHA1, SHA256 or a custom implementation identified by its class name. </td>
-    </tr>
-    <tr>
-      <td> Password cipher key </td>
-      <td> String </td>
-      <td></td>
-      <td></td>
-      <td> Specify key in case of reversible algorithm. </td>
-    </tr>
-    <tr>
-      <td> Retrieve password </td>
-      <td> Boolean </td>
-      <td></td>
-      <td></td>
-      <td> Specify if password must be retrieved by default. </td>
-    </tr>
-  </tbody>
-</table>
-
-=Schema=
-
-The Database Table connector only supports the ACCOUNT objectclass.
-
-The following table describes the attributes that are explicitly supported in the schema.
-All of these attributes are single-valued, and unless specifically noted otherwise in this table, they can be created, updated, and read.
-
-<table border="1">
-  <tbody>
-    <tr>
-      <th> Attribute Name </th>
+      <th> Required</th>
       <th> Description </th>
     </tr>
     <tr>
-      <td> <tt>"column name"</tt> </td>
-      <td> This attribute is required when "column" is NOT NULL. Blobs, clobs, and binaries are not returned by default. </td>
+      <td> SSL </td>
+      <td> Boolean </td>
+      <td></td>
+      <td> Specify it if OpenAM server is deployed in SSL mode </td>
     </tr>
     <tr>
-      <td> <tt>All columns ...</tt> </td>
-      <td> </td>
+      <td> OpenAM base Url </td>
+      <td> String </td>
+      <td> X </td>
+      <td> Base Url of OpenAM host </td>
     </tr>
     <tr>
-      <td> <tt>_<em>PASSWORD</em>_</tt> </td>
-      <td> This attribute is required for a Password Column and it is not readable or returned by default. </td>
+      <td> OpenAM port </td>
+      <td> String </td>
+      <td> X </td>
+      <td> Port of OpenAM host </td>
     </tr>
     <tr>
-      <td> <tt>_<em>NAME</em>_</tt> </td>
-      <td> This attribute is required. </td>
+      <td> OpenAM context </td>
+      <td> String </td>
+      <td> X </td>
+      <td> Context where OpenAM is deployed </td>
     </tr>
+    <tr>
+      <td> OpenAM realm </td>
+      <td> String </td>
+      <td> X </td>
+      <td> Realm where users are saved </td>
+    </tr>
+    <tr>
+      <td> Admin user </td>
+      <td> String </td>
+      <td> X <br/> </td>
+      <td> Id User admin of openam, usually amadmin </td>
+    </tr>
+    <tr>
+      <td> Admin password </td>
+      <td> String </td>
+      <td> X <br/> </td>
+      <td> Password of admin user of openam </td>
+    <tr>
+      <td> Password Attribute </td>
+      <td> String </td>
+      <td> X </td>
+      <td> Password attribute where user password value will be stored </td>
+    </tr>
+    <tr>
+      <td> Status Attribute </td>
+      <td> String </td>
+      <td> X </td>
+      <td>Status attribute where user status value will be stored</td>
+    </tr>
+    <tr>
+      <td> Uid Attribute </td>
+      <td> String </td>
+      <td> X </td>
+      <td> Uid attribute where user uid value will be stored</td>
+    </tr>
+    
   </tbody>
 </table>
