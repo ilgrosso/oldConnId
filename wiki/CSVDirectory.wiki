@@ -110,6 +110,32 @@ The following table describes all of the properties that you can specify for the
       <td> String </td>
       <td> X </td>
       <td> Character used to separate keys in a multi-key scenario </td>
+
+    <tr>
+      <td> Status Column </td>
+      <td> String </td>
+      <td></td>
+      <td> <em>Optional</em> name of the status column where the account's status (enabled/disabled/...) are stored. </td>
+    </tr>
+    <tr>
+      <td> Disabled Status Value </td>
+      <td> String </td>
+      <td></td>
+      <td> <em>Optional</em> value of 'status column' indicating disabled users.</td>
+    </tr>
+    <tr>
+      <td> Enabled Status Value </td>
+      <td> String </td>
+      <td></td>
+      <td> <em>Optional</em> value of 'status column' indicating enabled users.</td>
+    </tr>
+    <tr>
+      <td> Default Status Value </td>
+      <td> String </td>
+      <td></td>
+      <td> <em>Optional</em> default value for 'status column' in case of value not provided.</td>
+    </tr>
+
     </tr>
   </tbody>
 </table>
