@@ -57,8 +57,7 @@ public class OpenAMExecuteQuery extends CommonMethods {
 
         if (uidResults == null || uidResults.length == 1) {
             LOG.error("User " + ldapFilter + " not exists");
-            throw new IllegalArgumentException("User "
-                    + ldapFilter + " not exists");
+            return;
         }
 
         List<String[]> usersList = new ArrayList<String[]>();

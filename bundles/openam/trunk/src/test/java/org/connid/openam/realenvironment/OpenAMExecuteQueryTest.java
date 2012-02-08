@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.Set;
 import org.connid.openam.OpenAMConnector;
 import org.connid.openam.utilities.SharedMethodsForTests;
-import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
@@ -131,7 +130,7 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
         connector.dispose();
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test
     public final void executeQueryNotExistingUserTest() {
         final OpenAMConnector connector = new OpenAMConnector();
         final Set actual = new HashSet();
@@ -145,6 +144,7 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
                 return true;
             }
         }, null);
+        Assert.assertEquals(0, actual.size());
         connector.dispose();
     }
 }
