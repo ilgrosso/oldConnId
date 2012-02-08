@@ -49,14 +49,15 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
 
         connector.executeQuery(ObjectClass.ACCOUNT,
-                "uid=" + newAccount.getUidValue(), new ResultsHandler() {
+                "(" + Uid.NAME + "=" + newAccount.getUidValue() + ")",
+                new ResultsHandler() {
 
-            @Override
-            public boolean handle(final ConnectorObject co) {
-                actual.add(co);
-                return true;
-            }
-        }, null);
+                    @Override
+                    public boolean handle(final ConnectorObject co) {
+                        actual.add(co);
+                        return true;
+                    }
+                }, null);
         for (Iterator it = actual.iterator(); it.hasNext();) {
             Object object = it.next();
             ConnectorObject co = (ConnectorObject) object;
