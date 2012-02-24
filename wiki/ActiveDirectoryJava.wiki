@@ -8,7 +8,7 @@ The Active Directory Connector supports provisioning to Windows servers 2003 / 2
 
 In order to have all the functionalities available with Windows server 2003 you have to raise functional level and forest functional level.
 
-Please take a look at http://www.petri.co.il/raise_forest_function_level_in_windows_2003.htm for more details.
+Please take a look at [http://www.petri.co.il/raise_forest_function_level_in_windows_2003.htm raise forest function level] for more details.
 
 This bundle is fully implemented in Java and makes use of JNDI to communicate to Active Directory, hence it does not require any additional module.
 
