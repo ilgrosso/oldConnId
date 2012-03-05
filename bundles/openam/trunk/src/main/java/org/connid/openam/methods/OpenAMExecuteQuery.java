@@ -12,8 +12,10 @@ import org.connid.openam.utilities.AdminToken;
 import org.connid.openam.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
 import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.OperationalAttributes;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.Uid;
 
@@ -90,9 +92,15 @@ public class OpenAMExecuteQuery extends CommonMethods {
                         }
                     }
                 }
-                if (name != null && name.contains("uid")) {
+                if (name != null && name.contains(openAMConfiguration
+                        .getOpenamUidAttribute())) {
                     bld.setUid(attributesList.get(0));
                     bld.setName(attributesList.get(0));
+                }
+                if (name != null && name.contains(
+                        openAMConfiguration.getOpenamStatusAttribute())) {
+                    bld.addAttribute(OperationalAttributes.ENABLE_NAME,
+                            "Active".equalsIgnoreCase(attributesList.get(0)));
                 }
 
                 if (name != null && name.contains("objectclass")) {
