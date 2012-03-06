@@ -94,13 +94,11 @@ public class OpenAMUpdate extends CommonMethods {
             List<Object> values = attr.getValue();
             if (values != null && !values.isEmpty()) {
                 if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
-                    System.out.println("PASSWORD: " + attr.getName());
-                    System.out.println("VALUE: " + getPlainPassword(
-                            (GuardedString) values.get(0)));
                     parameters.append("&identity_attribute_names=")
                         .append(configuration.getOpenamPasswordAttribute())
                         .append("&identity_attribute_values_")
-                        .append(configuration.getOpenamPasswordAttribute()).append("=")
+                        .append(configuration.getOpenamPasswordAttribute())
+                            .append("=")
                         .append(getPlainPassword(
                             (GuardedString) values.get(0)));
                 } else {
