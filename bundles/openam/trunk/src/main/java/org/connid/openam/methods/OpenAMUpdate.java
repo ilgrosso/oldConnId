@@ -33,8 +33,10 @@ import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
 import org.connid.openam.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.OperationalAttributes;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -91,11 +93,23 @@ public class OpenAMUpdate extends CommonMethods {
         for (Attribute attr : attrs) {
             List<Object> values = attr.getValue();
             if (values != null && !values.isEmpty()) {
-                parameters.append("&identity_attribute_names=")
+                if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
+                    System.out.println("PASSWORD: " + attr.getName());
+                    System.out.println("VALUE: " + getPlainPassword(
+                            (GuardedString) values.get(0)));
+                    parameters.append("&identity_attribute_names=")
+                        .append(configuration.getOpenamPasswordAttribute())
+                        .append("&identity_attribute_values_")
+                        .append(configuration.getOpenamPasswordAttribute()).append("=")
+                        .append(getPlainPassword(
+                            (GuardedString) values.get(0)));
+                } else {
+                    parameters.append("&identity_attribute_names=")
                         .append(attr.getName())
                         .append("&identity_attribute_values_")
                         .append(attr.getName()).append("=")
                         .append((String) values.get(0));
+                }
             }
         }
         parameters.append("&admin=")
