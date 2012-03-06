@@ -44,7 +44,7 @@ public class OpenAMDelete extends CommonMethods {
     private String token = "";
 
     public OpenAMDelete(final OpenAMConfiguration openAMConfiguration,
-            final Uid uid) {
+            final Uid uid) throws UnsupportedEncodingException {
         this.configuration = openAMConfiguration;
         this.uid = uid;
         connection = OpenAMConnection.openConnection(configuration);

@@ -107,4 +107,12 @@ public class UrlFactory {
                 .append(OpenamServicesUrl.TEST_SERVICE);
         return testUrl.toString();
     }
+
+    public String isTokenValidUrl(String parameters) {
+        StringBuilder isTokenValidUrl = new StringBuilder();
+        isTokenValidUrl.append(openAmUrl())
+                .append(OpenamServicesUrl.TOKEN_VALID_RESTFUL_SERVICE)
+                .append("tokenid=").append(parameters);
+        return isTokenValidUrl.toString();
+    }
 }

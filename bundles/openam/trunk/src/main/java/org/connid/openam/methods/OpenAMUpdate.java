@@ -50,7 +50,7 @@ public class OpenAMUpdate extends CommonMethods {
     private String token = "";
 
     public OpenAMUpdate(final OpenAMConfiguration openAMConfiguration,
-            final Uid uid, final Set<Attribute> attrs) {
+            final Uid uid, final Set<Attribute> attrs) throws UnsupportedEncodingException {
         this.configuration = openAMConfiguration;
         this.uid = uid;
         this.attrs = attrs;

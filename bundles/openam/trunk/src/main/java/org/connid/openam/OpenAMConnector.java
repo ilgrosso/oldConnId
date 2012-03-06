@@ -23,7 +23,10 @@
  */
 package org.connid.openam;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.connid.openam.methods.OpenAMAuthenticate;
 import org.connid.openam.methods.OpenAMCreate;
 import org.connid.openam.methods.OpenAMDelete;
@@ -79,23 +82,46 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     @Override
     public final Uid create(final ObjectClass oc, final Set<Attribute> set,
             final OperationOptions oo) {
-        return new OpenAMCreate(openAMConfiguration, set).create();
+        Uid uidResult = null;
+        try {
+            uidResult = new OpenAMCreate(openAMConfiguration, set).create();
+        } catch (UnsupportedEncodingException ex) {
+            LOG.error("Encoding error", ex);
+        }
+        return uidResult;
     }
 
     @Override
     public final Uid update(final ObjectClass oc, final Uid uid,
             final Set<Attribute> set, final OperationOptions oo) {
-        return new OpenAMUpdate(openAMConfiguration, uid, set).update();
+        Uid uidResult = null;
+        try {
+            uidResult = new OpenAMUpdate(openAMConfiguration, uid, set)
+                    .update();
+        } catch (UnsupportedEncodingException ex) {
+            LOG.error("Encoding error", ex);
+        }
+        return uidResult;
     }
 
     @Override
     public final void delete(final ObjectClass oc, final Uid uid,
             final OperationOptions oo) {
-        new OpenAMDelete(openAMConfiguration, uid).delete();
+        try {
+            new OpenAMDelete(openAMConfiguration, uid).delete();
+        } catch (UnsupportedEncodingException ex) {
+            LOG.error("Encoding error", ex);
+        }
     }
 
     public final boolean existsUser(final String uid) {
-        return new OpenAMSearch(openAMConfiguration, uid).existsUser();
+        boolean result = false;
+        try {
+            result = new OpenAMSearch(openAMConfiguration, uid).existsUser();
+        } catch (UnsupportedEncodingException ex) {
+            LOG.error("Encoding error", ex);
+        }
+        return result;
     }
 
     @Override
@@ -116,7 +142,12 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     @Override
     public final void executeQuery(final ObjectClass oc, final String filter,
             final ResultsHandler rh, final OperationOptions oo) {
-        new OpenAMExecuteQuery(openAMConfiguration, filter, rh).executeQuery();
+        try {
+            new OpenAMExecuteQuery(openAMConfiguration, filter, rh)
+                    .executeQuery();
+        } catch (UnsupportedEncodingException ex) {
+            LOG.error("Encoding error", ex);
+        }
     }
 
     @Override

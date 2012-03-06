@@ -24,6 +24,7 @@
 package org.connid.openam.methods;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
@@ -40,7 +41,7 @@ public class OpenAMSearch extends CommonMethods {
     private String token = "";
 
     public OpenAMSearch(final OpenAMConfiguration configuration,
-            final String uid) {
+            final String uid) throws UnsupportedEncodingException {
         this.openAMConfiguration = configuration;
         connection = OpenAMConnection.openConnection(configuration);
         this.uid = uid;

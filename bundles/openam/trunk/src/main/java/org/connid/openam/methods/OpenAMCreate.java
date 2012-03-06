@@ -52,7 +52,7 @@ public class OpenAMCreate extends CommonMethods {
     private String uidString = null;
 
     public OpenAMCreate(final OpenAMConfiguration configuration,
-            final Set<Attribute> attrs) {
+            final Set<Attribute> attrs) throws UnsupportedEncodingException {
         this.configuration = configuration;
         this.attrs = attrs;
         connection = OpenAMConnection.openConnection(configuration);

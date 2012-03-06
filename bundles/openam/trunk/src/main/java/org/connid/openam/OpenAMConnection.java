@@ -96,4 +96,9 @@ public class OpenAMConnection {
         return httpClientMethods.getMethod(
                 urlFactory.testUrl());
     }
+    
+    public String isTokenValid(final String parameters) {
+        return restfulClient.getMethod(
+                urlFactory.isTokenValidUrl(parameters));
+    }
 }

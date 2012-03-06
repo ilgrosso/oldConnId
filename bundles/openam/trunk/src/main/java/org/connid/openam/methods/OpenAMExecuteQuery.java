@@ -30,7 +30,7 @@ public class OpenAMExecuteQuery extends CommonMethods {
     private String token = "";
 
     public OpenAMExecuteQuery(final OpenAMConfiguration configuration,
-            final String ldapFilter, final ResultsHandler rh) {
+            final String ldapFilter, final ResultsHandler rh) throws UnsupportedEncodingException {
         openAMConfiguration = configuration;
         connection = OpenAMConnection.openConnection(configuration);
         this.ldapFilter = ldapFilter;
