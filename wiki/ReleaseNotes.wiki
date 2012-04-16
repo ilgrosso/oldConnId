@@ -30,6 +30,12 @@ The most important new features are:
  1. Possibility to perform an initial loading based on sync operation
  1. DirSync search extended to all the existent groups ([http://code.google.com/p/connid/issues/detail?id=25&can=1 #25]) in order to catch all memberOf attribute updates
 
+=== 1.0.1 (April 16th, 2012) ===
+With great pleasure we announce the availability of the new Active Directory connector's 1.0.1 release (JNDI implementation).
+
+The most relevant new feature is:
+ 1. Possibility to create a new user entry by specifying the sAMAccountName but by providing the complete DN (a default people container will be used).
+
 == Database Table ==
 === 2.1 (January 12th, 2012) ===
 With great pleasure we announce the availability of the new Database Table connector's 2.1 release.
