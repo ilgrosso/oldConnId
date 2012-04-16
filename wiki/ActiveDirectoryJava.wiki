@@ -56,7 +56,7 @@ The following table lists all the configuration properties you can specify when 
       <td>  X </td>
       <td> <tt>int</tt> </td>
       <td></td>
-      <td> LDAPs port on which to connect </td>
+      <td> ADs port on which to connect </td>
     </tr>
     <tr>
       <td> <tt>Failover</tt> </td>
@@ -85,7 +85,14 @@ If the connector cannot make a connection to the server specified in the <tt>hos
       <td>  X </td>
       <td> <tt>String[]</tt> </td>
       <td></td>
-      <td> Base context DNs for provisioning operations. The connector ignores any entries outside these base contexts. </td>
+      <td> DN of context to be used as starting point for entry searches. The connector ignores any entries outside these base contexts but the default people container. </td>
+    </tr>
+    <tr>
+      <td> <tt>Default people container</tt> </td>
+      <td></td>
+      <td> <tt>String</tt> </td>
+      <td></td>
+      <td> Default people container to be used during create in case of entry DN is not explicitly provided. </td>
     </tr>
     <tr>
       <td> <tt>Entry object classes</tt> </td>
@@ -113,7 +120,7 @@ If the connector cannot make a connection to the server specified in the <tt>hos
       <td>  X </td>
       <td> <tt>String[]</tt> </td>
       <td> <tt>"user"</tt> </td>
-      <td> LDAP object classes to synchronize. The connector ignores any changes if it cannot find any of the modified entry's object classes in this property. </td>
+      <td> AD object classes to synchronize. The connector ignores any changes if it cannot find any of the modified entry's object classes in this property. </td>
     </tr>
     <tr>
       <td> <tt>Memberships</tt> </td>
@@ -155,4 +162,4 @@ If the connector cannot make a connection to the server specified in the <tt>hos
 
 *Note*:
 Acvtive Directory connector works using a secure connection only. 
-LDAPs port must be always provided.
+ADs port must be always provided.
