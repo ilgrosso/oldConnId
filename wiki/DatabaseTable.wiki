@@ -264,6 +264,20 @@ The following table describes all of the properties that you can specify for the
       <td> Specify key in case of reversible algorithm. </td>
     </tr>
     <tr>
+      <td> Force password encoding to upper case </td>
+      <td> Boolean </td>
+      <td></td>
+      <td></td>
+      <td> Specify if encoded password must be converted to use uppercase letters. Please, consider that by using this feature password won't be reversible any more, neither using reversible algorithm.</td>
+    </tr>
+    <tr>
+      <td> Force password encoding to lower case </td>
+      <td> Boolean </td>
+      <td></td>
+      <td></td>
+      <td> Specify if encoded password must be converted to use lowercase letters. Please, consider that by using this feature password won't be reversible any more, neither using reversible algorithm. </td>
+    </tr>
+    <tr>
       <td> Retrieve password </td>
       <td> Boolean </td>
       <td></td>
