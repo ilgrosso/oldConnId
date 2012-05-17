@@ -24,6 +24,7 @@
 package org.connid.unix.commands;
 
 import com.sshtools.j2ssh.SshClient;
+import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
 import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
 import com.sshtools.j2ssh.configuration.SshConnectionProperties;
 import com.sshtools.j2ssh.connection.ChannelState;
@@ -33,6 +34,7 @@ import com.sshtools.j2ssh.transport.IgnoreHostKeyVerification;
 import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import org.identityconnectors.common.logging.Log;
 
 public class SSHClient {
@@ -58,6 +60,18 @@ public class SSHClient {
         pwd.setUsername(username);
         pwd.setPassword(password);
         return sshClient.authenticate(pwd);
+    }
+    
+    public final void authenticate(final String username, final String password)
+            throws UnknownHostException, IOException {
+        sshClient.connect(properties, new IgnoreHostKeyVerification());
+        PasswordAuthenticationClient pwd = new PasswordAuthenticationClient();
+        pwd.setUsername(username);
+        pwd.setPassword(password);
+        int status = sshClient.authenticate(pwd);
+        if (status != AuthenticationProtocolState.COMPLETE) {
+            throw new IOException();
+        }
     }
 
     public final SessionChannelClient getSession() throws IOException {

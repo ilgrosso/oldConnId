@@ -44,4 +44,24 @@ public class UnixCreateTest extends SharedTestMethods {
         connector.delete(ObjectClass.ACCOUNT, newAccount, null);
         connector.dispose();
     }
+    
+    @Test
+    public final void createExistsUser() {
+        boolean userExists = false;
+        final UnixConnector connector = new UnixConnector();
+        connector.init(createConfiguration());
+        Name name = new Name("createtest" + randomNumber());
+        Uid newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name), null);
+        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        try {
+        connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name), null);
+        } catch (Exception e) {
+            userExists = true;
+        }
+        Assert.assertTrue(userExists);
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+        connector.dispose();
+    }
 }

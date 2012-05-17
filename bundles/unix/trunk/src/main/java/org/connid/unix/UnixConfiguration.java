@@ -24,6 +24,7 @@
 package org.connid.unix;
 
 import org.identityconnectors.common.StringUtil;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.spi.AbstractConfiguration;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
 
@@ -32,7 +33,7 @@ public class UnixConfiguration extends AbstractConfiguration {
     private String hostname = "";
     private int port = 0;
     private String admin = "";
-    private String password = "";
+    private GuardedString password = null;
 
     @ConfigurationProperty(displayMessageKey = "unix.admin.display",
     helpMessageKey = "unix.admin.help", order = 1)
@@ -56,11 +57,11 @@ public class UnixConfiguration extends AbstractConfiguration {
 
     @ConfigurationProperty(displayMessageKey = "unix.password.display",
     helpMessageKey = "unix.password.help", order = 2)
-    public String getPassword() {
+    public GuardedString getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(GuardedString password) {
         this.password = password;
     }
 
@@ -78,7 +79,19 @@ public class UnixConfiguration extends AbstractConfiguration {
     public void validate() {
         if (StringUtil.isBlank(this.admin)) {
             throw new IllegalArgumentException(
-                    "OpenAM base url must not be blank!");
+                    "Unix admin username must not be blank!");
+        }
+        if (StringUtil.isBlank(this.hostname)) {
+            throw new IllegalArgumentException(
+                    "Unix hostname must not be blank!");
+        }
+        if (StringUtil.isBlank(this.password.toString())) {
+            throw new IllegalArgumentException(
+                    "Unix admin password must not be blank!");
+        }
+        if (StringUtil.isBlank(String.valueOf(this.port))) {
+            throw new IllegalArgumentException(
+                    "Unix port must not be blank!");
         }
     }
 }

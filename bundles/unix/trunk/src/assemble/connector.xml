@@ -30,9 +30,7 @@
     <dependencySets>
         <dependencySet>
             <includes>
-                <include>commons-httpclient:commons-httpclient</include>
-                <include>org.springframework:spring-web</include>
-                <include>org.springframework:spring-core</include>
+                <include>sshtools:j2ssh-core</include>
             </includes>
             <outputDirectory>lib</outputDirectory>
         </dependencySet>

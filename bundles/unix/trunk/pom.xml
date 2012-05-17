@@ -74,6 +74,7 @@
             <scope>runtime</scope>
         </dependency>
         
+        <!-- SSH -->
         <dependency>
             <groupId>sshtools</groupId>
             <artifactId>j2ssh-core</artifactId>
@@ -84,6 +85,7 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
         </dependency>
+        <!-- SSH -->
         
         <!-- TEST -->
         <dependency>

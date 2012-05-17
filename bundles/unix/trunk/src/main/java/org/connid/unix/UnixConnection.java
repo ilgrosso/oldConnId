@@ -25,7 +25,9 @@ package org.connid.unix;
 
 import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import org.connid.unix.commands.SSHClient;
+import org.identityconnectors.common.security.GuardedString;
 
 public class UnixConnection {
 
@@ -36,7 +38,8 @@ public class UnixConnection {
         this.unixConfiguration = unixConfiguration;
         sshc = new SSHClient(
                 unixConfiguration.getHostname(), unixConfiguration.getPort(),
-                unixConfiguration.getAdmin(), unixConfiguration.getPassword());
+                unixConfiguration.getAdmin(),
+                getPlainPassword(unixConfiguration.getPassword()));
     }
 
     public static UnixConnection openConnection(
@@ -58,9 +61,27 @@ public class UnixConnection {
             InvalidStateException, InterruptedException {
         sshc.createUser(uidstring, password);
     }
-    
+
     public void delete(final String username)
             throws IOException, InvalidStateException, InterruptedException {
         sshc.deleteUser(username);
+    }
+
+    public void authenticate(final String username, final String password)
+            throws UnknownHostException, IOException {
+        sshc.authenticate(username, password);
+    }
+
+    private final String getPlainPassword(final GuardedString password) {
+        final StringBuffer buf = new StringBuffer();
+
+        password.access(new GuardedString.Accessor() {
+
+            @Override
+            public void access(final char[] clearChars) {
+                buf.append(clearChars);
+            }
+        });
+        return buf.toString();
     }
 }

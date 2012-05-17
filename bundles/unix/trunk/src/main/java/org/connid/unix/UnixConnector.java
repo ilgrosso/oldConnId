@@ -24,6 +24,7 @@
 package org.connid.unix;
 
 import java.util.Set;
+import org.connid.unix.methods.UnixAuthenticate;
 import org.connid.unix.methods.UnixCreate;
 import org.connid.unix.methods.UnixDelete;
 import org.connid.unix.methods.UnixTest;
@@ -80,6 +81,14 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
     }
 
     @Override
+    public Uid authenticate(final ObjectClass oc, final String username,
+            final GuardedString gs, final OperationOptions oo) {
+        LOG.info("Authenticate user");
+        return new UnixAuthenticate(
+                unixConfiguration, username, gs).authenticate();
+    }
+
+    @Override
     public Uid update(ObjectClass oc, Uid uid, Set<Attribute> set, OperationOptions oo) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -91,11 +100,6 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
 
     @Override
     public void executeQuery(ObjectClass oc, String t, ResultsHandler rh, OperationOptions oo) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Uid authenticate(ObjectClass oc, String string, GuardedString gs, OperationOptions oo) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

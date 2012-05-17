@@ -83,6 +83,11 @@ public class UnixCreate extends CommonMethods {
                 }
             }
         }
+
+        if (userExists(uidString, connection)) {
+            throw new ConnectorException(
+                    "User " + uidString + " already exists");
+        }
         connection.create(uidString, password);
         return new Uid(uidString);
     }

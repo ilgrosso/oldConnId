@@ -37,7 +37,8 @@ public class SharedTestMethods {
         // create the connector configuration..
         UnixConfiguration config = new UnixConfiguration();
         config.setAdmin(UnixProperties.UNIX_ADMIN);
-        config.setPassword(UnixProperties.UNIX_PASSWORD);
+        config.setPassword(
+                new GuardedString(UnixProperties.UNIX_PASSWORD.toCharArray()));
         config.setHostname(UnixProperties.UNIX_HOSTNAME);
         config.setPort(Integer.valueOf(UnixProperties.UNIX_PORT).intValue());
         config.validate();
