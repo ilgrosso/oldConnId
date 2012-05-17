@@ -23,6 +23,33 @@
  */
 package org.connid.unix;
 
+import com.sshtools.j2ssh.util.InvalidStateException;
+import java.io.IOException;
+import org.connid.unix.commands.SSHClient;
+
 public class UnixConnection {
-    
+
+    private UnixConfiguration unixConfiguration = null;
+    SSHClient sshc = null;
+
+    private UnixConnection(final UnixConfiguration unixConfiguration) {
+        this.unixConfiguration = unixConfiguration;
+        sshc = new SSHClient(
+                unixConfiguration.getHostname(), unixConfiguration.getPort(),
+                unixConfiguration.getAdmin(), unixConfiguration.getPassword());
+    }
+
+    public static UnixConnection openConnection(UnixConfiguration unixConfiguration) {
+        return new UnixConnection(unixConfiguration);
+    }
+
+    public int testConnection() throws IOException {
+        return sshc.authenticate();
+    }
+
+    public void create(final String uidstring,
+            final String password) throws IOException,
+            InvalidStateException, InterruptedException {
+        sshc.create(uidstring, password);
+    }
 }

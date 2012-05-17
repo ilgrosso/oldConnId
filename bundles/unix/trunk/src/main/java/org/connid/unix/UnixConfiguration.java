@@ -23,13 +23,14 @@
  */
 package org.connid.unix;
 
+import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.spi.AbstractConfiguration;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
 
 public class UnixConfiguration extends AbstractConfiguration {
     
     private String hostname = "";
-    private String port = "";
+    private int port = 0;
     private String admin = "";
     private String password = "";
 
@@ -65,17 +66,19 @@ public class UnixConfiguration extends AbstractConfiguration {
 
     @ConfigurationProperty(displayMessageKey = "unix.port.display",
     helpMessageKey = "unix.port.help", order = 4)
-    public String getPort() {
+    public int getPort() {
         return port;
     }
 
-    public void setPort(String port) {
+    public void setPort(int port) {
         this.port = port;
     }
 
     @Override
     public void validate() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (StringUtil.isBlank(this.admin)) {
+            throw new IllegalArgumentException(
+                    "OpenAM base url must not be blank!");
+        }
     }
-    
 }

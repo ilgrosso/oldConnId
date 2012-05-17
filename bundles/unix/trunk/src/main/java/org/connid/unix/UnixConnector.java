@@ -23,7 +23,11 @@
  */
 package org.connid.unix;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Set;
+import org.connid.unix.methods.UnixCreate;
+import org.connid.unix.methods.UnixTest;
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.*;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
@@ -37,24 +41,34 @@ displayNameKey = "unix.connector.display")
 public class UnixConnector implements Connector, CreateOp, UpdateOp,
         DeleteOp, TestOp, SearchOp<String>, AuthenticateOp {
 
+    private static final Log LOG = Log.getLog(UnixConnector.class);
+    private UnixConfiguration unixConfiguration;
+
     @Override
     public Configuration getConfiguration() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return unixConfiguration;
     }
 
     @Override
-    public void init(Configuration c) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public final void init(final Configuration configuration) {
+        unixConfiguration = (UnixConfiguration) configuration;
     }
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //no action
+    }
+
+    @Override
+    public void test() {
+        LOG.info("Remote connection test");
+        new UnixTest(unixConfiguration).test();
     }
 
     @Override
     public Uid create(ObjectClass oc, Set<Attribute> set, OperationOptions oo) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        LOG.info("Create new user");
+        return new UnixCreate(unixConfiguration, set).create();
     }
 
     @Override
@@ -64,11 +78,6 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
 
     @Override
     public void delete(ObjectClass oc, Uid uid, OperationOptions oo) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void test() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
