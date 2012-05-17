@@ -23,9 +23,9 @@
  */
 package org.connid.unix;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Set;
 import org.connid.unix.methods.UnixCreate;
+import org.connid.unix.methods.UnixDelete;
 import org.connid.unix.methods.UnixTest;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
@@ -66,18 +66,21 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
     }
 
     @Override
-    public Uid create(ObjectClass oc, Set<Attribute> set, OperationOptions oo) {
+    public Uid create(final ObjectClass oc, final Set<Attribute> set,
+            final OperationOptions oo) {
         LOG.info("Create new user");
         return new UnixCreate(unixConfiguration, set).create();
     }
 
     @Override
-    public Uid update(ObjectClass oc, Uid uid, Set<Attribute> set, OperationOptions oo) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void delete(final ObjectClass oc, final Uid uid,
+            final OperationOptions oo) {
+        LOG.info("Delete user");
+        new UnixDelete(unixConfiguration, uid).delete();
     }
 
     @Override
-    public void delete(ObjectClass oc, Uid uid, OperationOptions oo) {
+    public Uid update(ObjectClass oc, Uid uid, Set<Attribute> set, OperationOptions oo) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

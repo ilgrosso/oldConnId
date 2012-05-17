@@ -39,17 +39,28 @@ public class UnixConnection {
                 unixConfiguration.getAdmin(), unixConfiguration.getPassword());
     }
 
-    public static UnixConnection openConnection(UnixConfiguration unixConfiguration) {
+    public static UnixConnection openConnection(
+            final UnixConfiguration unixConfiguration) {
         return new UnixConnection(unixConfiguration);
     }
 
-    public int testConnection() throws IOException {
-        return sshc.authenticate();
+    public boolean userExists(final String username)
+            throws IOException, InvalidStateException, InterruptedException {
+        return sshc.userExists(username);
+    }
+
+    public void testConnection() throws IOException {
+        sshc.getSession();
     }
 
     public void create(final String uidstring,
             final String password) throws IOException,
             InvalidStateException, InterruptedException {
-        sshc.create(uidstring, password);
+        sshc.createUser(uidstring, password);
+    }
+    
+    public void delete(final String username)
+            throws IOException, InvalidStateException, InterruptedException {
+        sshc.deleteUser(username);
     }
 }

@@ -28,7 +28,7 @@ import org.identityconnectors.framework.spi.AbstractConfiguration;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
 
 public class UnixConfiguration extends AbstractConfiguration {
-    
+
     private String hostname = "";
     private int port = 0;
     private String admin = "";

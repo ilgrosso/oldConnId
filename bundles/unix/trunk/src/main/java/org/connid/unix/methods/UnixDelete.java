@@ -23,32 +23,44 @@
  */
 package org.connid.unix.methods;
 
-import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
+import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.objects.Uid;
 
-public class UnixTest {
+public class UnixDelete extends CommonMethods {
 
-    private static final Log LOG = Log.getLog(UnixTest.class);
-    private UnixConnection unixConnection = null;
+    private static final Log LOG = Log.getLog(UnixDelete.class);
+    private UnixConfiguration configuration = null;
+    private UnixConnection connection = null;
+    private Uid uid = null;
 
-    public UnixTest(final UnixConfiguration unixConfiguration) {
-        unixConnection = UnixConnection.openConnection(unixConfiguration);
+    public UnixDelete(final UnixConfiguration unixConfiguration,
+            final Uid uid) {
+        configuration = unixConfiguration;
+        connection = UnixConnection.openConnection(configuration);
+        this.uid = uid;
     }
 
-    public final void test() {
+    public final void delete() {
         try {
-            execute();
+            doDelete();
         } catch (Exception e) {
-            LOG.error(e, "error during test connection");
+            LOG.error(e, "error during delete operation");
             throw new ConnectorException(e);
         }
     }
 
-    private void execute() throws IOException {
-        unixConnection.testConnection();
+    private void doDelete()
+            throws IOException, InvalidStateException, InterruptedException {
+
+        if (!userExists(uid.getUidValue(), connection)) {
+            LOG.error("User do not exists");
+            throw new ConnectorException("User do not exists");
+        }
+        connection.delete(uid.getUidValue());
     }
 }
