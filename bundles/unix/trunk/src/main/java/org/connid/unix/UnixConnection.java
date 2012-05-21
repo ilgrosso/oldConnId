@@ -31,7 +31,7 @@ import org.identityconnectors.common.security.GuardedString;
 
 public class UnixConnection {
 
-    private UnixConfiguration unixConfiguration = null;
+    private static UnixConfiguration unixConfiguration = null;
     SSHClient sshc = null;
 
     private UnixConnection(final UnixConfiguration unixConfiguration) {
@@ -45,6 +45,10 @@ public class UnixConnection {
     public static UnixConnection openConnection(
             final UnixConfiguration unixConfiguration) {
         return new UnixConnection(unixConfiguration);
+    }
+    
+    public static UnixConfiguration getConfiguration() {
+        return unixConfiguration;
     }
 
     public boolean userExists(final String username)

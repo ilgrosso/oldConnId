@@ -25,6 +25,9 @@ package org.connid.unix.commands;
 
 public class Commands {
 
+    private static CommandsOptionByConfiguration commandsOption =
+            new CommandsOptionByConfiguration();
+
     public static String getEncryptPasswordCommand(final String password) {
         return "(perl -e 'print crypt($ARGV[0],"
                 + "\"password\")' " + password + ")";
@@ -32,7 +35,9 @@ public class Commands {
 
     public static String getUserAddCommand(final String encryptPassword,
             final String uidstring) {
-        return "useradd -m -p " + encryptPassword + " " + uidstring;
+        return "useradd " + commandsOption.createHomeDirectory()
+                + " " + commandsOption.baseHomeDirectory()
+                + " -p " + encryptPassword + " " + uidstring;
     }
 
     public static String getUserExistsCommand(final String username) {
@@ -40,6 +45,7 @@ public class Commands {
     }
 
     public static String getUserDelCommand(final String username) {
-        return "userdel -r " + username;
+        return "userdel " + commandsOption.deleteHomeDirectory()
+                + " " + username;
     }
 }

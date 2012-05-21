@@ -21,25 +21,30 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  */
-package org.connid.unix.utilities;
+package org.connid.unix;
 
-import java.util.ResourceBundle;
+import org.connid.unix.utilities.SharedTestMethods;
+import org.connid.unix.utilities.UnixProperties;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class UnixProperties {
+public class UnixConfigurationTests extends SharedTestMethods {
 
-    public static String UNIX_ADMIN;
-    public static String UNIX_PASSWORD;
-    public static String UNIX_HOSTNAME;
-    public static String UNIX_PORT;
-    public static String UNIX_BASE_HOME_DIRECTORY;
-
-    static {
-        ResourceBundle unixProperties = ResourceBundle.getBundle("unix");
-        UNIX_ADMIN = unixProperties.getString("unix.admin");
-        UNIX_PASSWORD = unixProperties.getString("unix.password");
-        UNIX_HOSTNAME = unixProperties.getString("unix.hostname");
-        UNIX_PORT = unixProperties.getString("unix.port");
-        UNIX_BASE_HOME_DIRECTORY =
-                unixProperties.getString("unix.base.home.directory");
+    /**
+     * Tests setting and validating the parameters provided.
+     */
+    @Test
+    public final void testValidate() {
+        UnixConfiguration config = new UnixConfiguration();
+        try {
+            config.validate();
+            Assert.fail();
+        } catch (RuntimeException e) {
+            // expected because configuration is incomplete
+        }
+        config = createConfiguration();
+        config.validate();
+        Assert.assertEquals(config.getHostname(),
+                UnixProperties.UNIX_HOSTNAME);
     }
 }

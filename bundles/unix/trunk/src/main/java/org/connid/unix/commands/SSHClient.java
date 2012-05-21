@@ -54,35 +54,20 @@ public class SSHClient {
         sshClient = new SshClient();
     }
 
-    public final int authenticate() throws IOException {
+    public final int authAdminUser() throws IOException {
         sshClient.connect(properties, new IgnoreHostKeyVerification());
-        PasswordAuthenticationClient pwd = new PasswordAuthenticationClient();
-        pwd.setUsername(username);
-        pwd.setPassword(password);
-        return sshClient.authenticate(pwd);
-    }
-    
-    public final void authenticate(final String username, final String password)
-            throws UnknownHostException, IOException {
-        sshClient.connect(properties, new IgnoreHostKeyVerification());
-        PasswordAuthenticationClient pwd = new PasswordAuthenticationClient();
-        pwd.setUsername(username);
-        pwd.setPassword(password);
-        int status = sshClient.authenticate(pwd);
-        if (status != AuthenticationProtocolState.COMPLETE) {
-            throw new IOException();
-        }
+        return sshClient.authenticate(getPwdAuthClient(username, password));
     }
 
     public final SessionChannelClient getSession() throws IOException {
-        authenticate();
+        authAdminUser();
         return sshClient.openSessionChannel();
     }
 
     public final boolean userExists(final String username)
             throws IOException, InvalidStateException, InterruptedException {
         boolean exists = false;
-        authenticate();
+        authAdminUser();
         SessionChannelClient session = sshClient.openSessionChannel();
         IOStreamConnector output = new IOStreamConnector();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -101,11 +86,13 @@ public class SSHClient {
 
     public final void createUser(final String uidstring, final String password)
             throws IOException, InvalidStateException, InterruptedException {
-        authenticate();
+        authAdminUser();
         SessionChannelClient session = sshClient.openSessionChannel();
         String encryptPassword = "";
         IOStreamConnector output = new IOStreamConnector();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        LOG.info("Next command: "
+                + Commands.getEncryptPasswordCommand(password));
         if (session.executeCommand(
                 Commands.getEncryptPasswordCommand(password))) {
             output.connect(session.getInputStream(), bos);
@@ -115,6 +102,8 @@ public class SSHClient {
             LOG.error("Error during password encrypt");
         }
         session = sshClient.openSessionChannel();
+        LOG.info("Next command: "
+                + Commands.getUserAddCommand(encryptPassword, uidstring));
         if (session.executeCommand(Commands.getUserAddCommand(
                 encryptPassword, uidstring))) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
@@ -127,7 +116,7 @@ public class SSHClient {
 
     public final void deleteUser(final String username)
             throws IOException, InvalidStateException, InterruptedException {
-        authenticate();
+        authAdminUser();
         SessionChannelClient session = sshClient.openSessionChannel();
         IOStreamConnector output = new IOStreamConnector();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -140,5 +129,23 @@ public class SSHClient {
         }
         bos.close();
         output.close();
+    }
+
+    public final void authenticate(final String username, final String password)
+            throws UnknownHostException, IOException {
+        sshClient.connect(properties, new IgnoreHostKeyVerification());
+        int status =
+                sshClient.authenticate(getPwdAuthClient(username, password));
+        if (status != AuthenticationProtocolState.COMPLETE) {
+            throw new IOException();
+        }
+    }
+
+    private PasswordAuthenticationClient getPwdAuthClient(
+            final String username, final String password) {
+        PasswordAuthenticationClient pwd = new PasswordAuthenticationClient();
+        pwd.setUsername(username);
+        pwd.setPassword(password);
+        return pwd;
     }
 }

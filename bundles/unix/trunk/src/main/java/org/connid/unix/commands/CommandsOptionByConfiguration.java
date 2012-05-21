@@ -21,25 +21,33 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  */
-package org.connid.unix.utilities;
+package org.connid.unix.commands;
 
-import java.util.ResourceBundle;
+import org.connid.unix.UnixConfiguration;
+import org.connid.unix.UnixConnection;
 
-public class UnixProperties {
+public class CommandsOptionByConfiguration {
 
-    public static String UNIX_ADMIN;
-    public static String UNIX_PASSWORD;
-    public static String UNIX_HOSTNAME;
-    public static String UNIX_PORT;
-    public static String UNIX_BASE_HOME_DIRECTORY;
+    private UnixConfiguration unixConfiguration =
+            UnixConnection.getConfiguration();
 
-    static {
-        ResourceBundle unixProperties = ResourceBundle.getBundle("unix");
-        UNIX_ADMIN = unixProperties.getString("unix.admin");
-        UNIX_PASSWORD = unixProperties.getString("unix.password");
-        UNIX_HOSTNAME = unixProperties.getString("unix.hostname");
-        UNIX_PORT = unixProperties.getString("unix.port");
-        UNIX_BASE_HOME_DIRECTORY =
-                unixProperties.getString("unix.base.home.directory");
+    public final String createHomeDirectory() {
+        String option = "";
+        if (unixConfiguration.isCreateHomeDirectory()) {
+            option = "-m";
+        }
+        return option;
+    }
+
+    public final String deleteHomeDirectory() {
+        String option = "";
+        if (unixConfiguration.isDeleteHomeDirectory()) {
+            option = "-r";
+        }
+        return option;
+    }
+
+    public final String baseHomeDirectory() {
+        return "-b " + unixConfiguration.getBaseHomeDirectory();
     }
 }

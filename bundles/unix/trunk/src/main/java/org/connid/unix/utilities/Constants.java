@@ -25,9 +25,14 @@ package org.connid.unix.utilities;
 
 public class Constants {
 
-    private static int SSHCLIENT_AUTHENTICATE_STATUS_OK = 4;
+    private static int UNIX_LAST_PORT = 65535;
+    private static int SSH_DEFAULT_PORT = 22;
 
-    public static int getSSHCLIENT_AUTHENTICATE_STATUS_OK() {
-        return SSHCLIENT_AUTHENTICATE_STATUS_OK;
+    public static int getUnixLastPort() {
+        return UNIX_LAST_PORT;
+    }
+
+    public static int getSshDefaultPort() {
+        return SSH_DEFAULT_PORT;
     }
 }

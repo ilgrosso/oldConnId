@@ -41,7 +41,9 @@ public class SharedTestMethods {
                 new GuardedString(UnixProperties.UNIX_PASSWORD.toCharArray()));
         config.setHostname(UnixProperties.UNIX_HOSTNAME);
         config.setPort(Integer.valueOf(UnixProperties.UNIX_PORT).intValue());
-        config.validate();
+        config.setBaseHomeDirectory(UnixProperties.UNIX_BASE_HOME_DIRECTORY);
+        config.setCreateHomeDirectory(true);
+        config.setDeleteHomeDirectory(true);
         return config;
     }
 
