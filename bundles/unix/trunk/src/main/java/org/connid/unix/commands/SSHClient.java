@@ -28,19 +28,20 @@ import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
 import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
 import com.sshtools.j2ssh.configuration.SshConnectionProperties;
 import com.sshtools.j2ssh.connection.ChannelState;
-import com.sshtools.j2ssh.io.IOStreamConnector;
 import com.sshtools.j2ssh.session.SessionChannelClient;
 import com.sshtools.j2ssh.transport.IgnoreHostKeyVerification;
 import com.sshtools.j2ssh.util.InvalidStateException;
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+import org.connid.unix.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
 
 public class SSHClient {
 
     private static final Log LOG = Log.getLog(SSHClient.class);
-    SshConnectionProperties properties = new SshConnectionProperties();
+    private SshConnectionProperties properties = new SshConnectionProperties();
     private String username;
     private String password;
     private SshClient sshClient = null;
@@ -52,6 +53,7 @@ public class SSHClient {
         this.username = userName;
         this.password = password;
         sshClient = new SshClient();
+        sshClient.setSocketTimeout(Constants.getSshSocketTimeout());
     }
 
     public final int authAdminUser() throws IOException {
@@ -66,69 +68,48 @@ public class SSHClient {
 
     public final boolean userExists(final String username)
             throws IOException, InvalidStateException, InterruptedException {
-        boolean exists = false;
-        authAdminUser();
-        SessionChannelClient session = sshClient.openSessionChannel();
-        IOStreamConnector output = new IOStreamConnector();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        if (session.executeCommand(
-                Commands.getUserExistsCommand(username))) {
-            output.connect(session.getInputStream(), bos);
+        String output = "";
+        SessionChannelClient session = getSession();
+        String cmd = Commands.getUserExistsCommand(username);
+        if (session.executeCommand(cmd)) {
+            output = getOutput(session);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
-            exists = !bos.toString().isEmpty();
         } else {
             LOG.error("Error during password encrypt");
         }
-        bos.close();
-        output.close();
-        return exists;
+        sshClient.disconnect();
+        return !output.isEmpty();
     }
 
     public final void createUser(final String uidstring, final String password)
             throws IOException, InvalidStateException, InterruptedException {
-        authAdminUser();
-        SessionChannelClient session = sshClient.openSessionChannel();
+        SessionChannelClient session = getSession();
         String encryptPassword = "";
-        IOStreamConnector output = new IOStreamConnector();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        LOG.info("Next command: "
-                + Commands.getEncryptPasswordCommand(password));
-        if (session.executeCommand(
-                Commands.getEncryptPasswordCommand(password))) {
-            output.connect(session.getInputStream(), bos);
+        String cmd = Commands.getEncryptPasswordCommand(password);
+        if (session.executeCommand(cmd)) {
+            encryptPassword = getOutput(session);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
-            encryptPassword = bos.toString();
         } else {
             LOG.error("Error during password encrypt");
         }
         session = sshClient.openSessionChannel();
-        LOG.info("Next command: "
-                + Commands.getUserAddCommand(encryptPassword, uidstring));
         if (session.executeCommand(Commands.getUserAddCommand(
                 encryptPassword, uidstring))) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during useradd operation");
         }
-        bos.close();
-        output.close();
     }
 
     public final void deleteUser(final String username)
             throws IOException, InvalidStateException, InterruptedException {
-        authAdminUser();
-        SessionChannelClient session = sshClient.openSessionChannel();
-        IOStreamConnector output = new IOStreamConnector();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        SessionChannelClient session = getSession();
         if (session.executeCommand(
                 Commands.getUserDelCommand(username))) {
-            output.connect(session.getInputStream(), bos);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during deleted operation");
         }
-        bos.close();
-        output.close();
     }
 
     public final void authenticate(final String username, final String password)
@@ -139,6 +120,18 @@ public class SSHClient {
         if (status != AuthenticationProtocolState.COMPLETE) {
             throw new IOException();
         }
+    }
+
+    private String getOutput(final SessionChannelClient session)
+            throws IOException {
+        String line = "";
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(session.getInputStream()));
+        StringBuilder buffer = new StringBuilder();
+        while ((line = br.readLine()) != null) {
+            buffer.append(line);
+        }
+        return buffer.toString();
     }
 
     private PasswordAuthenticationClient getPwdAuthClient(

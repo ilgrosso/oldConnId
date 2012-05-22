@@ -23,6 +23,7 @@
  */
 package org.connid.unix;
 
+import java.io.IOException;
 import java.util.Set;
 import org.connid.unix.methods.*;
 import org.identityconnectors.common.logging.Log;
@@ -60,36 +61,61 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
     @Override
     public final void test() {
         LOG.info("Remote connection test");
-        new UnixTest(unixConfiguration).test();
+        try {
+            new UnixTest(unixConfiguration).test();
+        } catch (IOException ex) {
+            LOG.error("Error in connection process", ex);
+        }
     }
 
     @Override
     public final Uid create(final ObjectClass oc, final Set<Attribute> set,
             final OperationOptions oo) {
         LOG.info("Create new user");
-        return new UnixCreate(unixConfiguration, set).create();
+        Uid uidResult = null;
+        try {
+            uidResult = new UnixCreate(unixConfiguration, set).create();
+        } catch (IOException ex) {
+            LOG.error("Error in connection process", ex);
+        }
+        return uidResult;
     }
 
     @Override
     public final void delete(final ObjectClass oc, final Uid uid,
             final OperationOptions oo) {
         LOG.info("Delete user: " + uid.getUidValue());
-        new UnixDelete(unixConfiguration, uid).delete();
+        try {
+            new UnixDelete(unixConfiguration, uid).delete();
+        } catch (IOException ex) {
+            LOG.error("Error in connection process", ex);
+        }
     }
 
     @Override
     public final Uid authenticate(final ObjectClass oc, final String username,
             final GuardedString gs, final OperationOptions oo) {
-        LOG.info("Authenticate user: " + username);
-        return new UnixAuthenticate(
-                unixConfiguration, username, gs).authenticate();
+        Uid uidResult = null;
+        try {
+            LOG.info("Authenticate user: " + username);
+            uidResult = new UnixAuthenticate(
+                    unixConfiguration, username, gs).authenticate();
+        } catch (IOException ex) {
+            LOG.error("Error in connection process", ex);
+        }
+        return uidResult;
     }
 
     @Override
     public final Uid update(final ObjectClass oc, final Uid uid,
             final Set<Attribute> set, final OperationOptions oo) {
         LOG.info("Update user: " + uid.getUidValue());
-        return new UnixUpdate(unixConfiguration, uid, set).update();
+        try {
+            new UnixUpdate(unixConfiguration, uid, set).update();
+        } catch (IOException ex) {
+            LOG.error("Error in connection process", ex);
+        }
+        return uid;
     }
 
     @Override

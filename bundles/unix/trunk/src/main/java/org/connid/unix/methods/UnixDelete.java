@@ -39,7 +39,7 @@ public class UnixDelete extends CommonMethods {
     private Uid uid = null;
 
     public UnixDelete(final UnixConfiguration unixConfiguration,
-            final Uid uid) {
+            final Uid uid) throws IOException {
         configuration = unixConfiguration;
         connection = UnixConnection.openConnection(configuration);
         this.uid = uid;

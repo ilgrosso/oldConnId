@@ -27,6 +27,7 @@ public class Constants {
 
     private static int UNIX_LAST_PORT = 65535;
     private static int SSH_DEFAULT_PORT = 22;
+    private static int SSH_SOCKET_TIMEOUT = 30000;
 
     public static int getUnixLastPort() {
         return UNIX_LAST_PORT;
@@ -34,5 +35,9 @@ public class Constants {
 
     public static int getSshDefaultPort() {
         return SSH_DEFAULT_PORT;
+    }
+
+    public static int getSshSocketTimeout() {
+        return SSH_SOCKET_TIMEOUT;
     }
 }

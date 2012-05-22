@@ -40,7 +40,8 @@ public class UnixAuthenticate extends CommonMethods {
     GuardedString password = null;
 
     public UnixAuthenticate(final UnixConfiguration unixConfiguration,
-            final String username, final GuardedString password) {
+            final String username, final GuardedString password)
+            throws IOException {
         unixConnection = UnixConnection.openConnection(unixConfiguration);
         this.username = username;
         this.password = password;

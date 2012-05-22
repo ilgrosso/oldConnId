@@ -35,7 +35,8 @@ public class UnixTest {
     private static final Log LOG = Log.getLog(UnixTest.class);
     private UnixConnection unixConnection = null;
 
-    public UnixTest(final UnixConfiguration unixConfiguration) {
+    public UnixTest(final UnixConfiguration unixConfiguration)
+            throws IOException {
         unixConnection = UnixConnection.openConnection(unixConfiguration);
     }
 

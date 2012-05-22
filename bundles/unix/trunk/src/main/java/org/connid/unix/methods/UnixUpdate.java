@@ -23,7 +23,7 @@
  */
 package org.connid.unix.methods;
 
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.util.Set;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
@@ -41,7 +41,7 @@ public class UnixUpdate extends CommonMethods {
     private Uid uid = null;
 
     public UnixUpdate(final UnixConfiguration unixConfiguration,
-            final Uid uid, final Set<Attribute> attrs) {
+            final Uid uid, final Set<Attribute> attrs) throws IOException {
         this.configuration = unixConfiguration;
         this.uid = uid;
         this.attrs = attrs;

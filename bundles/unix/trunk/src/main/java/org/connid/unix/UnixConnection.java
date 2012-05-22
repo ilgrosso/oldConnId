@@ -34,7 +34,8 @@ public class UnixConnection {
     private static UnixConfiguration unixConfiguration = null;
     SSHClient sshc = null;
 
-    private UnixConnection(final UnixConfiguration unixConfiguration) {
+    private UnixConnection(final UnixConfiguration unixConfiguration)
+            throws IOException {
         this.unixConfiguration = unixConfiguration;
         sshc = new SSHClient(
                 unixConfiguration.getHostname(), unixConfiguration.getPort(),
@@ -43,10 +44,10 @@ public class UnixConnection {
     }
 
     public static UnixConnection openConnection(
-            final UnixConfiguration unixConfiguration) {
+            final UnixConfiguration unixConfiguration) throws IOException {
         return new UnixConnection(unixConfiguration);
     }
-    
+
     public static UnixConfiguration getConfiguration() {
         return unixConfiguration;
     }

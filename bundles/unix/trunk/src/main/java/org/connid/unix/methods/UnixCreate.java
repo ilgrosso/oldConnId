@@ -47,7 +47,7 @@ public class UnixCreate extends CommonMethods {
     private String password = null;
 
     public UnixCreate(final UnixConfiguration unixConfiguration,
-            final Set<Attribute> attributes) {
+            final Set<Attribute> attributes) throws IOException {
         this.configuration = unixConfiguration;
         this.attrs = attributes;
         connection = UnixConnection.openConnection(configuration);
