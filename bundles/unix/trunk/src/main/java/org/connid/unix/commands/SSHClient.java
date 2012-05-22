@@ -56,13 +56,9 @@ public class SSHClient {
         sshClient.setSocketTimeout(Constants.getSshSocketTimeout());
     }
 
-    public final int authAdminUser() throws IOException {
-        sshClient.connect(properties, new IgnoreHostKeyVerification());
-        return sshClient.authenticate(getPwdAuthClient(username, password));
-    }
-
     public final SessionChannelClient getSession() throws IOException {
-        authAdminUser();
+        sshClient.connect(properties, new IgnoreHostKeyVerification());
+        sshClient.authenticate(getPwdAuthClient(username, password));
         return sshClient.openSessionChannel();
     }
 
@@ -99,6 +95,7 @@ public class SSHClient {
         } else {
             LOG.error("Error during useradd operation");
         }
+        sshClient.disconnect();
     }
 
     public final void deleteUser(final String username)
@@ -110,6 +107,7 @@ public class SSHClient {
         } else {
             LOG.error("Error during deleted operation");
         }
+        sshClient.disconnect();
     }
 
     public final void authenticate(final String username, final String password)
@@ -120,6 +118,7 @@ public class SSHClient {
         if (status != AuthenticationProtocolState.COMPLETE) {
             throw new IOException();
         }
+        sshClient.disconnect();
     }
 
     private String getOutput(final SessionChannelClient session)
