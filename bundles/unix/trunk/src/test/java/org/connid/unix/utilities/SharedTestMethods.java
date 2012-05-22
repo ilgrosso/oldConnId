@@ -30,6 +30,7 @@ import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.Name;
+import org.identityconnectors.framework.common.objects.OperationalAttributes;
 
 public class SharedTestMethods {
 
@@ -42,6 +43,7 @@ public class SharedTestMethods {
         config.setHostname(UnixProperties.UNIX_HOSTNAME);
         config.setPort(Integer.valueOf(UnixProperties.UNIX_PORT).intValue());
         config.setBaseHomeDirectory(UnixProperties.UNIX_BASE_HOME_DIRECTORY);
+        config.setShell(UnixProperties.UNIX_USER_SHELL);
         config.setCreateHomeDirectory(true);
         config.setDeleteHomeDirectory(true);
         return config;

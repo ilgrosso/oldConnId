@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.connid.unix.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
@@ -43,8 +44,9 @@ public class UnixCreate extends CommonMethods {
     private Set<Attribute> attrs = null;
     private UnixConfiguration configuration = null;
     private UnixConnection connection = null;
-    private String uidString = null;
-    private String password = null;
+    private String uidString = "";
+    private String password = "";
+    private String inactiveOption = "";
 
     public UnixCreate(final UnixConfiguration unixConfiguration,
             final Set<Attribute> attributes) throws IOException {
@@ -64,6 +66,7 @@ public class UnixCreate extends CommonMethods {
 
     private Uid doCreate() throws IOException,
             InvalidStateException, InterruptedException {
+        boolean status = false;
         for (Attribute attr : attrs) {
             if (attr.is(Name.NAME) || attr.is(Uid.NAME)) {
                 uidString = (String) attr.getValue().get(0);
@@ -71,7 +74,6 @@ public class UnixCreate extends CommonMethods {
                 password = getPlainPassword(
                         (GuardedString) attr.getValue().get(0));
             } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
-                boolean status = false;
                 // manage enable/disable status
                 if (attr.getValue() != null && !attr.getValue().isEmpty()) {
                     status = Boolean.parseBoolean(
@@ -88,7 +90,7 @@ public class UnixCreate extends CommonMethods {
             throw new ConnectorException(
                     "User " + uidString + " already exists");
         }
-        connection.create(uidString, password);
+        connection.create(uidString, password, !status);
         return new Uid(uidString);
     }
 }

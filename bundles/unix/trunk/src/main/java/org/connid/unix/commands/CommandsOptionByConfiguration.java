@@ -50,4 +50,8 @@ public class CommandsOptionByConfiguration {
     public final String baseHomeDirectory() {
         return "-b " + unixConfiguration.getBaseHomeDirectory();
     }
+    
+    public final String userShell() {
+        return "-s " + unixConfiguration.getShell();
+    }
 }

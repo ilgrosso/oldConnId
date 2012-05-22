@@ -35,7 +35,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
-import org.connid.unix.utilities.Constants;
+import org.connid.unix.utilities.DefaultProperties;
 import org.identityconnectors.common.logging.Log;
 
 public class SSHClient {
@@ -53,7 +53,7 @@ public class SSHClient {
         this.username = userName;
         this.password = password;
         sshClient = new SshClient();
-        sshClient.setSocketTimeout(Constants.getSshSocketTimeout());
+        sshClient.setSocketTimeout(DefaultProperties.SSH_SOCKET_TIMEOUT);
     }
 
     public final SessionChannelClient getSession() throws IOException {
@@ -77,7 +77,8 @@ public class SSHClient {
         return !output.isEmpty();
     }
 
-    public final void createUser(final String uidstring, final String password)
+    public final void createUser(final String uidstring, final String password,
+            final boolean status)
             throws IOException, InvalidStateException, InterruptedException {
         SessionChannelClient session = getSession();
         String encryptPassword = "";
@@ -90,7 +91,7 @@ public class SSHClient {
         }
         session = sshClient.openSessionChannel();
         if (session.executeCommand(Commands.getUserAddCommand(
-                encryptPassword, uidstring))) {
+                encryptPassword, uidstring, status))) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during useradd operation");

@@ -62,9 +62,9 @@ public class UnixConnection {
     }
 
     public void create(final String uidstring,
-            final String password) throws IOException,
+            final String password, final boolean status) throws IOException,
             InvalidStateException, InterruptedException {
-        sshc.createUser(uidstring, password);
+        sshc.createUser(uidstring, password, status);
     }
 
     public void delete(final String username)

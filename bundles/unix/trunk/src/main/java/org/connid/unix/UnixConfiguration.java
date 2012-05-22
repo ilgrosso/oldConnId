@@ -24,6 +24,7 @@
 package org.connid.unix;
 
 import org.connid.unix.utilities.Constants;
+import org.connid.unix.utilities.DefaultProperties;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConfigurationException;
@@ -39,79 +40,92 @@ public class UnixConfiguration extends AbstractConfiguration {
     private boolean createHomeDirectory = false;
     private boolean deleteHomeDirectory = false;
     private String baseHomeDirectory = "";
+    private String shell = "";
 
     @ConfigurationProperty(displayMessageKey = "unix.admin.display",
     helpMessageKey = "unix.admin.help", order = 1)
-    public String getAdmin() {
+    public final String getAdmin() {
         return admin;
     }
 
-    public void setAdmin(String admin) {
+    public final void setAdmin(final String admin) {
         this.admin = admin;
     }
 
     @ConfigurationProperty(displayMessageKey = "unix.hostname.display",
     helpMessageKey = "unix.hostname.help", order = 3)
-    public String getHostname() {
+    public final String getHostname() {
         return hostname;
     }
 
-    public void setHostname(String hostname) {
+    public final void setHostname(final String hostname) {
         this.hostname = hostname;
     }
 
     @ConfigurationProperty(displayMessageKey = "unix.password.display",
     helpMessageKey = "unix.password.help", order = 2)
-    public GuardedString getPassword() {
+    public final GuardedString getPassword() {
         return password;
     }
 
-    public void setPassword(GuardedString password) {
+    public final void setPassword(final GuardedString password) {
         this.password = password;
     }
 
     @ConfigurationProperty(displayMessageKey = "unix.port.display",
     helpMessageKey = "unix.port.help", order = 4)
-    public int getPort() {
+    public final int getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public final void setPort(final int port) {
         this.port = port;
     }
 
     @ConfigurationProperty(displayMessageKey = "unix.createhomedir.display",
     helpMessageKey = "unix.createhomedir.help", order = 5)
-    public boolean isCreateHomeDirectory() {
+    public final boolean isCreateHomeDirectory() {
         return createHomeDirectory;
     }
 
-    public void setCreateHomeDirectory(boolean createHomeDirectory) {
+    public final void setCreateHomeDirectory(
+            final boolean createHomeDirectory) {
         this.createHomeDirectory = createHomeDirectory;
     }
 
     @ConfigurationProperty(displayMessageKey = "unix.deletehomedir.display",
     helpMessageKey = "unix.deletehomedir.help", order = 6)
-    public boolean isDeleteHomeDirectory() {
+    public final boolean isDeleteHomeDirectory() {
         return deleteHomeDirectory;
     }
 
-    public void setDeleteHomeDirectory(boolean deleteHomeDirectory) {
+    public final void setDeleteHomeDirectory(
+            final boolean deleteHomeDirectory) {
         this.deleteHomeDirectory = deleteHomeDirectory;
     }
 
     @ConfigurationProperty(displayMessageKey = "unix.basehomedir.display",
     helpMessageKey = "unix.basehomedir.help", order = 7)
-    public String getBaseHomeDirectory() {
+    public final String getBaseHomeDirectory() {
         return baseHomeDirectory;
     }
 
-    public void setBaseHomeDirectory(String baseHomeDirectory) {
+    public final void setBaseHomeDirectory(final String baseHomeDirectory) {
         this.baseHomeDirectory = baseHomeDirectory;
     }
 
+    @ConfigurationProperty(displayMessageKey = "unix.shell.display",
+    helpMessageKey = "unix.shell.help", order = 8)
+    public final String getShell() {
+        return shell;
+    }
+
+    public final void setShell(final String shell) {
+        this.shell = shell;
+    }
+
     @Override
-    public void validate() {
+    public final void validate() {
         if (StringUtil.isBlank(admin)) {
             throw new ConfigurationException(
                     "Unix admin username must not be blank!");
@@ -132,7 +146,7 @@ public class UnixConfiguration extends AbstractConfiguration {
                     "Unix ssh port range: 0 - 65535");
         }
         if (StringUtil.isBlank(baseHomeDirectory)) {
-            baseHomeDirectory = "/home";
+            baseHomeDirectory = DefaultProperties.UNIX_USER_HOMEDIRECTORY;
         }
         if (StringUtil.isBlank(
                 Boolean.valueOf(createHomeDirectory).toString())) {
@@ -141,6 +155,9 @@ public class UnixConfiguration extends AbstractConfiguration {
         if (StringUtil.isBlank(
                 Boolean.valueOf(deleteHomeDirectory).toString())) {
             deleteHomeDirectory = false;
+        }
+        if (StringUtil.isBlank(shell)) {
+            shell = DefaultProperties.UNIX_SHELL;
         }
     }
 }

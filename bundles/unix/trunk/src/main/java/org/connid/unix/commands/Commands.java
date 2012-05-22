@@ -23,6 +23,8 @@
  */
 package org.connid.unix.commands;
 
+import org.connid.unix.utilities.Constants;
+
 public class Commands {
 
     private static CommandsOptionByConfiguration commandsOption =
@@ -34,10 +36,18 @@ public class Commands {
     }
 
     public static String getUserAddCommand(final String encryptPassword,
-            final String uidstring) {
-        return "useradd " + commandsOption.createHomeDirectory()
-                + " " + commandsOption.baseHomeDirectory()
-                + " -p " + encryptPassword + " " + uidstring;
+            final String uidstring, final boolean status) {
+        StringBuilder useraddCommand = new StringBuilder();
+        useraddCommand.append("useradd ").append(
+                commandsOption.createHomeDirectory()).append(" ").append(
+                commandsOption.baseHomeDirectory()).append(" ").append(
+                commandsOption.userShell());
+        if (status) {
+            useraddCommand.append(" -e ").append(Constants.getInactiveDate());
+        }
+        useraddCommand.append(" -p ").append(
+                encryptPassword).append(" ").append(uidstring);
+        return useraddCommand.toString();
     }
 
     public static String getUserExistsCommand(final String username) {

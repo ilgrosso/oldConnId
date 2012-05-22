@@ -25,23 +25,19 @@ package org.connid.unix.utilities;
 
 import java.util.ResourceBundle;
 
-public class UnixProperties {
+public class DefaultProperties {
 
-    public static String UNIX_ADMIN;
-    public static String UNIX_PASSWORD;
-    public static String UNIX_HOSTNAME;
-    public static String UNIX_PORT;
-    public static String UNIX_BASE_HOME_DIRECTORY;
-    public static String UNIX_USER_SHELL;
+    public static String UNIX_SHELL;
+    public static String UNIX_USER_HOMEDIRECTORY;
+    public static int SSH_SOCKET_TIMEOUT;
 
     static {
-        ResourceBundle unixProperties = ResourceBundle.getBundle("unix");
-        UNIX_ADMIN = unixProperties.getString("unix.admin");
-        UNIX_PASSWORD = unixProperties.getString("unix.password");
-        UNIX_HOSTNAME = unixProperties.getString("unix.hostname");
-        UNIX_PORT = unixProperties.getString("unix.port");
-        UNIX_USER_SHELL = unixProperties.getString("unix.user.shell");
-        UNIX_BASE_HOME_DIRECTORY =
-                unixProperties.getString("unix.base.home.directory");
+        ResourceBundle defaultProperties = ResourceBundle.getBundle("default");
+
+        UNIX_SHELL = defaultProperties.getString("unix.user.shell");
+        SSH_SOCKET_TIMEOUT = Integer.valueOf(
+                defaultProperties.getString("ssh.socket.timeout")).intValue();
+        UNIX_USER_HOMEDIRECTORY =
+                defaultProperties.getString("unix.user.homedirectory");
     }
 }
