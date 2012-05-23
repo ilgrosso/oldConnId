@@ -49,11 +49,13 @@ public class SharedTestMethods {
         return config;
     }
 
-    protected final Set<Attribute> createSetOfAttributes(final Name name) {
-        final GuardedString password =
-                new GuardedString("password".toCharArray());
+    protected final Set<Attribute> createSetOfAttributes(final Name name,
+            final String password) {
+        final GuardedString encPassword =
+                new GuardedString(password.toCharArray());
         final Set<Attribute> attributes =
-                CollectionUtil.newSet(AttributeBuilder.buildPassword(password));
+                CollectionUtil.newSet(
+                AttributeBuilder.buildPassword(encPassword));
         attributes.add(name);
         return attributes;
     }

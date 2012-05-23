@@ -25,13 +25,14 @@ package org.connid.unix.realenvironment;
 
 import org.connid.unix.UnixConnector;
 import org.connid.unix.utilities.SharedTestMethods;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class UnixCreateTest extends SharedTestMethods {
+public class UnixUpdateTest extends SharedTestMethods {
 
     @Test
     public final void createAndDeleteTest() {
@@ -41,26 +42,10 @@ public class UnixCreateTest extends SharedTestMethods {
         Uid newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name, "password"), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
-        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
-        connector.dispose();
-    }
-    
-    @Test
-    public final void createExistsUser() {
-        boolean userExists = false;
-        final UnixConnector connector = new UnixConnector();
-        connector.init(createConfiguration());
-        Name name = new Name("createtest" + randomNumber());
-        Uid newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, "password"), null);
-        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
-        try {
-        connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, "password"), null);
-        } catch (Exception e) {
-            userExists = true;
-        }
-        Assert.assertTrue(userExists);
+        connector.update(ObjectClass.ACCOUNT,
+                newAccount, createSetOfAttributes(name, "password2"), null);
+        connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
+                new GuardedString("password2".toCharArray()), null);
         connector.delete(ObjectClass.ACCOUNT, newAccount, null);
         connector.dispose();
     }

@@ -81,20 +81,27 @@ public class SSHClient {
             final boolean status)
             throws IOException, InvalidStateException, InterruptedException {
         SessionChannelClient session = getSession();
-        String encryptPassword = "";
-        String cmd = Commands.getEncryptPasswordCommand(password);
-        if (session.executeCommand(cmd)) {
-            encryptPassword = getOutput(session);
-            session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
-        } else {
-            LOG.error("Error during password encrypt");
-        }
         session = sshClient.openSessionChannel();
         if (session.executeCommand(Commands.getUserAddCommand(
-                encryptPassword, uidstring, status))) {
+                uidstring, password, status))) {
+            System.out.println("OUTPUT: " + getOutput(session));
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during useradd operation");
+        }
+        sshClient.disconnect();
+    }
+
+    public final void updateUser(final String actualUsername,
+            final String username, final String password)
+            throws IOException, InvalidStateException, InterruptedException {
+        SessionChannelClient session = getSession();
+        session = sshClient.openSessionChannel();
+        if (session.executeCommand(Commands.getUserModCommand(actualUsername,
+                username, password))) {
+            session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
+        } else {
+            LOG.error("Error during usermod operation");
         }
         sshClient.disconnect();
     }

@@ -23,13 +23,18 @@
  */
 package org.connid.unix.methods;
 
+import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.Name;
+import org.identityconnectors.framework.common.objects.OperationalAttributes;
 import org.identityconnectors.framework.common.objects.Uid;
 
 public class UnixUpdate extends CommonMethods {
@@ -39,6 +44,8 @@ public class UnixUpdate extends CommonMethods {
     private UnixConfiguration configuration = null;
     private UnixConnection connection = null;
     private Uid uid = null;
+    private String username = "";
+    private String password = "";
 
     public UnixUpdate(final UnixConfiguration unixConfiguration,
             final Uid uid, final Set<Attribute> attrs) throws IOException {
@@ -57,7 +64,25 @@ public class UnixUpdate extends CommonMethods {
         }
     }
 
-    private Uid doUpdate() {
-        throw new UnsupportedOperationException("Not yet implemented");
+    private Uid doUpdate()
+            throws IOException, InvalidStateException, InterruptedException {
+        if (!userExists(uid.getUidValue(), connection)) {
+            throw new ConnectorException(
+                    "User " + uid + " do not exists");
+        }
+        for (Attribute attr : attrs) {
+            if (attr.is(Name.NAME) || attr.is(Uid.NAME)) {
+                username = (String) attr.getValue().get(0);
+            } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
+                password = getPlainPassword(
+                        (GuardedString) attr.getValue().get(0));
+            } else {
+                List<Object> values = attr.getValue();
+                if ((values != null) && (!values.isEmpty())) {
+                }
+            }
+        }
+        connection.update(uid.getUidValue(), username, password);
+        return uid;
     }
 }

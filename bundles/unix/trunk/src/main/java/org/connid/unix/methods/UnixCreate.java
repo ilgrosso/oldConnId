@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
-import org.connid.unix.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
@@ -90,7 +89,7 @@ public class UnixCreate extends CommonMethods {
             throw new ConnectorException(
                     "User " + uidString + " already exists");
         }
-        connection.create(uidString, password, !status);
+        connection.create(uidString, password, status);
         return new Uid(uidString);
     }
 }

@@ -27,7 +27,10 @@ import org.connid.unix.UnixConnector;
 import org.connid.unix.utilities.SharedTestMethods;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.Uid;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class UnixAuthenticateTest extends SharedTestMethods {
@@ -38,6 +41,20 @@ public class UnixAuthenticateTest extends SharedTestMethods {
         connector.init(createConfiguration());
         connector.authenticate(ObjectClass.ACCOUNT,
                 "whois", new GuardedString("wrong".toCharArray()), null);
+        connector.dispose();
+    }
+    
+    @Test
+    public final void authenticateTest() {
+        final UnixConnector connector = new UnixConnector();
+        connector.init(createConfiguration());
+        Name name = new Name("createtest" + randomNumber());
+        Uid newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, "password"), null);
+        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
+                new GuardedString("password".toCharArray()), null);
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
         connector.dispose();
     }
 }

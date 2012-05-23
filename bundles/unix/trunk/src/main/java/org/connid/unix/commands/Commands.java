@@ -24,30 +24,40 @@
 package org.connid.unix.commands;
 
 import org.connid.unix.utilities.Constants;
+import org.identityconnectors.common.StringUtil;
 
 public class Commands {
 
     private static CommandsOptionByConfiguration commandsOption =
             new CommandsOptionByConfiguration();
 
-    public static String getEncryptPasswordCommand(final String password) {
-        return "(perl -e 'print crypt($ARGV[0],"
-                + "\"password\")' " + password + ")";
-    }
-
-    public static String getUserAddCommand(final String encryptPassword,
-            final String uidstring, final boolean status) {
-        StringBuilder useraddCommand = new StringBuilder();
-        useraddCommand.append("useradd ").append(
+    public static String getUserAddCommand(final String username,
+            final String password, final boolean status) {
+        StringBuilder useraddCommand = new StringBuilder("useradd ");
+        useraddCommand.append(
                 commandsOption.createHomeDirectory()).append(" ").append(
                 commandsOption.baseHomeDirectory()).append(" ").append(
                 commandsOption.userShell());
         if (status) {
             useraddCommand.append(" -e ").append(Constants.getInactiveDate());
         }
-        useraddCommand.append(" -p ").append(
-                encryptPassword).append(" ").append(uidstring);
+        useraddCommand.append(" ").append(username).append(
+                "; echo ").append(password).append(" | passwd ").append(
+                username).append(" --stdin");
         return useraddCommand.toString();
+    }
+
+    public static String getUserModCommand(final String actualUsername,
+            final String username, final String password) {
+        StringBuilder usermodCommand = new StringBuilder("usermod ");
+        if ((StringUtil.isNotBlank(username))
+                && (StringUtil.isNotEmpty(username))) {
+            usermodCommand.append("-l ").append(username);
+        }
+        usermodCommand.append(actualUsername).append(
+                "; echo ").append(password).append(" | passwd ").append(
+                username).append(" --stdin");
+        return usermodCommand.toString();
     }
 
     public static String getUserExistsCommand(final String username) {

@@ -67,6 +67,12 @@ public class UnixConnection {
         sshc.createUser(uidstring, password, status);
     }
 
+    public void update(final String actualUsername,
+            final String username, final String password)
+            throws IOException, InvalidStateException, InterruptedException {
+        sshc.updateUser(actualUsername, username, password);
+    }
+
     public void delete(final String username)
             throws IOException, InvalidStateException, InterruptedException {
         sshc.deleteUser(username);
