@@ -24,44 +24,79 @@
 package org.connid.unix.realenvironment;
 
 import org.connid.unix.UnixConnector;
+import org.connid.unix.utilities.AttributesTestValue;
 import org.connid.unix.utilities.SharedTestMethods;
+import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class UnixCreateTest extends SharedTestMethods {
 
-    @Test
-    public final void createAndDeleteTest() {
-        final UnixConnector connector = new UnixConnector();
+    private UnixConnector connector = null;
+    private Name name = null;
+    private Uid newAccount = null;
+    private AttributesTestValue attrs = null;
+
+    @Before
+    public final void initTest() {
+        attrs = new AttributesTestValue();
+        connector = new UnixConnector();
         connector.init(createConfiguration());
-        Name name = new Name("createtest" + randomNumber());
-        Uid newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, "password"), null);
-        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
-        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
-        connector.dispose();
+        name = new Name(attrs.getUsername());
     }
-    
+
     @Test
     public final void createExistsUser() {
         boolean userExists = false;
-        final UnixConnector connector = new UnixConnector();
-        connector.init(createConfiguration());
-        Name name = new Name("createtest" + randomNumber());
-        Uid newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, "password"), null);
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name,
+                attrs.getPassword()), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
         try {
-        connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, "password"), null);
+            connector.create(ObjectClass.ACCOUNT,
+                    createSetOfAttributes(name, attrs.getPassword()), null);
         } catch (Exception e) {
             userExists = true;
         }
         Assert.assertTrue(userExists);
         connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+    }
+
+    @Test(expected = ConnectorException.class)
+    public void createWithWrongObjectClass() {
+        connector.create(attrs.getWrongObjectClass(),
+                createSetOfAttributes(name, attrs.getPassword()), null);
+    }
+
+    @Test(expected = ConnectorException.class)
+    public void createTestWithNull() {
+        connector.create(attrs.getWrongObjectClass(), null, null);
+    }
+
+    @Test(expected = ConnectorException.class)
+    public void createTestWithNameNull() {
+        connector.create(attrs.getWrongObjectClass(),
+                createSetOfAttributes(null, attrs.getPassword()), null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void createTestWithPasswordNull() {
+        connector.create(attrs.getWrongObjectClass(),
+                createSetOfAttributes(name, null), null);
+    }
+
+    @Test(expected = ConnectorException.class)
+    public void createTestWithAllNull() {
+        connector.create(null, null, null);
+    }
+
+    @After
+    public final void close() {
         connector.dispose();
     }
 }

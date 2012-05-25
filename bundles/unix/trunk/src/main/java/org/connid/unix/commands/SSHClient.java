@@ -78,13 +78,11 @@ public class SSHClient {
     }
 
     public final void createUser(final String uidstring, final String password,
-            final boolean status)
+            final String comment, final boolean status)
             throws IOException, InvalidStateException, InterruptedException {
         SessionChannelClient session = getSession();
-        session = sshClient.openSessionChannel();
         if (session.executeCommand(Commands.getUserAddCommand(
-                uidstring, password, status))) {
-            System.out.println("OUTPUT: " + getOutput(session));
+                uidstring, password, comment, status))) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during useradd operation");
@@ -96,7 +94,6 @@ public class SSHClient {
             final String username, final String password)
             throws IOException, InvalidStateException, InterruptedException {
         SessionChannelClient session = getSession();
-        session = sshClient.openSessionChannel();
         if (session.executeCommand(Commands.getUserModCommand(actualUsername,
                 username, password))) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);

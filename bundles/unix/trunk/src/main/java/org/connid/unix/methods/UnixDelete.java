@@ -27,8 +27,10 @@ import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
 
 public class UnixDelete extends CommonMethods {
@@ -37,12 +39,15 @@ public class UnixDelete extends CommonMethods {
     private UnixConfiguration configuration = null;
     private UnixConnection connection = null;
     private Uid uid = null;
+    private ObjectClass objectClass = null;
 
-    public UnixDelete(final UnixConfiguration unixConfiguration,
+    public UnixDelete(final ObjectClass oc,
+            final UnixConfiguration unixConfiguration,
             final Uid uid) throws IOException {
         configuration = unixConfiguration;
         connection = UnixConnection.openConnection(configuration);
         this.uid = uid;
+        objectClass = oc;
     }
 
     public final void delete() {
@@ -56,6 +61,17 @@ public class UnixDelete extends CommonMethods {
 
     private void doDelete()
             throws IOException, InvalidStateException, InterruptedException {
+
+        if (uid == null || StringUtil.isBlank(uid.getUidValue())) {
+            throw new IllegalArgumentException(
+                    "No Uid attribute provided in the attributes");
+        }
+
+        LOG.info("Delete user: " + uid.getUidValue());
+
+        if (!objectClass.equals(ObjectClass.ACCOUNT)) {
+            throw new IllegalStateException("Wrong object class");
+        }
 
         if (!userExists(uid.getUidValue(), connection)) {
             LOG.error("User do not exists");

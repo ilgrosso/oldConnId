@@ -30,21 +30,25 @@ import org.connid.unix.UnixConnection;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
 
 public class UnixAuthenticate extends CommonMethods {
 
     private static final Log LOG = Log.getLog(UnixAuthenticate.class);
     private UnixConnection unixConnection = null;
-    String username = "";
-    GuardedString password = null;
+    private String username = "";
+    private GuardedString password = null;
+    private ObjectClass objectClass;
 
-    public UnixAuthenticate(final UnixConfiguration unixConfiguration,
+    public UnixAuthenticate(final ObjectClass oc,
+            final UnixConfiguration unixConfiguration,
             final String username, final GuardedString password)
             throws IOException {
         unixConnection = UnixConnection.openConnection(unixConfiguration);
         this.username = username;
         this.password = password;
+        objectClass = oc;
     }
 
     public Uid authenticate() {
@@ -52,11 +56,14 @@ public class UnixAuthenticate extends CommonMethods {
             return doAuthenticate();
         } catch (Exception e) {
             LOG.error(e, "error during authentication");
-            throw new ConnectorException(e);
+            throw new ConnectorException("Username or Password wrong", e);
         }
     }
 
     private Uid doAuthenticate() throws UnknownHostException, IOException {
+        if (!objectClass.equals(ObjectClass.ACCOUNT)) {
+            throw new IllegalStateException("Wrong object class");
+        }
         unixConnection.authenticate(username, getPlainPassword(password));
         return new Uid(username);
     }

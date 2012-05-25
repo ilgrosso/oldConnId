@@ -29,13 +29,11 @@ import java.util.List;
 import java.util.Set;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.OperationalAttributes;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 
 public class UnixCreate extends CommonMethods {
 
@@ -43,15 +41,15 @@ public class UnixCreate extends CommonMethods {
     private Set<Attribute> attrs = null;
     private UnixConfiguration configuration = null;
     private UnixConnection connection = null;
-    private String uidString = "";
-    private String password = "";
-    private String inactiveOption = "";
+    private ObjectClass objectClass = null;
 
-    public UnixCreate(final UnixConfiguration unixConfiguration,
+    public UnixCreate(final ObjectClass oc,
+            final UnixConfiguration unixConfiguration,
             final Set<Attribute> attributes) throws IOException {
         this.configuration = unixConfiguration;
         this.attrs = attributes;
         connection = UnixConnection.openConnection(configuration);
+        objectClass = oc;
     }
 
     public Uid create() {
@@ -66,12 +64,29 @@ public class UnixCreate extends CommonMethods {
     private Uid doCreate() throws IOException,
             InvalidStateException, InterruptedException {
         boolean status = false;
+        String comment = "";
+
+        if (!objectClass.equals(ObjectClass.ACCOUNT)) {
+            throw new IllegalStateException("Wrong object class");
+        }
+
+        final Name name = AttributeUtil.getNameFromAttributes(attrs);
+
+        if (name == null || StringUtil.isBlank(name.getNameValue())) {
+            throw new IllegalArgumentException(
+                    "No Name attribute provided in the attributes");
+        }
+
+        String username = name.getNameValue();
+
+        if (userExists(username, connection)) {
+            throw new ConnectorException(
+                    "User " + username + " already exists");
+        }
+
         for (Attribute attr : attrs) {
-            if (attr.is(Name.NAME) || attr.is(Uid.NAME)) {
-                uidString = (String) attr.getValue().get(0);
-            } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
-                password = getPlainPassword(
-                        (GuardedString) attr.getValue().get(0));
+            if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
+                continue;
             } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
                 // manage enable/disable status
                 if (attr.getValue() != null && !attr.getValue().isEmpty()) {
@@ -81,15 +96,16 @@ public class UnixCreate extends CommonMethods {
             } else {
                 List<Object> values = attr.getValue();
                 if ((values != null) && (!values.isEmpty())) {
+                    comment = (String) values.get(0);
                 }
             }
         }
 
-        if (userExists(uidString, connection)) {
-            throw new ConnectorException(
-                    "User " + uidString + " already exists");
-        }
-        connection.create(uidString, password, status);
-        return new Uid(uidString);
+        final String password =
+                getPlainPassword(AttributeUtil.getPasswordValue(attrs));
+
+        connection.create(username, password, comment, status);
+
+        return new Uid(username);
     }
 }

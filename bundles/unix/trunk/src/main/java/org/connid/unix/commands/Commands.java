@@ -32,7 +32,7 @@ public class Commands {
             new CommandsOptionByConfiguration();
 
     public static String getUserAddCommand(final String username,
-            final String password, final boolean status) {
+            final String password, final String comment, final boolean status) {
         StringBuilder useraddCommand = new StringBuilder("useradd ");
         useraddCommand.append(
                 commandsOption.createHomeDirectory()).append(" ").append(
@@ -40,6 +40,10 @@ public class Commands {
                 commandsOption.userShell());
         if (status) {
             useraddCommand.append(" -e ").append(Constants.getInactiveDate());
+        }
+        if ((StringUtil.isNotBlank(comment))
+                && (StringUtil.isNotEmpty(comment))) {
+            useraddCommand.append(" -c ").append(comment);
         }
         useraddCommand.append(" ").append(username).append(
                 "; echo ").append(password).append(" | passwd ").append(

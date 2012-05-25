@@ -29,13 +29,11 @@ import java.util.List;
 import java.util.Set;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.OperationalAttributes;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 
 public class UnixUpdate extends CommonMethods {
 
@@ -46,13 +44,16 @@ public class UnixUpdate extends CommonMethods {
     private Uid uid = null;
     private String username = "";
     private String password = "";
+    private ObjectClass objectClass = null;
 
-    public UnixUpdate(final UnixConfiguration unixConfiguration,
+    public UnixUpdate(final ObjectClass oc,
+            final UnixConfiguration unixConfiguration,
             final Uid uid, final Set<Attribute> attrs) throws IOException {
         this.configuration = unixConfiguration;
         this.uid = uid;
         this.attrs = attrs;
         connection = UnixConnection.openConnection(configuration);
+        objectClass = oc;
     }
 
     public Uid update() {
@@ -60,12 +61,24 @@ public class UnixUpdate extends CommonMethods {
             return doUpdate();
         } catch (Exception e) {
             LOG.error(e, "error during update operation");
-            throw new ConnectorException(e);
+            throw new ConnectorException("Error during update", e);
         }
     }
 
     private Uid doUpdate()
             throws IOException, InvalidStateException, InterruptedException {
+
+        if (uid == null || StringUtil.isBlank(uid.getUidValue())) {
+            throw new IllegalArgumentException(
+                    "No Uid attribute provided in the attributes");
+        }
+
+        LOG.info("Update user: " + uid.getUidValue());
+
+        if (!objectClass.equals(ObjectClass.ACCOUNT)) {
+            throw new IllegalStateException("Wrong object class");
+        }
+
         if (!userExists(uid.getUidValue(), connection)) {
             throw new ConnectorException(
                     "User " + uid + " do not exists");

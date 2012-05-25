@@ -30,7 +30,6 @@ import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.OperationalAttributes;
 
 public class SharedTestMethods {
 
@@ -51,16 +50,14 @@ public class SharedTestMethods {
 
     protected final Set<Attribute> createSetOfAttributes(final Name name,
             final String password) {
-        final GuardedString encPassword =
-                new GuardedString(password.toCharArray());
-        final Set<Attribute> attributes =
-                CollectionUtil.newSet(
+        GuardedString encPassword = null;
+        if (password != null) {
+            encPassword = new GuardedString(password.toCharArray());
+        }
+
+        final Set<Attribute> attributes = CollectionUtil.newSet(
                 AttributeBuilder.buildPassword(encPassword));
         attributes.add(name);
         return attributes;
-    }
-
-    protected int randomNumber() {
-        return (int) (Math.random() * 100000);
     }
 }

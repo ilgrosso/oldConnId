@@ -31,11 +31,10 @@ import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UnixAuthenticateTest extends SharedTestMethods {
+public class UnixDeleteTest extends SharedTestMethods {
 
     private UnixConnector connector = null;
     private Name name = null;
@@ -48,63 +47,32 @@ public class UnixAuthenticateTest extends SharedTestMethods {
         connector = new UnixConnector();
         connector.init(createConfiguration());
         name = new Name(attrs.getUsername());
-        newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name,
-                attrs.getPassword()), null);
-        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
     }
 
     @Test(expected = ConnectorException.class)
-    public final void authFailedTest() {
-        connector.authenticate(ObjectClass.ACCOUNT,
-                attrs.getWrongUsername(),
-                attrs.getWrongGuardedPassword(), null);
+    public final void deleteNotExistsUser() {
+        connector.delete(ObjectClass.ACCOUNT,
+                new Uid(attrs.getWrongUsername()), null);
     }
 
     @Test(expected = ConnectorException.class)
-    public final void authTestWithWrongPassword() {
-        connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
-                attrs.getWrongGuardedPassword(), null);
+    public final void deleteNullUser() {
+        connector.delete(ObjectClass.ACCOUNT, null, null);
+    }
+    
+    @Test(expected = ConnectorException.class)
+    public final void deleteNull() {
+        connector.delete(null, null, null);
     }
 
     @Test(expected = ConnectorException.class)
-    public final void authTestWithWrongUsername() {
-        connector.authenticate(ObjectClass.ACCOUNT,
-                attrs.getWrongUsername(), attrs.getGuardedPassword(), null);
-    }
-
-    @Test(expected = ConnectorException.class)
-    public void authTestWithWrongObjectClass() {
-        connector.authenticate(attrs.getWrongObjectClass(),
-                attrs.getUsername(), attrs.getGuardedPassword(), null);
-    }
-
-    @Test(expected = ConnectorException.class)
-    public final void authTestWithNullPassword() {
-        connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
-                null, null);
-    }
-
-    @Test(expected = ConnectorException.class)
-    public final void authTestWithNullUsername() {
-        connector.authenticate(ObjectClass.ACCOUNT, null,
-                attrs.getWrongGuardedPassword(), null);
-    }
-
-    @Test(expected = ConnectorException.class)
-    public final void authTestWithAllNull() {
-        connector.authenticate(null, null, null, null);
-    }
-
-    @Test
-    public final void authenticateTest() {
-        connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
-                attrs.getGuardedPassword(), null);
+    public final void deleteWithWrongObjectClass() {
+        connector.delete(attrs.getWrongObjectClass(),
+                newAccount, null);
     }
 
     @After
     public final void close() {
-        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
         connector.dispose();
     }
 }

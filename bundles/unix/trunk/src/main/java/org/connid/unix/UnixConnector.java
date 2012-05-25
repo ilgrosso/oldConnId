@@ -74,7 +74,7 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
         LOG.info("Create new user");
         Uid uidResult = null;
         try {
-            uidResult = new UnixCreate(unixConfiguration, set).create();
+            uidResult = new UnixCreate(oc, unixConfiguration, set).create();
         } catch (IOException ex) {
             LOG.error("Error in connection process", ex);
         }
@@ -84,9 +84,8 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
     @Override
     public final void delete(final ObjectClass oc, final Uid uid,
             final OperationOptions oo) {
-        LOG.info("Delete user: " + uid.getUidValue());
         try {
-            new UnixDelete(unixConfiguration, uid).delete();
+            new UnixDelete(oc, unixConfiguration, uid).delete();
         } catch (IOException ex) {
             LOG.error("Error in connection process", ex);
         }
@@ -98,7 +97,7 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
         Uid uidResult = null;
         try {
             LOG.info("Authenticate user: " + username);
-            uidResult = new UnixAuthenticate(
+            uidResult = new UnixAuthenticate(oc,
                     unixConfiguration, username, gs).authenticate();
         } catch (IOException ex) {
             LOG.error("Error in connection process", ex);
@@ -109,9 +108,8 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
     @Override
     public final Uid update(final ObjectClass oc, final Uid uid,
             final Set<Attribute> set, final OperationOptions oo) {
-        LOG.info("Update user: " + uid.getUidValue());
         try {
-            new UnixUpdate(unixConfiguration, uid, set).update();
+            new UnixUpdate(oc, unixConfiguration, uid, set).update();
         } catch (IOException ex) {
             LOG.error("Error in connection process", ex);
         }
@@ -119,12 +117,14 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
     }
 
     @Override
-    public FilterTranslator<String> createFilterTranslator(ObjectClass oc, OperationOptions oo) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void executeQuery(final ObjectClass oc, final String t,
+            final ResultsHandler rh, final OperationOptions oo) {
+        LOG.info("Execute query");
+        new UnixExecuteQuery().executeQuery();
     }
 
     @Override
-    public void executeQuery(ObjectClass oc, String t, ResultsHandler rh, OperationOptions oo) {
+    public FilterTranslator<String> createFilterTranslator(ObjectClass oc, OperationOptions oo) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
