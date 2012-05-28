@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.connid.unix.utilities.Utilities;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
@@ -64,7 +65,8 @@ public class UnixAuthenticate extends CommonMethods {
         if (!objectClass.equals(ObjectClass.ACCOUNT)) {
             throw new IllegalStateException("Wrong object class");
         }
-        unixConnection.authenticate(username, getPlainPassword(password));
+        unixConnection.authenticate(username,
+                Utilities.getPlainPassword(password));
         return new Uid(username);
     }
 }

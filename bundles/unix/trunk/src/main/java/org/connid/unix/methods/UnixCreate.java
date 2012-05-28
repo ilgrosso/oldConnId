@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Set;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.connid.unix.utilities.Utilities;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
-import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.*;
 
@@ -101,8 +101,8 @@ public class UnixCreate extends CommonMethods {
             }
         }
 
-        final String password =
-                getPlainPassword(AttributeUtil.getPasswordValue(attrs));
+        final String password = Utilities.getPlainPassword(
+                AttributeUtil.getPasswordValue(attrs));
 
         connection.create(username, password, comment, status);
 

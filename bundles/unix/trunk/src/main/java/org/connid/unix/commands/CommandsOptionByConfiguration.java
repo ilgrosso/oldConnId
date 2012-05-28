@@ -25,11 +25,23 @@ package org.connid.unix.commands;
 
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.connid.unix.utilities.Utilities;
 
 public class CommandsOptionByConfiguration {
 
     private UnixConfiguration unixConfiguration =
             UnixConnection.getConfiguration();
+
+    public final String sudoAuthorization() {
+        String sudoAuthorization = "";
+        if (!unixConfiguration.isRoot()) {
+            sudoAuthorization = "sudo -k; echo "
+                    + Utilities.getPlainPassword(
+                    unixConfiguration.getSudoPassword())
+                    + " | sudo -v -S; sudo ";
+        }
+        return sudoAuthorization;
+    }
 
     public final String createHomeDirectory() {
         String option = "";
@@ -50,7 +62,7 @@ public class CommandsOptionByConfiguration {
     public final String baseHomeDirectory() {
         return "-b " + unixConfiguration.getBaseHomeDirectory();
     }
-    
+
     public final String userShell() {
         return "-s " + unixConfiguration.getShell();
     }

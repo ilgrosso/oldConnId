@@ -41,6 +41,8 @@ public class UnixConfiguration extends AbstractConfiguration {
     private boolean deleteHomeDirectory = false;
     private String baseHomeDirectory = "";
     private String shell = "";
+    private boolean root = false;
+    private GuardedString sudoPassword = null;
 
     @ConfigurationProperty(displayMessageKey = "unix.admin.display",
     helpMessageKey = "unix.admin.help", order = 1)
@@ -124,6 +126,26 @@ public class UnixConfiguration extends AbstractConfiguration {
         this.shell = shell;
     }
 
+    @ConfigurationProperty(displayMessageKey = "unix.isroot.display",
+    helpMessageKey = "unix.isroot.help", order = 9)
+    public boolean isRoot() {
+        return root;
+    }
+
+    public void setIsRoot(boolean root) {
+        this.root = root;
+    }
+
+    @ConfigurationProperty(displayMessageKey = "unix.sudopwd.display",
+    helpMessageKey = "unix.sudopwd.help", order = 10)
+    public GuardedString getSudoPassword() {
+        return sudoPassword;
+    }
+
+    public void setSudoPassword(GuardedString sudoPassword) {
+        this.sudoPassword = sudoPassword;
+    }
+    
     @Override
     public final void validate() {
         if (StringUtil.isBlank(admin)) {
@@ -158,6 +180,10 @@ public class UnixConfiguration extends AbstractConfiguration {
         }
         if (StringUtil.isBlank(shell)) {
             shell = DefaultProperties.UNIX_SHELL;
+        }
+        if ((!root) && (StringUtil.isBlank(sudoPassword.toString()))) {
+            throw new ConfigurationException(
+                    "Unix connector needs sudo password or root password");
         }
     }
 }

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.connid.unix.utilities.Utilities;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
@@ -87,7 +88,7 @@ public class UnixUpdate extends CommonMethods {
             if (attr.is(Name.NAME) || attr.is(Uid.NAME)) {
                 username = (String) attr.getValue().get(0);
             } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
-                password = getPlainPassword(
+                password = Utilities.getPlainPassword(
                         (GuardedString) attr.getValue().get(0));
             } else {
                 List<Object> values = attr.getValue();

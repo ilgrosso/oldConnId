@@ -21,17 +21,22 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  */
-package org.connid.unix.methods;
+package org.connid.unix.utilities;
 
-import com.sshtools.j2ssh.util.InvalidStateException;
-import java.io.IOException;
-import org.connid.unix.UnixConnection;
+import org.identityconnectors.common.security.GuardedString;
 
-public class CommonMethods {
+public class Utilities {
 
-    protected final boolean userExists(final String username,
-            final UnixConnection unixConnection)
-            throws IOException, InvalidStateException, InterruptedException {
-        return unixConnection.userExists(username);
+    public static String getPlainPassword(final GuardedString password) {
+        final StringBuffer buf = new StringBuffer();
+
+        password.access(new GuardedString.Accessor() {
+
+            @Override
+            public void access(final char[] clearChars) {
+                buf.append(clearChars);
+            }
+        });
+        return buf.toString();
     }
 }

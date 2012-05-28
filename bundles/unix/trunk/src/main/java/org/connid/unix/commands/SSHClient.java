@@ -35,23 +35,27 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+import org.connid.unix.UnixConfiguration;
 import org.connid.unix.utilities.DefaultProperties;
+import org.connid.unix.utilities.Utilities;
 import org.identityconnectors.common.logging.Log;
 
 public class SSHClient {
 
     private static final Log LOG = Log.getLog(SSHClient.class);
     private SshConnectionProperties properties = new SshConnectionProperties();
+    private UnixConfiguration unixConfiguration = null;
     private String username;
     private String password;
     private SshClient sshClient = null;
 
-    public SSHClient(final String host, final int port, final String userName,
-            final String password) {
-        properties.setHost(host);
-        properties.setPort(port);
-        this.username = userName;
-        this.password = password;
+    public SSHClient(final UnixConfiguration unixConfiguration) {
+        this.unixConfiguration = unixConfiguration;
+        properties.setHost(unixConfiguration.getHostname());
+        properties.setPort(unixConfiguration.getPort());
+        this.username = unixConfiguration.getAdmin();
+        this.password = Utilities.getPlainPassword(
+                unixConfiguration.getPassword());
         sshClient = new SshClient();
         sshClient.setSocketTimeout(DefaultProperties.SSH_SOCKET_TIMEOUT);
     }

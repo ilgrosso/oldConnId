@@ -33,11 +33,11 @@ public class Commands {
 
     public static String getUserAddCommand(final String username,
             final String password, final String comment, final boolean status) {
-        StringBuilder useraddCommand = new StringBuilder("useradd ");
-        useraddCommand.append(
-                commandsOption.createHomeDirectory()).append(" ").append(
-                commandsOption.baseHomeDirectory()).append(" ").append(
-                commandsOption.userShell());
+        StringBuilder useraddCommand = new StringBuilder();
+        useraddCommand.append(commandsOption.sudoAuthorization()).append(
+                "useradd ").append(commandsOption.createHomeDirectory()).append(
+                " ").append(commandsOption.baseHomeDirectory()).append(
+                " ").append(commandsOption.userShell());
         if (status) {
             useraddCommand.append(" -e ").append(Constants.getInactiveDate());
         }
@@ -53,7 +53,9 @@ public class Commands {
 
     public static String getUserModCommand(final String actualUsername,
             final String username, final String password) {
-        StringBuilder usermodCommand = new StringBuilder("usermod ");
+        StringBuilder usermodCommand = new StringBuilder();
+        usermodCommand.append(
+                commandsOption.sudoAuthorization()).append("usermod ");
         if ((StringUtil.isNotBlank(username))
                 && (StringUtil.isNotEmpty(username))) {
             usermodCommand.append("-l ").append(username);
@@ -69,7 +71,11 @@ public class Commands {
     }
 
     public static String getUserDelCommand(final String username) {
-        return "userdel " + commandsOption.deleteHomeDirectory()
-                + " " + username;
+        StringBuilder userdelCommand = new StringBuilder();
+        userdelCommand.append(
+                commandsOption.sudoAuthorization()).append("userdel ").append(
+                commandsOption.deleteHomeDirectory()).append(
+                " ").append(username);
+        return userdelCommand.toString();
     }
 }

@@ -37,10 +37,7 @@ public class UnixConnection {
     private UnixConnection(final UnixConfiguration unixConfiguration)
             throws IOException {
         this.unixConfiguration = unixConfiguration;
-        sshc = new SSHClient(
-                unixConfiguration.getHostname(), unixConfiguration.getPort(),
-                unixConfiguration.getAdmin(),
-                getPlainPassword(unixConfiguration.getPassword()));
+        sshc = new SSHClient(unixConfiguration);
     }
 
     public static UnixConnection openConnection(
@@ -81,18 +78,5 @@ public class UnixConnection {
     public void authenticate(final String username, final String password)
             throws UnknownHostException, IOException {
         sshc.authenticate(username, password);
-    }
-
-    private final String getPlainPassword(final GuardedString password) {
-        final StringBuffer buf = new StringBuffer();
-
-        password.access(new GuardedString.Accessor() {
-
-            @Override
-            public void access(final char[] clearChars) {
-                buf.append(clearChars);
-            }
-        });
-        return buf.toString();
     }
 }
