@@ -26,8 +26,7 @@ package org.connid.unix;
 import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import org.connid.unix.commands.SSHClient;
-import org.identityconnectors.common.security.GuardedString;
+import org.connid.unix.sshmanagement.SSHClient;
 
 public class UnixConnection {
 

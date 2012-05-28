@@ -21,7 +21,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  */
-package org.connid.unix.commands;
+package org.connid.unix.sshmanagement;
 
 import com.sshtools.j2ssh.SshClient;
 import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
@@ -36,8 +36,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 import org.connid.unix.UnixConfiguration;
+import org.connid.unix.commands.GeneralCommands;
+import org.connid.unix.commands.PasswdCommand;
+import org.connid.unix.commands.SudoCommand;
+import org.connid.unix.commands.UserAddCommand;
+import org.connid.unix.commands.UserDelCommand;
+import org.connid.unix.commands.UserModCommand;
 import org.connid.unix.utilities.DefaultProperties;
 import org.connid.unix.utilities.Utilities;
+import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 
 public class SSHClient {
@@ -70,8 +77,7 @@ public class SSHClient {
             throws IOException, InvalidStateException, InterruptedException {
         String output = "";
         SessionChannelClient session = getSession();
-        String cmd = Commands.getUserExistsCommand(username);
-        if (session.executeCommand(cmd)) {
+        if (session.executeCommand(GeneralCommands.getUserExistsCommand(username))) {
             output = getOutput(session);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
@@ -85,8 +91,8 @@ public class SSHClient {
             final String comment, final boolean status)
             throws IOException, InvalidStateException, InterruptedException {
         SessionChannelClient session = getSession();
-        if (session.executeCommand(Commands.getUserAddCommand(
-                uidstring, password, comment, status))) {
+        if (session.executeCommand(
+                createAddCommand(uidstring, password, comment, status))) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during useradd operation");
@@ -94,12 +100,28 @@ public class SSHClient {
         sshClient.disconnect();
     }
 
+    private String createAddCommand(final String uidstring,
+            final String password, final String comment, final boolean status) {
+        UserAddCommand userAddCommand = new UserAddCommand(
+                unixConfiguration, uidstring, password, comment, status);
+        PasswdCommand passwdCommand = new PasswdCommand(uidstring, password);
+        StringBuilder commandToExecute = new StringBuilder();
+        if (!unixConfiguration.isRoot()) {
+            SudoCommand sudoCommand =
+                    new SudoCommand(unixConfiguration.getSudoPassword());
+            commandToExecute.append(sudoCommand.sudo()).append("; ");
+        }
+        commandToExecute.append(userAddCommand.useradd()).append("; ").append(
+                passwdCommand.passwd());
+        return commandToExecute.toString();
+    }
+
     public final void updateUser(final String actualUsername,
             final String username, final String password)
             throws IOException, InvalidStateException, InterruptedException {
-        SessionChannelClient session = getSession();
-        if (session.executeCommand(Commands.getUserModCommand(actualUsername,
-                username, password))) {
+        SessionChannelClient session = getSession();;
+        if (session.executeCommand(
+                createModCommand(actualUsername, username, password))) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during usermod operation");
@@ -107,11 +129,26 @@ public class SSHClient {
         sshClient.disconnect();
     }
 
+    private String createModCommand(final String actualUsername,
+            final String username, final String password) {
+        UserModCommand userModCommand =
+                new UserModCommand(actualUsername, username);
+        StringBuilder commandToExecute = new StringBuilder();
+        commandToExecute.append(userModCommand);
+        if ((StringUtil.isNotBlank(password))
+                && (StringUtil.isNotEmpty(password))) {
+            PasswdCommand passwdCommand = new PasswdCommand(username, password);
+            commandToExecute.append("; ").append(passwdCommand.passwd());
+        }
+        return commandToExecute.toString();
+    }
+
     public final void deleteUser(final String username)
             throws IOException, InvalidStateException, InterruptedException {
         SessionChannelClient session = getSession();
-        if (session.executeCommand(
-                Commands.getUserDelCommand(username))) {
+        UserDelCommand userDelCommand =
+                new UserDelCommand(unixConfiguration, username);
+        if (session.executeCommand(userDelCommand.userdel())) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during deleted operation");
