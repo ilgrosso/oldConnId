@@ -141,11 +141,11 @@ public class SSHClient {
     }
 
     public final void updateUser(final String actualUsername,
-            final String username, final String password)
+            final String newUserName, final String password)
             throws IOException, InvalidStateException, InterruptedException {
         SessionChannelClient session = getSession();;
         if (session.executeCommand(
-                createModCommand(actualUsername, username, password))) {
+                createModCommand(actualUsername, newUserName, password))) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during usermod operation");
@@ -154,17 +154,30 @@ public class SSHClient {
     }
 
     private String createModCommand(final String actualUsername,
-            final String username, final String password) {
+            final String newUserName, final String password) {
         UserModCommand userModCommand =
-                new UserModCommand(actualUsername, username);
+                new UserModCommand(actualUsername, newUserName);
         StringBuilder commandToExecute = new StringBuilder();
         commandToExecute.append(userModCommand);
         if ((StringUtil.isNotBlank(password))
                 && (StringUtil.isNotEmpty(password))) {
-            PasswdCommand passwdCommand = new PasswdCommand(username, password);
+            PasswdCommand passwdCommand = new PasswdCommand(newUserName, password);
             commandToExecute.append("; ").append(passwdCommand.passwd());
         }
         return commandToExecute.toString();
+    }
+
+    public void updateGroup(String actualGroupName, String newUserName)
+            throws IOException, InvalidStateException, InterruptedException {
+        GroupModCommand groupModCommand =
+                new GroupModCommand(actualGroupName, newUserName);
+        SessionChannelClient session = getSession();
+        if (session.executeCommand(groupModCommand.groupMod())) {
+            session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
+        } else {
+            LOG.error("Error during groupmod operation");
+        }
+        sshClient.disconnect();
     }
 
     public final void deleteUser(final String username)

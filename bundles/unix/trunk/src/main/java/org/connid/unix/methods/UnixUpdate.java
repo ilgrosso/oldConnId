@@ -43,7 +43,7 @@ public class UnixUpdate extends CommonMethods {
     private UnixConfiguration configuration = null;
     private UnixConnection connection = null;
     private Uid uid = null;
-    private String username = "";
+    private String newUserName = "";
     private String password = "";
     private ObjectClass objectClass = null;
 
@@ -76,27 +76,36 @@ public class UnixUpdate extends CommonMethods {
 
         LOG.info("Update user: " + uid.getUidValue());
 
-        if (!objectClass.equals(ObjectClass.ACCOUNT)) {
+        if (!objectClass.equals(ObjectClass.ACCOUNT)
+                && (!objectClass.equals(ObjectClass.GROUP))) {
             throw new IllegalStateException("Wrong object class");
         }
 
-        if (!userExists(uid.getUidValue(), connection)) {
-            throw new ConnectorException(
-                    "User " + uid + " do not exists");
-        }
-        for (Attribute attr : attrs) {
-            if (attr.is(Name.NAME) || attr.is(Uid.NAME)) {
-                username = (String) attr.getValue().get(0);
-            } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
-                password = Utilities.getPlainPassword(
-                        (GuardedString) attr.getValue().get(0));
-            } else {
-                List<Object> values = attr.getValue();
-                if ((values != null) && (!values.isEmpty())) {
+        if (objectClass.equals(ObjectClass.ACCOUNT)) {
+            if (!userExists(uid.getUidValue(), connection)) {
+                throw new ConnectorException(
+                        "User " + uid + " do not exists");
+            }
+            for (Attribute attr : attrs) {
+                if (attr.is(Name.NAME) || attr.is(Uid.NAME)) {
+                    newUserName = (String) attr.getValue().get(0);
+                } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
+                    password = Utilities.getPlainPassword(
+                            (GuardedString) attr.getValue().get(0));
+                } else {
+                    List<Object> values = attr.getValue();
+                    if ((values != null) && (!values.isEmpty())) {
+                    }
                 }
             }
+            connection.updateUser(uid.getUidValue(), newUserName, password);
+        } else if (objectClass.equals(ObjectClass.GROUP)) {
+            if (!groupExists(newUserName, connection)) {
+                throw new ConnectorException(
+                        "Group do not exists");
+            }
+            connection.updateGroup(uid.getUidValue(), newUserName);
         }
-        connection.update(uid.getUidValue(), username, password);
         return uid;
     }
 }

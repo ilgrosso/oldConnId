@@ -28,7 +28,7 @@ import org.identityconnectors.framework.common.objects.ObjectClass;
 
 public class AttributesTestValue extends SharedTestMethods {
 
-    private final static String USERNAME = "createtest" + randomNumber();
+    private String USERNAME = "createtest" + randomNumber();
     private static final String WRONG_USERNAME = "wronguser";
     private static final String PASSWORD = "password";
     private final GuardedString GUARDED_PASSWORD =
@@ -40,7 +40,8 @@ public class AttributesTestValue extends SharedTestMethods {
     private static final String NEW_PASSWORD = "password2";
     private final ObjectClass WRONG_OBJECTCLASS =
             new ObjectClass("WRONG_OBJECTCLASS");
-    private final static String GROUPNAME = "grouptest" + randomNumber();
+    private String GROUPNAME = "grouptest" + randomNumber();
+    private String NEW_GROUPNAME = "grouptest" + randomNumber();
     private static final String WRONG_GROUPNAME = "wronggroup";
 
     public String getUsername() {
@@ -82,8 +83,12 @@ public class AttributesTestValue extends SharedTestMethods {
     public String getWrongGroupName() {
         return WRONG_GROUPNAME;
     }
+    
+    public String getNewGroupName() {
+        return NEW_GROUPNAME;
+    }
 
-    private static int randomNumber() {
+    private int randomNumber() {
         return (int) (Math.random() * 100000);
     }
 }

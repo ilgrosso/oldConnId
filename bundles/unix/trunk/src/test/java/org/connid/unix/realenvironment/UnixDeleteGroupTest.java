@@ -30,6 +30,7 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,9 +54,14 @@ public class UnixDeleteGroupTest extends SharedTestMethods {
         connector.delete(ObjectClass.GROUP,
                 new Uid(attrs.getWrongGroupName()), null);
     }
-    
+
     @Test(expected = ConnectorException.class)
     public final void deleteNullUser() {
         connector.delete(ObjectClass.GROUP, null, null);
+    }
+
+    @After
+    public final void close() {
+        connector.dispose();
     }
 }

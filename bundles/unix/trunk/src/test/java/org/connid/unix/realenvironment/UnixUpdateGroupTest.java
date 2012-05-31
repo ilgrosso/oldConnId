@@ -31,11 +31,10 @@ import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UnixUpdateUserTest extends SharedTestMethods {
+public class UnixUpdateGroupTest extends SharedTestMethods {
 
     private UnixConnector connector = null;
     private Name name = null;
@@ -50,86 +49,62 @@ public class UnixUpdateUserTest extends SharedTestMethods {
         name = new Name(attrs.getUsername());
     }
 
-    @Test
-    public final void updateAndAuthenticateWithNewPassword() {
-        newAccount = connector.create(ObjectClass.ACCOUNT,
+    public final void updateGroup() {
+        newAccount = connector.create(ObjectClass.GROUP,
                 createSetOfAttributes(name, attrs.getPassword()), null);
-        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
-        connector.update(ObjectClass.ACCOUNT, newAccount,
+        connector.update(ObjectClass.GROUP, new Uid(attrs.getNewGroupName()),
                 createSetOfAttributes(name, attrs.getNewPassword()), null);
-        connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
-                attrs.getNewGuardedPassword(), null);
+        connector.delete(ObjectClass.GROUP,
+                new Uid(attrs.getNewGroupName()), null);
     }
 
     @Test(expected = ConnectorException.class)
-    public final void updateAndAuthenticateWithOldPassword() {
-        newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, attrs.getPassword()), null);
-        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
-        connector.update(ObjectClass.ACCOUNT, newAccount,
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
-        connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
-                attrs.getGuardedPassword(), null);
-    }
-
-    @Test(expected = ConnectorException.class)
-    public final void updateNotExistsUser() {
-        connector.update(ObjectClass.ACCOUNT, new Uid(attrs.getWrongUsername()),
+    public final void updateNotExistsGroup() {
+        connector.update(ObjectClass.GROUP, new Uid(attrs.getWrongGroupName()),
                 createSetOfAttributes(name, attrs.getNewPassword()), null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithWrongObjectClass() {
-        newAccount = connector.create(ObjectClass.ACCOUNT,
+        newAccount = connector.create(ObjectClass.GROUP,
                 createSetOfAttributes(name, attrs.getPassword()), null);
         connector.update(attrs.getWrongObjectClass(), newAccount,
                 createSetOfAttributes(name, attrs.getNewPassword()), null);
     }
 
     @Test(expected = ConnectorException.class)
-    public void updateWithNullObjectClass() {
-        connector.update(null, newAccount,
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
-    }
-
-    @Test(expected = ConnectorException.class)
     public void updateWithNullUid() {
-        connector.update(ObjectClass.ACCOUNT, null,
+        connector.update(ObjectClass.GROUP, null,
                 createSetOfAttributes(name, attrs.getNewPassword()), null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithNullSet() {
-        newAccount = connector.create(ObjectClass.ACCOUNT,
+        newAccount = connector.create(ObjectClass.GROUP,
                 createSetOfAttributes(name, attrs.getPassword()), null);
-        connector.update(ObjectClass.ACCOUNT, newAccount, null, null);
+        connector.update(ObjectClass.GROUP, newAccount, null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateWithNullPwd() {
-        newAccount = connector.create(ObjectClass.ACCOUNT,
+        newAccount = connector.create(ObjectClass.GROUP,
                 createSetOfAttributes(name, attrs.getPassword()), null);
-        connector.update(ObjectClass.ACCOUNT, newAccount,
+        connector.update(ObjectClass.GROUP, newAccount,
                 createSetOfAttributes(name, null), null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithNullUsername() {
-        newAccount = connector.create(ObjectClass.ACCOUNT,
+        newAccount = connector.create(ObjectClass.GROUP,
                 createSetOfAttributes(name, attrs.getPassword()), null);
-        connector.update(ObjectClass.ACCOUNT, newAccount,
+        connector.update(ObjectClass.GROUP, newAccount,
                 createSetOfAttributes(null, attrs.getPassword()), null);
-    }
-
-    @Test(expected = ConnectorException.class)
-    public void updateWithAllNull() {
-        connector.update(null, null, null, null);
     }
 
     @After
     public final void close() {
         if (newAccount != null) {
-            connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+            connector.delete(ObjectClass.GROUP, newAccount, null);
         }
         connector.dispose();
     }

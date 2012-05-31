@@ -73,10 +73,15 @@ public class UnixConnection {
         sshc.createGroup(groupName);
     }
 
-    public void update(final String actualUsername,
+    public void updateUser(final String actualUsername,
             final String username, final String password)
             throws IOException, InvalidStateException, InterruptedException {
         sshc.updateUser(actualUsername, username, password);
+    }
+
+    public void updateGroup(String actualGroupName, String newUserName)
+            throws IOException, InvalidStateException, InterruptedException {
+        sshc.updateGroup(actualGroupName, newUserName);
     }
 
     public void deleteUser(final String username)
