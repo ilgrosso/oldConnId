@@ -36,7 +36,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UnixUpdateTest extends SharedTestMethods {
+public class UnixUpdateUserTest extends SharedTestMethods {
 
     private UnixConnector connector = null;
     private Name name = null;

@@ -30,12 +30,10 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UnixCreateTest extends SharedTestMethods {
+public class UnixDeleteGroupTest extends SharedTestMethods {
 
     private UnixConnector connector = null;
     private Name name = null;
@@ -50,53 +48,14 @@ public class UnixCreateTest extends SharedTestMethods {
         name = new Name(attrs.getUsername());
     }
 
-    @Test
-    public final void createExistsUser() {
-        boolean userExists = false;
-        newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name,
-                attrs.getPassword()), null);
-        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
-        try {
-            connector.create(ObjectClass.ACCOUNT,
-                    createSetOfAttributes(name, attrs.getPassword()), null);
-        } catch (Exception e) {
-            userExists = true;
-        }
-        Assert.assertTrue(userExists);
-        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
-    }
-
     @Test(expected = ConnectorException.class)
-    public void createWithWrongObjectClass() {
-        connector.create(attrs.getWrongObjectClass(),
-                createSetOfAttributes(name, attrs.getPassword()), null);
+    public final void deleteNotExistsUser() {
+        connector.delete(ObjectClass.GROUP,
+                new Uid(attrs.getWrongGroupName()), null);
     }
-
+    
     @Test(expected = ConnectorException.class)
-    public void createTestWithNull() {
-        connector.create(attrs.getWrongObjectClass(), null, null);
-    }
-
-    @Test(expected = ConnectorException.class)
-    public void createTestWithNameNull() {
-        connector.create(attrs.getWrongObjectClass(),
-                createSetOfAttributes(null, attrs.getPassword()), null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void createTestWithPasswordNull() {
-        connector.create(attrs.getWrongObjectClass(),
-                createSetOfAttributes(name, null), null);
-    }
-
-    @Test(expected = ConnectorException.class)
-    public void createTestWithAllNull() {
-        connector.create(null, null, null);
-    }
-
-    @After
-    public final void close() {
-        connector.dispose();
+    public final void deleteNullUser() {
+        connector.delete(ObjectClass.GROUP, null, null);
     }
 }

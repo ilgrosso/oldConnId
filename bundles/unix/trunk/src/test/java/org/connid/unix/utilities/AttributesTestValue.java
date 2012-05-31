@@ -28,18 +28,20 @@ import org.identityconnectors.framework.common.objects.ObjectClass;
 
 public class AttributesTestValue extends SharedTestMethods {
 
-    private String USERNAME = "createtest" + randomNumber();
-    private String WRONG_USERNAME = "wronguser";
-    private final String PASSWORD = "password";
+    private final static String USERNAME = "createtest" + randomNumber();
+    private static final String WRONG_USERNAME = "wronguser";
+    private static final String PASSWORD = "password";
     private final GuardedString GUARDED_PASSWORD =
             new GuardedString(getPassword().toCharArray());
     private final GuardedString NEW_GUARDED_PASSWORD =
             new GuardedString(getNewPassword().toCharArray());
     private final GuardedString WRONG_GUARDED_PASSWORD =
             new GuardedString("wrongpassword".toCharArray());
-    private final String NEW_PASSWORD = "password2";
+    private static final String NEW_PASSWORD = "password2";
     private final ObjectClass WRONG_OBJECTCLASS =
             new ObjectClass("WRONG_OBJECTCLASS");
+    private final static String GROUPNAME = "grouptest" + randomNumber();
+    private static final String WRONG_GROUPNAME = "wronggroup";
 
     public String getUsername() {
         return USERNAME;
@@ -52,7 +54,7 @@ public class AttributesTestValue extends SharedTestMethods {
     public GuardedString getGuardedPassword() {
         return GUARDED_PASSWORD;
     }
-    
+
     public GuardedString getNewGuardedPassword() {
         return NEW_GUARDED_PASSWORD;
     }
@@ -64,7 +66,7 @@ public class AttributesTestValue extends SharedTestMethods {
     public String getPassword() {
         return PASSWORD;
     }
-    
+
     public String getNewPassword() {
         return NEW_PASSWORD;
     }
@@ -73,7 +75,15 @@ public class AttributesTestValue extends SharedTestMethods {
         return WRONG_OBJECTCLASS;
     }
 
-    private int randomNumber() {
+    public String getGroupName() {
+        return GROUPNAME;
+    }
+
+    public String getWrongGroupName() {
+        return WRONG_GROUPNAME;
+    }
+
+    private static int randomNumber() {
         return (int) (Math.random() * 100000);
     }
 }

@@ -36,12 +36,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 import org.connid.unix.UnixConfiguration;
-import org.connid.unix.commands.GeneralCommands;
-import org.connid.unix.commands.PasswdCommand;
-import org.connid.unix.commands.SudoCommand;
-import org.connid.unix.commands.UserAddCommand;
-import org.connid.unix.commands.UserDelCommand;
-import org.connid.unix.commands.UserModCommand;
+import org.connid.unix.commands.*;
 import org.connid.unix.utilities.DefaultProperties;
 import org.connid.unix.utilities.Utilities;
 import org.identityconnectors.common.StringUtil;
@@ -77,7 +72,23 @@ public class SSHClient {
             throws IOException, InvalidStateException, InterruptedException {
         String output = "";
         SessionChannelClient session = getSession();
-        if (session.executeCommand(GeneralCommands.getUserExistsCommand(username))) {
+        if (session.executeCommand(
+                GeneralCommands.getUserExistsCommand(username))) {
+            output = getOutput(session);
+            session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
+        } else {
+            LOG.error("Error during password encrypt");
+        }
+        sshClient.disconnect();
+        return !output.isEmpty();
+    }
+
+    public boolean groupExists(String groupname)
+            throws IOException, InvalidStateException, InterruptedException {
+        String output = "";
+        SessionChannelClient session = getSession();
+        if (session.executeCommand(
+                GeneralCommands.getGroupExistsCommand(groupname))) {
             output = getOutput(session);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
@@ -92,7 +103,7 @@ public class SSHClient {
             throws IOException, InvalidStateException, InterruptedException {
         SessionChannelClient session = getSession();
         if (session.executeCommand(
-                createAddCommand(uidstring, password, comment, status))) {
+                createUserAddCommand(uidstring, password, comment, status))) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during useradd operation");
@@ -100,7 +111,7 @@ public class SSHClient {
         sshClient.disconnect();
     }
 
-    private String createAddCommand(final String uidstring,
+    private String createUserAddCommand(final String uidstring,
             final String password, final String comment, final boolean status) {
         UserAddCommand userAddCommand = new UserAddCommand(
                 unixConfiguration, uidstring, password, comment, status);
@@ -114,6 +125,19 @@ public class SSHClient {
         commandToExecute.append(userAddCommand.useradd()).append("; ").append(
                 passwdCommand.passwd());
         return commandToExecute.toString();
+    }
+
+    public void createGroup(String groupName)
+            throws IOException, InvalidStateException, InterruptedException {
+
+        SessionChannelClient session = getSession();
+        GroupAddCommand groupAddCommand = new GroupAddCommand(groupName);
+        if (session.executeCommand(groupAddCommand.groupadd())) {
+            session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
+        } else {
+            LOG.error("Error during groupadd operation");
+        }
+        sshClient.disconnect();
     }
 
     public final void updateUser(final String actualUsername,
@@ -149,6 +173,18 @@ public class SSHClient {
         UserDelCommand userDelCommand =
                 new UserDelCommand(unixConfiguration, username);
         if (session.executeCommand(userDelCommand.userdel())) {
+            session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
+        } else {
+            LOG.error("Error during deleted operation");
+        }
+        sshClient.disconnect();
+    }
+
+    public void deleteGroup(String groupName)
+            throws IOException, InvalidStateException, InterruptedException {
+        SessionChannelClient session = getSession();
+        GroupDelCommand groupDelCommand = new GroupDelCommand(groupName);
+        if (session.executeCommand(groupDelCommand.groupDel())) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during deleted operation");

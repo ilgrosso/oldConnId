@@ -23,13 +23,25 @@
  */
 package org.connid.unix.commands;
 
-public class GeneralCommands {
+public class GroupAddCommand {
 
-    public static String getUserExistsCommand(final String username) {
-        return "cat /etc/passwd | grep " + username;
+    /**
+     * The groupadd command creates a new group account using the values
+     * specified on the command line plus the default values from the system.
+     * The new group will be entered into the system files as needed.
+     */
+    private static final String GROUPADD_COMMAND = "groupadd";
+    private String groupname = "";
+
+    public GroupAddCommand(final String groupname) {
+        this.groupname = groupname;
     }
 
-    public static String getGroupExistsCommand(String groupname) {
-        return "cat /etc/group | grep " + groupname;
+    private String createGroupAddCommand() {
+        return GROUPADD_COMMAND + " " + groupname;
+    }
+
+    public String groupadd() {
+        return createGroupAddCommand();
     }
 }

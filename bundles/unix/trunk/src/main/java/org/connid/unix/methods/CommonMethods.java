@@ -34,4 +34,10 @@ public class CommonMethods {
             throws IOException, InvalidStateException, InterruptedException {
         return unixConnection.userExists(username);
     }
+
+    protected final boolean groupExists(final String groupname,
+            final UnixConnection unixConnection)
+            throws IOException, InvalidStateException, InterruptedException {
+        return unixConnection.groupExists(groupname);
+    }
 }

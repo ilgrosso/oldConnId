@@ -66,7 +66,8 @@ public class UnixCreate extends CommonMethods {
         boolean status = false;
         String comment = "";
 
-        if (!objectClass.equals(ObjectClass.ACCOUNT)) {
+        if (!objectClass.equals(ObjectClass.ACCOUNT)
+                && (!objectClass.equals(ObjectClass.GROUP))) {
             throw new IllegalStateException("Wrong object class");
         }
 
@@ -79,32 +80,40 @@ public class UnixCreate extends CommonMethods {
 
         String username = name.getNameValue();
 
-        if (userExists(username, connection)) {
-            throw new ConnectorException(
-                    "User " + username + " already exists");
-        }
+        if (objectClass.equals(ObjectClass.ACCOUNT)) {
+            if (userExists(username, connection)) {
+                throw new ConnectorException(
+                        "User " + username + " already exists");
+            }
 
-        for (Attribute attr : attrs) {
-            if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
-                continue;
-            } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
-                // manage enable/disable status
-                if (attr.getValue() != null && !attr.getValue().isEmpty()) {
-                    status = Boolean.parseBoolean(
-                            attr.getValue().get(0).toString());
-                }
-            } else {
-                List<Object> values = attr.getValue();
-                if ((values != null) && (!values.isEmpty())) {
-                    comment = (String) values.get(0);
+            for (Attribute attr : attrs) {
+                if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
+                    continue;
+                } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
+                    // manage enable/disable status
+                    if (attr.getValue() != null && !attr.getValue().isEmpty()) {
+                        status = Boolean.parseBoolean(
+                                attr.getValue().get(0).toString());
+                    }
+                } else {
+                    List<Object> values = attr.getValue();
+                    if ((values != null) && (!values.isEmpty())) {
+                        comment = (String) values.get(0);
+                    }
                 }
             }
+
+            final String password = Utilities.getPlainPassword(
+                    AttributeUtil.getPasswordValue(attrs));
+
+            connection.createUser(username, password, comment, status);
+        } else if (objectClass.equals(ObjectClass.GROUP)) {
+            if (groupExists(username, connection)) {
+                throw new ConnectorException(
+                        "Group " + username + " already exists");
+            }
+            connection.createGroup(username);
         }
-
-        final String password = Utilities.getPlainPassword(
-                AttributeUtil.getPasswordValue(attrs));
-
-        connection.create(username, password, comment, status);
 
         return new Uid(username);
     }

@@ -53,14 +53,24 @@ public class UnixConnection {
         return sshc.userExists(username);
     }
 
+    public boolean groupExists(String groupname)
+            throws IOException, InvalidStateException, InterruptedException {
+        return sshc.groupExists(groupname);
+    }
+
     public void testConnection() throws IOException {
         sshc.getSession();
     }
 
-    public void create(final String uidstring,
+    public void createUser(final String uidstring,
             final String password, final String comment, final boolean status)
             throws IOException, InvalidStateException, InterruptedException {
         sshc.createUser(uidstring, password, comment, status);
+    }
+
+    public void createGroup(String groupName)
+            throws IOException, InvalidStateException, InterruptedException {
+        sshc.createGroup(groupName);
     }
 
     public void update(final String actualUsername,
@@ -69,9 +79,14 @@ public class UnixConnection {
         sshc.updateUser(actualUsername, username, password);
     }
 
-    public void delete(final String username)
+    public void deleteUser(final String username)
             throws IOException, InvalidStateException, InterruptedException {
         sshc.deleteUser(username);
+    }
+
+    public void deleteGroup(String groupName)
+            throws IOException, InvalidStateException, InterruptedException {
+        sshc.deleteGroup(groupName);
     }
 
     public void authenticate(final String username, final String password)

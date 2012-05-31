@@ -69,14 +69,22 @@ public class UnixDelete extends CommonMethods {
 
         LOG.info("Delete user: " + uid.getUidValue());
 
-        if (!objectClass.equals(ObjectClass.ACCOUNT)) {
+        if (!objectClass.equals(ObjectClass.ACCOUNT)
+                && (!objectClass.equals(ObjectClass.GROUP))) {
             throw new IllegalStateException("Wrong object class");
         }
 
-        if (!userExists(uid.getUidValue(), connection)) {
-            LOG.error("User do not exists");
-            throw new ConnectorException("User do not exists");
+        if (objectClass.equals(ObjectClass.ACCOUNT)) {
+            if (!userExists(uid.getUidValue(), connection)) {
+                LOG.error("User do not exists");
+                throw new ConnectorException("User do not exists");
+            }
+            connection.deleteUser(uid.getUidValue());
+        } else if (objectClass.equals(ObjectClass.GROUP)) {
+            if (!groupExists(uid.getUidValue(), connection)) {
+                throw new ConnectorException("Group do not exists");
+            }
+            connection.deleteGroup(uid.getUidValue());
         }
-        connection.delete(uid.getUidValue());
     }
 }

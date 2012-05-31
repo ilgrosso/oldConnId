@@ -34,7 +34,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UnixDeleteTest extends SharedTestMethods {
+public class UnixDeleteUserTest extends SharedTestMethods {
 
     private UnixConnector connector = null;
     private Name name = null;

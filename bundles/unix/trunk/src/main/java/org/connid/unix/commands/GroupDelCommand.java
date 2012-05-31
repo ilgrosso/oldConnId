@@ -23,13 +23,24 @@
  */
 package org.connid.unix.commands;
 
-public class GeneralCommands {
+public class GroupDelCommand {
 
-    public static String getUserExistsCommand(final String username) {
-        return "cat /etc/passwd | grep " + username;
+    /**
+     * The groupdel command modifies the system account files, deleting all
+     * entries that refer to group. The named group must exist.
+     */
+    private static final String GROUPDEL_COMMAND = "groupdel";
+    private String groupname = "";
+
+    public GroupDelCommand(final String groupName) {
+        this.groupname = groupName;
     }
 
-    public static String getGroupExistsCommand(String groupname) {
-        return "cat /etc/group | grep " + groupname;
+    private String createGropuDelCommand() {
+        return GROUPDEL_COMMAND + " " + groupname;
+    }
+
+    public String groupDel() {
+        return createGropuDelCommand();
     }
 }
