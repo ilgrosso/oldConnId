@@ -132,7 +132,7 @@ public class UnixConfiguration extends AbstractConfiguration {
         return root;
     }
 
-    public void setIsRoot(boolean root) {
+    public void setRoot(boolean root) {
         this.root = root;
     }
 

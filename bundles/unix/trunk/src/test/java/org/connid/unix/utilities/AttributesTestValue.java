@@ -83,7 +83,7 @@ public class AttributesTestValue extends SharedTestMethods {
     public String getWrongGroupName() {
         return WRONG_GROUPNAME;
     }
-    
+
     public String getNewGroupName() {
         return NEW_GROUPNAME;
     }

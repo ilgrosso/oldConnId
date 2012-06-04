@@ -45,7 +45,7 @@ public class SharedTestMethods {
         config.setShell(UnixProperties.UNIX_USER_SHELL);
         config.setCreateHomeDirectory(true);
         config.setDeleteHomeDirectory(true);
-        config.setIsRoot(true);
+        config.setRoot(true);
         config.setSudoPassword(null);
         return config;
     }
