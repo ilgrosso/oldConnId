@@ -74,9 +74,9 @@ public class UnixConnection {
     }
 
     public void updateUser(final String actualUsername,
-            final String username, final String password)
+            final String username, final String password, final boolean status)
             throws IOException, InvalidStateException, InterruptedException {
-        sshc.updateUser(actualUsername, username, password);
+        sshc.updateUser(actualUsername, username, password, status);
     }
 
     public void updateGroup(String actualGroupName, String newUserName)
@@ -97,5 +97,10 @@ public class UnixConnection {
     public void authenticate(final String username, final String password)
             throws UnknownHostException, IOException {
         sshc.authenticate(username, password);
+    }
+
+    public void searchUser(String username)
+            throws IOException, InvalidStateException, InterruptedException {
+        sshc.searchUser(username);
     }
 }

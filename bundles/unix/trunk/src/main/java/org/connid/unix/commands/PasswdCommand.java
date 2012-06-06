@@ -25,8 +25,6 @@ package org.connid.unix.commands;
 
 public class PasswdCommand {
 
-    private String username = "";
-    private String userPassword = "";
     /**
      * passwd - update user's authentication tokens.
      *
@@ -37,18 +35,38 @@ public class PasswdCommand {
      * from standard input, which can be a pipe.
      */
     private static final String READ_PASSWORD_FROM_STDIN = "--stdin";
+    /**
+     * This option is used to lock the specified account and it is available to
+     * root only. The locking is performed by rendering the encrypted password
+     * into an invalid string (by prefixing the encrypted string with an !).
+     */
+    private static final String LOCK_ACCOUNT = "-l";
+    /**
+     * This is the reverse of the -l option - it will unlock the account
+     * password by removing the ! prefix. This option is avail - able to root
+     * only. By default passwd will refuse to create a passwordless account (it
+     * will not unlock an account that has only "!" as a password). The force
+     * option -f will override this protection.
+     *
+     */
+    private static final String UNLOCK_ACCOUNT = "-u";
 
-    public PasswdCommand(final String username, final String password) {
-        this.username = username;
-        userPassword = password;
-    }
-
-    private String createChangeUserPasswordCommand() {
-        return "echo " + userPassword + " | " + PASSWD_COMMAND + " " + username
+    private String createChangeUserPasswordCommand(final String username,
+            final String password) {
+        return "echo " + password + " | " + PASSWD_COMMAND + " " + username
                 + " " + READ_PASSWORD_FROM_STDIN;
     }
 
-    public String passwd() {
-        return createChangeUserPasswordCommand();
+    public String setPassword(final String username,
+            final String password) {
+        return createChangeUserPasswordCommand(username, password);
+    }
+
+    public String lockUser(final String username) {
+        return PASSWD_COMMAND + " " + LOCK_ACCOUNT + " " + username;
+    }
+
+    public String unlockUser(final String username) {
+        return PASSWD_COMMAND + " " + UNLOCK_ACCOUNT + " " + username;
     }
 }

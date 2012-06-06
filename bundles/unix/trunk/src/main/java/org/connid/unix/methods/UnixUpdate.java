@@ -45,6 +45,7 @@ public class UnixUpdate extends CommonMethods {
     private Uid uid = null;
     private String newUserName = "";
     private String password = "";
+    private boolean status = false;
     private ObjectClass objectClass = null;
 
     public UnixUpdate(final ObjectClass oc,
@@ -92,13 +93,17 @@ public class UnixUpdate extends CommonMethods {
                 } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
                     password = Utilities.getPlainPassword(
                             (GuardedString) attr.getValue().get(0));
+                } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
+                    status = Boolean.parseBoolean(
+                                attr.getValue().get(0).toString());
                 } else {
                     List<Object> values = attr.getValue();
                     if ((values != null) && (!values.isEmpty())) {
                     }
                 }
             }
-            connection.updateUser(uid.getUidValue(), newUserName, password);
+            connection.updateUser(uid.getUidValue(), newUserName, password,
+                    status);
         } else if (objectClass.equals(ObjectClass.GROUP)) {
             if (!groupExists(newUserName, connection)) {
                 throw new ConnectorException(

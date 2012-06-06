@@ -57,7 +57,7 @@ public class UnixAuthenticate extends CommonMethods {
             return doAuthenticate();
         } catch (Exception e) {
             LOG.error(e, "error during authentication");
-            throw new ConnectorException("Username or Password wrong", e);
+            throw new ConnectorException("error during authentication", e);
         }
     }
 

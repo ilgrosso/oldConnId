@@ -117,14 +117,25 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
     }
 
     @Override
-    public void executeQuery(final ObjectClass oc, final String t,
+    public final void executeQuery(final ObjectClass oc, final String filter,
             final ResultsHandler rh, final OperationOptions oo) {
         LOG.info("Execute query");
-        new UnixExecuteQuery().executeQuery();
+        try {
+            new UnixExecuteQuery(
+                    unixConfiguration, oc, filter, rh).executeQuery();
+        } catch (IOException ex) {
+            LOG.error("Error in connection process", ex);
+        }
     }
 
     @Override
-    public FilterTranslator<String> createFilterTranslator(ObjectClass oc, OperationOptions oo) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public final FilterTranslator<String> createFilterTranslator(
+            final ObjectClass oc, final OperationOptions oo) {
+        System.out.println("");
+        if (oc == null || (!oc.equals(ObjectClass.ACCOUNT))
+                && (!oc.equals(ObjectClass.GROUP))) {
+            throw new IllegalArgumentException("Invalid objectclass");
+        }
+        return new UnixFilterTranslator();
     }
 }

@@ -39,16 +39,14 @@ public class UnixCreate extends CommonMethods {
 
     private static final Log LOG = Log.getLog(UnixCreate.class);
     private Set<Attribute> attrs = null;
-    private UnixConfiguration configuration = null;
     private UnixConnection connection = null;
     private ObjectClass objectClass = null;
 
     public UnixCreate(final ObjectClass oc,
             final UnixConfiguration unixConfiguration,
             final Set<Attribute> attributes) throws IOException {
-        this.configuration = unixConfiguration;
         this.attrs = attributes;
-        connection = UnixConnection.openConnection(configuration);
+        connection = UnixConnection.openConnection(unixConfiguration);
         objectClass = oc;
     }
 

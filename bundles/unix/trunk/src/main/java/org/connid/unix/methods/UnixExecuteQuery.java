@@ -23,12 +23,32 @@
  */
 package org.connid.unix.methods;
 
+import com.sshtools.j2ssh.util.InvalidStateException;
+import java.io.IOException;
+import org.connid.unix.UnixConfiguration;
+import org.connid.unix.UnixConnection;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.ResultsHandler;
 
 public class UnixExecuteQuery extends CommonMethods {
 
     private static final Log LOG = Log.getLog(UnixExecuteQuery.class);
+    private UnixConnection connection = null;
+    private String filter = null;
+    private ResultsHandler handler = null;
+    private ObjectClass objectClass = null;
+
+    public UnixExecuteQuery(final UnixConfiguration configuration,
+            final ObjectClass oc, final String filter,
+            final ResultsHandler rh) throws IOException {
+        connection = UnixConnection.openConnection(configuration);
+        this.filter = filter;
+        handler = rh;
+        objectClass = oc;
+    }
 
     public final void executeQuery() {
         try {
@@ -39,7 +59,24 @@ public class UnixExecuteQuery extends CommonMethods {
         }
     }
 
-    private void doExecuteQuery() {
-        throw new UnsupportedOperationException("Not yet implemented");
+    private void doExecuteQuery()
+            throws IOException, InvalidStateException, InterruptedException {
+        if (!objectClass.equals(ObjectClass.ACCOUNT)
+                && (!objectClass.equals(ObjectClass.GROUP))) {
+            throw new IllegalStateException("Wrong object class");
+        }
+
+        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
+        if (objectClass.equals(ObjectClass.ACCOUNT)) {
+            String username = cleanFilter(filter);
+            connection.userExists(username);
+        }
+
+    }
+
+    private String cleanFilter(String filter) {
+        String username[] = filter.split("=");
+        String a = username[1].substring(0, username.length - 1);
+        return a;
     }
 }

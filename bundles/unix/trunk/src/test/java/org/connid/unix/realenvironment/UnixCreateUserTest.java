@@ -23,13 +23,12 @@
  */
 package org.connid.unix.realenvironment;
 
+import java.util.Set;
 import org.connid.unix.UnixConnector;
 import org.connid.unix.utilities.AttributesTestValue;
 import org.connid.unix.utilities.SharedTestMethods;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -63,7 +62,26 @@ public class UnixCreateUserTest extends SharedTestMethods {
             userExists = true;
         }
         Assert.assertTrue(userExists);
-        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+    }
+
+    @Test(expected = ConnectorException.class)
+    public final void createLockedUser() {
+        Set<Attribute> attributes =
+                createSetOfAttributes(name, attrs.getPassword());
+        attributes.add(AttributeBuilder.buildEnabled(false));
+        newAccount = connector.create(ObjectClass.ACCOUNT, attributes, null);
+        connector.authenticate(ObjectClass.ACCOUNT, attrs.getUsername(),
+                attrs.getGuardedPassword(), null);
+    }
+
+    @Test
+    public final void createUnLockedUser() {
+        Set<Attribute> attributes =
+                createSetOfAttributes(name, attrs.getPassword());
+        attributes.add(AttributeBuilder.buildEnabled(true));
+        newAccount = connector.create(ObjectClass.ACCOUNT, attributes, null);
+        connector.authenticate(ObjectClass.ACCOUNT, attrs.getUsername(),
+                attrs.getGuardedPassword(), null);
     }
 
     @Test(expected = ConnectorException.class)
@@ -96,6 +114,9 @@ public class UnixCreateUserTest extends SharedTestMethods {
 
     @After
     public final void close() {
+        if (newAccount != null) {
+            connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+        }
         connector.dispose();
     }
 }

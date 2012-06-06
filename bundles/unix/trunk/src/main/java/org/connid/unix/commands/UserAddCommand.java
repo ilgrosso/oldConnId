@@ -74,16 +74,13 @@ public class UserAddCommand {
     private String username = "";
     private String password = "";
     private String comment = "";
-    private boolean status = false;
 
     public UserAddCommand(final UnixConfiguration configuration,
-            final String username, final String password, final String comment,
-            final boolean status) {
+            final String username, final String password, final String comment) {
         unixConfiguration = configuration;
         this.username = username;
         this.password = password;
         this.comment = comment;
-        this.status = status;
     }
 
     private String createUserAddCommand() {
@@ -95,10 +92,6 @@ public class UserAddCommand {
                 unixConfiguration.getBaseHomeDirectory()).append(" ");
         useraddCommand.append(SHELL_OPTION).append(" ").append(
                 unixConfiguration.getShell()).append(" ");
-        if (status) {
-            useraddCommand.append(EXPIRATE_DATE_USER_OPTION + " ").append(
-                    Constants.getInactiveDate()).append(" ");
-        }
         if ((StringUtil.isNotBlank(comment))
                 && (StringUtil.isNotEmpty(comment))) {
             useraddCommand.append(COMMENT + " ").append(comment).append(" ");
@@ -106,7 +99,7 @@ public class UserAddCommand {
         useraddCommand.append(username);
         return useraddCommand.toString();
     }
-    
+
     public String useradd() {
         return createUserAddCommand();
     }
