@@ -48,12 +48,22 @@ public class UnixConnection {
         return unixConfiguration;
     }
 
-    public boolean userExists(final String username)
+    public String userExists(final String username)
             throws IOException, InvalidStateException, InterruptedException {
         return sshc.userExists(username);
     }
 
-    public boolean groupExists(String groupname)
+    public String searchUser(final String username)
+            throws IOException, InvalidStateException, InterruptedException {
+        return sshc.searchUser(username);
+    }
+
+    public String userStatus(final String username)
+            throws IOException, InvalidStateException, InterruptedException {
+        return sshc.userStatus(username);
+    }
+
+    public String groupExists(String groupname)
             throws IOException, InvalidStateException, InterruptedException {
         return sshc.groupExists(groupname);
     }
@@ -97,10 +107,5 @@ public class UnixConnection {
     public void authenticate(final String username, final String password)
             throws UnknownHostException, IOException {
         sshc.authenticate(username, password);
-    }
-
-    public void searchUser(String username)
-            throws IOException, InvalidStateException, InterruptedException {
-        sshc.searchUser(username);
     }
 }

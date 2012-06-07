@@ -21,23 +21,24 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  */
-package org.connid.unix.methods;
+package org.connid.unix.utilities;
 
-import com.sshtools.j2ssh.util.InvalidStateException;
-import java.io.IOException;
-import org.connid.unix.UnixConnection;
-
-public class CommonMethods {
-
-    protected final boolean userExists(final String username,
-            final UnixConnection unixConnection)
-            throws IOException, InvalidStateException, InterruptedException {
-        return unixConnection.userExists(username);
+public class EvaluateCommandsResultOutput {
+    
+    public static boolean evaluateUserOrGroupExistsCommand(
+            final String commandResult) {
+        return !commandResult.isEmpty();
     }
-
-    protected final boolean groupExists(final String groupname,
-            final UnixConnection unixConnection)
-            throws IOException, InvalidStateException, InterruptedException {
-        return unixConnection.groupExists(groupname);
+    
+    public static String usernameFromSearchUserCommand(
+            final String commandResult) {
+        String[] userValues = commandResult.split(":");
+        return userValues[0];
+    }
+    
+    public static boolean evaluateUserStatusCommand(
+            final String commandResult) {
+        String[] values = commandResult.split(":");
+        return !values[1].startsWith("!");
     }
 }

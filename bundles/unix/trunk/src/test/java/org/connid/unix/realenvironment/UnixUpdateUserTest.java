@@ -23,7 +23,6 @@
  */
 package org.connid.unix.realenvironment;
 
-import java.util.Set;
 import org.connid.unix.UnixConnector;
 import org.connid.unix.utilities.AttributesTestValue;
 import org.connid.unix.utilities.SharedTestMethods;
@@ -76,6 +75,7 @@ public class UnixUpdateUserTest extends SharedTestMethods {
                 ACTIVE_USER), null);
         connector.authenticate(ObjectClass.ACCOUNT, newName.getNameValue(),
                 attrs.getNewGuardedPassword(), null);
+        newAccount = new Uid(newName.getNameValue());
     }
 
     @Test

@@ -27,13 +27,16 @@ import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.connid.unix.utilities.EvaluateCommandsResultOutput;
+import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
 import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.OperationalAttributes;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 
-public class UnixExecuteQuery extends CommonMethods {
+public class UnixExecuteQuery {
 
     private static final Log LOG = Log.getLog(UnixExecuteQuery.class);
     private UnixConnection connection = null;
@@ -66,17 +69,35 @@ public class UnixExecuteQuery extends CommonMethods {
             throw new IllegalStateException("Wrong object class");
         }
 
-        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
             String username = cleanFilter(filter);
-            connection.userExists(username);
+            String unixUsername =
+                    EvaluateCommandsResultOutput.usernameFromSearchUserCommand(
+                    connection.searchUser(username));
+            ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
+            if (StringUtil.isNotEmpty(unixUsername)
+                    && StringUtil.isNotBlank(unixUsername)) {
+                bld.setName(unixUsername);
+                bld.setUid(unixUsername);
+            }
+            bld.addAttribute(OperationalAttributes.ENABLE_NAME,
+                    EvaluateCommandsResultOutput.evaluateUserStatusCommand(
+                    connection.userStatus(username)));
+            handler.handle(bld.build());
+        } else if (objectClass.equals(ObjectClass.GROUP)) {
+            String groupname = cleanFilter(filter);
+            ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
+            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+                    connection.groupExists(groupname))) {
+                bld.setName(groupname);
+                bld.setUid(groupname);
+            }
+            handler.handle(bld.build());
         }
-
     }
 
-    private String cleanFilter(String filter) {
-        String username[] = filter.split("=");
-        String a = username[1].substring(0, username.length - 1);
-        return a;
+    private String cleanFilter(final String filter) {
+        String[] cleanedFilter = filter.split("=");
+        return cleanedFilter[1].substring(0, cleanedFilter[1].length() - 1);
     }
 }

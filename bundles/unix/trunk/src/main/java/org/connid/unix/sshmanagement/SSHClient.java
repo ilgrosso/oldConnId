@@ -68,46 +68,64 @@ public class SSHClient {
         return sshClient.openSessionChannel();
     }
 
-    public final boolean userExists(final String username)
+    public final String userExists(final String username)
             throws IOException, InvalidStateException, InterruptedException {
         String output = "";
         SessionChannelClient session = getSession();
         if (session.executeCommand(
-                GeneralCommands.getUserExistsCommand(username))) {
+                GeneralCommands.searchUserIntoPasswdFile(username))) {
             output = getOutput(session);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during password encrypt");
         }
         sshClient.disconnect();
-        return !output.isEmpty();
+        return output;
     }
 
-    public void searchUser(String username)
-            throws IOException, InvalidStateException, InterruptedException {
-        SessionChannelClient session = getSession();
-        if (session.executeCommand(
-                GeneralCommands.getUserExistsCommand(username))) {
-            session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
-        } else {
-            LOG.error("Error during password encrypt");
-        }
-        sshClient.disconnect();
-    }
-
-    public boolean groupExists(String groupname)
+    public final String searchUser(final String username)
             throws IOException, InvalidStateException, InterruptedException {
         String output = "";
         SessionChannelClient session = getSession();
         if (session.executeCommand(
-                GeneralCommands.getGroupExistsCommand(groupname))) {
+                GeneralCommands.searchUserIntoPasswdFile(username))) {
             output = getOutput(session);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during password encrypt");
         }
         sshClient.disconnect();
-        return !output.isEmpty();
+        return output;
+    }
+
+    public String groupExists(final String groupname)
+            throws IOException, InvalidStateException, InterruptedException {
+        String output = "";
+        SessionChannelClient session = getSession();
+        if (session.executeCommand(
+                GeneralCommands.searchGroupIntoGroupFile(groupname))) {
+            output = getOutput(session);
+            session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
+        } else {
+            LOG.error("Error during password encrypt");
+        }
+        sshClient.disconnect();
+        return output;
+    }
+
+    public String userStatus(String username)
+            throws IOException, InvalidStateException, InterruptedException {
+        String output = "";
+        SessionChannelClient session = getSession();
+        if (session.executeCommand(
+                GeneralCommands.searchUserStatusIntoShadowFile(username))) {
+            output = getOutput(session);
+            session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
+        } else {
+            LOG.error("Error during password encrypt");
+        }
+        sshClient.disconnect();
+        return output;
     }
 
     public final void createUser(final String username, final String password,

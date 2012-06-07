@@ -34,7 +34,7 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
 
-public class UnixAuthenticate extends CommonMethods {
+public class UnixAuthenticate {
 
     private static final Log LOG = Log.getLog(UnixAuthenticate.class);
     private UnixConnection unixConnection = null;

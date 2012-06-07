@@ -29,13 +29,14 @@ import java.util.List;
 import java.util.Set;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.connid.unix.utilities.EvaluateCommandsResultOutput;
 import org.connid.unix.utilities.Utilities;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.*;
 
-public class UnixCreate extends CommonMethods {
+public class UnixCreate {
 
     private static final Log LOG = Log.getLog(UnixCreate.class);
     private Set<Attribute> attrs = null;
@@ -79,7 +80,8 @@ public class UnixCreate extends CommonMethods {
         String username = name.getNameValue();
 
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
-            if (userExists(username, connection)) {
+            if (EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+                    connection.userExists(username))) {
                 throw new ConnectorException(
                         "User " + username + " already exists");
             }
@@ -106,7 +108,8 @@ public class UnixCreate extends CommonMethods {
 
             connection.createUser(username, password, comment, status);
         } else if (objectClass.equals(ObjectClass.GROUP)) {
-            if (groupExists(username, connection)) {
+            if (EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+                    connection.groupExists(username))) {
                 throw new ConnectorException(
                         "Group " + username + " already exists");
             }

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.connid.unix.utilities.EvaluateCommandsResultOutput;
 import org.connid.unix.utilities.Utilities;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
@@ -36,7 +37,7 @@ import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.*;
 
-public class UnixUpdate extends CommonMethods {
+public class UnixUpdate {
 
     private static final Log LOG = Log.getLog(UnixUpdate.class);
     private Set<Attribute> attrs = null;
@@ -83,7 +84,8 @@ public class UnixUpdate extends CommonMethods {
         }
 
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
-            if (!userExists(uid.getUidValue(), connection)) {
+            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+                    connection.userExists(uid.getUidValue()))) {
                 throw new ConnectorException(
                         "User " + uid + " do not exists");
             }
@@ -105,7 +107,8 @@ public class UnixUpdate extends CommonMethods {
             connection.updateUser(uid.getUidValue(), newUserName, password,
                     status);
         } else if (objectClass.equals(ObjectClass.GROUP)) {
-            if (!groupExists(newUserName, connection)) {
+            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+                    connection.groupExists(newUserName))) {
                 throw new ConnectorException(
                         "Group do not exists");
             }

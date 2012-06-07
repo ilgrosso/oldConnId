@@ -27,13 +27,14 @@ import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.connid.unix.utilities.EvaluateCommandsResultOutput;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
 
-public class UnixDelete extends CommonMethods {
+public class UnixDelete {
 
     private static final Log LOG = Log.getLog(UnixDelete.class);
     private UnixConfiguration configuration = null;
@@ -75,13 +76,15 @@ public class UnixDelete extends CommonMethods {
         }
 
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
-            if (!userExists(uid.getUidValue(), connection)) {
+            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+                    connection.userExists(uid.getUidValue()))) {
                 LOG.error("User do not exists");
                 throw new ConnectorException("User do not exists");
             }
             connection.deleteUser(uid.getUidValue());
         } else if (objectClass.equals(ObjectClass.GROUP)) {
-            if (!groupExists(uid.getUidValue(), connection)) {
+            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+                    connection.groupExists(uid.getUidValue()))) {
                 throw new ConnectorException("Group do not exists");
             }
             connection.deleteGroup(uid.getUidValue());

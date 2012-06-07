@@ -23,7 +23,6 @@
  */
 package org.connid.unix.methods;
 
-import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
 import java.io.IOException;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
