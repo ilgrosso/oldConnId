@@ -23,7 +23,6 @@
  */
 package org.connid.unix.realenvironment;
 
-import java.util.Set;
 import org.connid.unix.UnixConnector;
 import org.connid.unix.utilities.AttributesTestValue;
 import org.connid.unix.utilities.SharedTestMethods;
@@ -53,11 +52,12 @@ public class UnixCreateUserTest extends SharedTestMethods {
     public final void createExistsUser() {
         boolean userExists = false;
         newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
         try {
             connector.create(ObjectClass.ACCOUNT,
-                    createSetOfAttributes(name, attrs.getPassword()), null);
+                    createSetOfAttributes(name, attrs.getPassword(), true),
+                    null);
         } catch (Exception e) {
             userExists = true;
         }
@@ -66,20 +66,16 @@ public class UnixCreateUserTest extends SharedTestMethods {
 
     @Test(expected = ConnectorException.class)
     public final void createLockedUser() {
-        Set<Attribute> attributes =
-                createSetOfAttributes(name, attrs.getPassword());
-        attributes.add(AttributeBuilder.buildEnabled(false));
-        newAccount = connector.create(ObjectClass.ACCOUNT, attributes, null);
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(), false), null);
         connector.authenticate(ObjectClass.ACCOUNT, attrs.getUsername(),
                 attrs.getGuardedPassword(), null);
     }
 
     @Test
     public final void createUnLockedUser() {
-        Set<Attribute> attributes =
-                createSetOfAttributes(name, attrs.getPassword());
-        attributes.add(AttributeBuilder.buildEnabled(true));
-        newAccount = connector.create(ObjectClass.ACCOUNT, attributes, null);
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
         connector.authenticate(ObjectClass.ACCOUNT, attrs.getUsername(),
                 attrs.getGuardedPassword(), null);
     }
@@ -87,7 +83,7 @@ public class UnixCreateUserTest extends SharedTestMethods {
     @Test(expected = ConnectorException.class)
     public void createWithWrongObjectClass() {
         connector.create(attrs.getWrongObjectClass(),
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
     }
 
     @Test(expected = ConnectorException.class)
@@ -98,13 +94,13 @@ public class UnixCreateUserTest extends SharedTestMethods {
     @Test(expected = ConnectorException.class)
     public void createTestWithNameNull() {
         connector.create(attrs.getWrongObjectClass(),
-                createSetOfAttributes(null, attrs.getPassword()), null);
+                createSetOfAttributes(null, attrs.getPassword(), true), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createTestWithPasswordNull() {
         connector.create(attrs.getWrongObjectClass(),
-                createSetOfAttributes(name, null), null);
+                createSetOfAttributes(name, null, true), null);
     }
 
     @Test(expected = ConnectorException.class)

@@ -131,7 +131,6 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
     @Override
     public final FilterTranslator<String> createFilterTranslator(
             final ObjectClass oc, final OperationOptions oo) {
-        System.out.println("");
         if (oc == null || (!oc.equals(ObjectClass.ACCOUNT))
                 && (!oc.equals(ObjectClass.GROUP))) {
             throw new IllegalArgumentException("Invalid objectclass");

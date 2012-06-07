@@ -51,9 +51,10 @@ public class UnixUpdateGroupTest extends SharedTestMethods {
 
     public final void updateGroup() {
         newAccount = connector.create(ObjectClass.GROUP,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
         connector.update(ObjectClass.GROUP, new Uid(attrs.getNewGroupName()),
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
+                createSetOfAttributes(name, attrs.getNewPassword(), true),
+                null);
         connector.delete(ObjectClass.GROUP,
                 new Uid(attrs.getNewGroupName()), null);
     }
@@ -61,44 +62,47 @@ public class UnixUpdateGroupTest extends SharedTestMethods {
     @Test(expected = ConnectorException.class)
     public final void updateNotExistsGroup() {
         connector.update(ObjectClass.GROUP, new Uid(attrs.getWrongGroupName()),
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
+                createSetOfAttributes(name, attrs.getNewPassword(), true),
+                null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithWrongObjectClass() {
         newAccount = connector.create(ObjectClass.GROUP,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
         connector.update(attrs.getWrongObjectClass(), newAccount,
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
+                createSetOfAttributes(name, attrs.getNewPassword(), true),
+                null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithNullUid() {
         connector.update(ObjectClass.GROUP, null,
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
+                createSetOfAttributes(name, attrs.getNewPassword(), true),
+                null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithNullSet() {
         newAccount = connector.create(ObjectClass.GROUP,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
         connector.update(ObjectClass.GROUP, newAccount, null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateWithNullPwd() {
         newAccount = connector.create(ObjectClass.GROUP,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
         connector.update(ObjectClass.GROUP, newAccount,
-                createSetOfAttributes(name, null), null);
+                createSetOfAttributes(name, null, true), null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithNullUsername() {
         newAccount = connector.create(ObjectClass.GROUP,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
         connector.update(ObjectClass.GROUP, newAccount,
-                createSetOfAttributes(null, attrs.getPassword()), null);
+                createSetOfAttributes(null, attrs.getPassword(), true), null);
     }
 
     @After

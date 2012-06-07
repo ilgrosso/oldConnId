@@ -51,7 +51,7 @@ public class SharedTestMethods {
     }
 
     protected final Set<Attribute> createSetOfAttributes(final Name name,
-            final String password) {
+            final String password, final boolean status) {
         GuardedString encPassword = null;
         if (password != null) {
             encPassword = new GuardedString(password.toCharArray());
@@ -59,6 +59,7 @@ public class SharedTestMethods {
 
         final Set<Attribute> attributes = CollectionUtil.newSet(
                 AttributeBuilder.buildPassword(encPassword));
+        attributes.add(AttributeBuilder.buildEnabled(status));
         attributes.add(name);
         return attributes;
     }

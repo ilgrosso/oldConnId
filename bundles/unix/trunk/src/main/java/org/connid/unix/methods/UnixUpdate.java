@@ -45,7 +45,7 @@ public class UnixUpdate extends CommonMethods {
     private Uid uid = null;
     private String newUserName = "";
     private String password = "";
-    private boolean status = false;
+    private boolean status = true;
     private ObjectClass objectClass = null;
 
     public UnixUpdate(final ObjectClass oc,
@@ -95,7 +95,7 @@ public class UnixUpdate extends CommonMethods {
                             (GuardedString) attr.getValue().get(0));
                 } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
                     status = Boolean.parseBoolean(
-                                attr.getValue().get(0).toString());
+                            attr.getValue().get(0).toString());
                 } else {
                     List<Object> values = attr.getValue();
                     if ((values != null) && (!values.isEmpty())) {

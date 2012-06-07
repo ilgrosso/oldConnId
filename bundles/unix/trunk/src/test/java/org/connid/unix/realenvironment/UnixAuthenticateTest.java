@@ -48,10 +48,16 @@ public class UnixAuthenticateTest extends SharedTestMethods {
         connector = new UnixConnector();
         connector.init(createConfiguration());
         name = new Name(attrs.getUsername());
+    }
+
+    @Test
+    public final void authenticateTest() {
         newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name,
-                attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        connector.authenticate(ObjectClass.ACCOUNT, newAccount.getUidValue(),
+                attrs.getGuardedPassword(), null);
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
     }
 
     @Test(expected = ConnectorException.class)
@@ -96,15 +102,8 @@ public class UnixAuthenticateTest extends SharedTestMethods {
         connector.authenticate(null, null, null, null);
     }
 
-    @Test
-    public final void authenticateTest() {
-        connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
-                attrs.getGuardedPassword(), null);
-    }
-
     @After
     public final void close() {
-        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
         connector.dispose();
     }
 }

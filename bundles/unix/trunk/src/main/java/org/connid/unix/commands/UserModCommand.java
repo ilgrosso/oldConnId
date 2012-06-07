@@ -40,22 +40,39 @@ public class UserModCommand {
      * probably be changed manually to reflect the new login name.
      */
     private static final String CHANGE_LOGIN_OPTION = "-l";
-    private String actualUsername = "";
-    private String username = "";
+    /**
+     * Lock a user's password. This puts a '!' in front of the encrypted
+     * password, effectively disabling the password.
+     */
+    private static final String LOCK_USER_OPTION = "-L";
+    /**
+     * Unlock a user's password. This removes the '!' in front of the encrypted
+     * password.
+     */
+    private static final String UNLOCK_USER_OPTION = "-U";
 
-    public UserModCommand(final String actualUsername, final String username) {
-        this.actualUsername = actualUsername;
-        this.username = username;
+    public String userMod(final String actualUsername,
+            final String newUsername) {
+        return createUserModCommand(actualUsername, newUsername);
     }
 
-    private String createUserModCommand() {
+    private String createUserModCommand(final String actualUsername,
+            final String newUsername) {
         StringBuilder usermodCommand = new StringBuilder(USERMOD_COMMAND + " ");
-        if ((StringUtil.isNotBlank(username))
-                && (StringUtil.isNotEmpty(username))) {
+        if ((StringUtil.isNotBlank(newUsername))
+                && (StringUtil.isNotEmpty(newUsername))) {
             usermodCommand.append(CHANGE_LOGIN_OPTION).append(
-                    " ").append(username);
+                    " ").append(newUsername);
         }
-        usermodCommand.append(actualUsername);
+        usermodCommand.append(" ").append(actualUsername);
         return usermodCommand.toString();
+    }
+
+    public String lockUser(final String username) {
+        return USERMOD_COMMAND + " " + LOCK_USER_OPTION + " " + username;
+    }
+
+    public String unlockUser(final String username) {
+        return USERMOD_COMMAND + " " + UNLOCK_USER_OPTION + " " + username;
     }
 }

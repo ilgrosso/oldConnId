@@ -29,6 +29,7 @@ import org.identityconnectors.framework.common.objects.ObjectClass;
 public class AttributesTestValue extends SharedTestMethods {
 
     private String USERNAME = "createtest" + randomNumber();
+    private String NEW_USERNAME = "createtest" + randomNumber();
     private static final String WRONG_USERNAME = "wronguser";
     private static final String PASSWORD = "password";
     private final GuardedString GUARDED_PASSWORD =
@@ -46,6 +47,10 @@ public class AttributesTestValue extends SharedTestMethods {
 
     public String getUsername() {
         return USERNAME;
+    }
+    
+    public String getNewUsername() {
+        return NEW_USERNAME;
     }
 
     public String getWrongUsername() {

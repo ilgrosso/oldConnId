@@ -53,11 +53,12 @@ public class UnixCreateGroupTest extends SharedTestMethods {
     public final void createExistsGroup() {
         boolean groupExists = false;
         newAccount = connector.create(ObjectClass.GROUP,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
         try {
             connector.create(ObjectClass.GROUP,
-                    createSetOfAttributes(name, attrs.getPassword()), null);
+                    createSetOfAttributes(name, attrs.getPassword(), true),
+                    null);
         } catch (Exception e) {
             groupExists = true;
         }

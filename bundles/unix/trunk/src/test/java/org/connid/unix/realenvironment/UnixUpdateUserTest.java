@@ -40,6 +40,8 @@ public class UnixUpdateUserTest extends SharedTestMethods {
     private Name name = null;
     private Uid newAccount = null;
     private AttributesTestValue attrs = null;
+    private final static boolean ACTIVE_USER = true;
+    private final static boolean INACTIVE_USER = false;
 
     @Before
     public final void initTest() {
@@ -52,24 +54,52 @@ public class UnixUpdateUserTest extends SharedTestMethods {
     @Test
     public final void updateAndAuthenticateWithNewPassword() {
         newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(), ACTIVE_USER),
+                null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
         connector.update(ObjectClass.ACCOUNT, newAccount,
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
+                createSetOfAttributes(name, attrs.getNewPassword(),
+                ACTIVE_USER), null);
         connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
                 attrs.getNewGuardedPassword(), null);
     }
 
     @Test
+    public final void updateAndAuthenticateWithNewUsernameAndNewPassword() {
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
+        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        Name newName = new Name(attrs.getNewUsername());
+        connector.update(ObjectClass.ACCOUNT, newAccount,
+                createSetOfAttributes(newName, attrs.getNewPassword(),
+                ACTIVE_USER), null);
+        connector.authenticate(ObjectClass.ACCOUNT, newName.getNameValue(),
+                attrs.getNewGuardedPassword(), null);
+    }
+
+    @Test
     public final void updateLockedUser() {
-        Set<Attribute> attributes =
-                createSetOfAttributes(name, attrs.getPassword());
-        attributes.add(AttributeBuilder.buildEnabled(false));
-        newAccount = connector.create(ObjectClass.ACCOUNT, attributes, null);
-        Set<Attribute> newAttributes =
-                createSetOfAttributes(name, attrs.getPassword());
-        newAttributes.add(AttributeBuilder.buildEnabled(true));
-        connector.update(ObjectClass.ACCOUNT, newAccount, newAttributes, null);
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(),
+                INACTIVE_USER), null);
+        connector.update(ObjectClass.ACCOUNT, newAccount,
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
+        connector.authenticate(ObjectClass.ACCOUNT, attrs.getUsername(),
+                attrs.getGuardedPassword(), null);
+    }
+
+    @Test(expected = ConnectorException.class)
+    public final void updateUnlockedUser() {
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
+        connector.authenticate(ObjectClass.ACCOUNT, attrs.getUsername(),
+                attrs.getGuardedPassword(), null);
+        connector.update(ObjectClass.ACCOUNT, newAccount,
+                createSetOfAttributes(name, attrs.getPassword(),
+                INACTIVE_USER), null);
         connector.authenticate(ObjectClass.ACCOUNT, attrs.getUsername(),
                 attrs.getGuardedPassword(), null);
     }
@@ -77,10 +107,12 @@ public class UnixUpdateUserTest extends SharedTestMethods {
     @Test(expected = ConnectorException.class)
     public final void updateAndAuthenticateWithOldPassword() {
         newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
         connector.update(ObjectClass.ACCOUNT, newAccount,
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
+                createSetOfAttributes(name, attrs.getNewPassword(),
+                ACTIVE_USER), null);
         connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
                 attrs.getGuardedPassword(), null);
     }
@@ -88,50 +120,59 @@ public class UnixUpdateUserTest extends SharedTestMethods {
     @Test(expected = ConnectorException.class)
     public final void updateNotExistsUser() {
         connector.update(ObjectClass.ACCOUNT, new Uid(attrs.getWrongUsername()),
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
+                createSetOfAttributes(name, attrs.getNewPassword(),
+                ACTIVE_USER), null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithWrongObjectClass() {
         newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
         connector.update(attrs.getWrongObjectClass(), newAccount,
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
+                createSetOfAttributes(name, attrs.getNewPassword(),
+                ACTIVE_USER), null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithNullObjectClass() {
         connector.update(null, newAccount,
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
+                createSetOfAttributes(name, attrs.getNewPassword(),
+                ACTIVE_USER), null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithNullUid() {
         connector.update(ObjectClass.ACCOUNT, null,
-                createSetOfAttributes(name, attrs.getNewPassword()), null);
+                createSetOfAttributes(name, attrs.getNewPassword(),
+                ACTIVE_USER), null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithNullSet() {
         newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
         connector.update(ObjectClass.ACCOUNT, newAccount, null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateWithNullPwd() {
         newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
         connector.update(ObjectClass.ACCOUNT, newAccount,
-                createSetOfAttributes(name, null), null);
+                createSetOfAttributes(name, null, true), null);
     }
 
     @Test(expected = ConnectorException.class)
     public void updateWithNullUsername() {
         newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, attrs.getPassword()), null);
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
         connector.update(ObjectClass.ACCOUNT, newAccount,
-                createSetOfAttributes(null, attrs.getPassword()), null);
+                createSetOfAttributes(null, attrs.getPassword(),
+                ACTIVE_USER), null);
     }
 
     @Test(expected = ConnectorException.class)
