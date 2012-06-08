@@ -76,14 +76,14 @@ public class UnixDelete {
         }
 
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
-            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
                     connection.userExists(uid.getUidValue()))) {
                 LOG.error("User do not exists");
                 throw new ConnectorException("User do not exists");
             }
             connection.deleteUser(uid.getUidValue());
         } else if (objectClass.equals(ObjectClass.GROUP)) {
-            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
                     connection.groupExists(uid.getUidValue()))) {
                 throw new ConnectorException("Group do not exists");
             }

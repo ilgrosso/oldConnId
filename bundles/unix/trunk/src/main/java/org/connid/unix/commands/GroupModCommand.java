@@ -45,7 +45,7 @@ public class GroupModCommand {
 
     private String createGroupModCommand() {
         return GROUPMOD_COMMAND + " " + NEW_NAME_OPTION + " " + newGroupName
-                + groupName;
+                + " " + groupName;
     }
 
     public String groupMod() {

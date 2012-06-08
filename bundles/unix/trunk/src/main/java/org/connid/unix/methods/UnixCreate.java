@@ -80,7 +80,7 @@ public class UnixCreate {
         String username = name.getNameValue();
 
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
-            if (EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+            if (EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
                     connection.userExists(username))) {
                 throw new ConnectorException(
                         "User " + username + " already exists");
@@ -108,7 +108,7 @@ public class UnixCreate {
 
             connection.createUser(username, password, comment, status);
         } else if (objectClass.equals(ObjectClass.GROUP)) {
-            if (EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+            if (EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
                     connection.groupExists(username))) {
                 throw new ConnectorException(
                         "Group " + username + " already exists");

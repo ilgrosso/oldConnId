@@ -84,7 +84,7 @@ public class UnixUpdate {
         }
 
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
-            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
                     connection.userExists(uid.getUidValue()))) {
                 throw new ConnectorException(
                         "User " + uid + " do not exists");
@@ -106,8 +106,13 @@ public class UnixUpdate {
             }
             connection.updateUser(uid.getUidValue(), newUserName, password,
                     status);
+            if (StringUtil.isNotBlank(newUserName)
+                    && StringUtil.isNotEmpty(newUserName)) {
+                System.out.println("AGGIORNO IL GRUPPO");
+                connection.updateGroup(uid.getUidValue(), newUserName);
+            }
         } else if (objectClass.equals(ObjectClass.GROUP)) {
-            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
                     connection.groupExists(newUserName))) {
                 throw new ConnectorException(
                         "Group do not exists");

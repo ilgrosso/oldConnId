@@ -72,22 +72,27 @@ public class UnixExecuteQuery {
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
             String username = cleanFilter(filter);
             String unixUsername =
-                    EvaluateCommandsResultOutput.usernameFromSearchUserCommand(
+                    EvaluateCommandsResultOutput.usernameFromSearchUser(
                     connection.searchUser(username));
             ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
             if (StringUtil.isNotEmpty(unixUsername)
                     && StringUtil.isNotBlank(unixUsername)) {
                 bld.setName(unixUsername);
                 bld.setUid(unixUsername);
+            } else {
+                bld.setUid("_W_R_O_N_G_");
+                bld.setName("_W_R_O_N_G_");
             }
             bld.addAttribute(OperationalAttributes.ENABLE_NAME,
-                    EvaluateCommandsResultOutput.evaluateUserStatusCommand(
+                    EvaluateCommandsResultOutput.evaluateUserStatus(
                     connection.userStatus(username)));
             handler.handle(bld.build());
         } else if (objectClass.equals(ObjectClass.GROUP)) {
             String groupname = cleanFilter(filter);
             ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
-            if (!EvaluateCommandsResultOutput.evaluateUserOrGroupExistsCommand(
+            if (StringUtil.isNotBlank(groupname)
+                    && StringUtil.isNotEmpty(groupname)
+                    && !EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
                     connection.groupExists(groupname))) {
                 bld.setName(groupname);
                 bld.setUid(groupname);

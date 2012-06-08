@@ -145,7 +145,7 @@ public class UnixConfiguration extends AbstractConfiguration {
     public void setSudoPassword(GuardedString sudoPassword) {
         this.sudoPassword = sudoPassword;
     }
-    
+
     @Override
     public final void validate() {
         if (StringUtil.isBlank(admin)) {

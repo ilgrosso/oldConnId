@@ -24,7 +24,6 @@
 package org.connid.unix.commands;
 
 import org.connid.unix.UnixConfiguration;
-import org.connid.unix.utilities.Constants;
 import org.identityconnectors.common.StringUtil;
 
 public class UserAddCommand {

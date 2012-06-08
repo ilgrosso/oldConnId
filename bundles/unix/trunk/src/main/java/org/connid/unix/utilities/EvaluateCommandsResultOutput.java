@@ -23,22 +23,29 @@
  */
 package org.connid.unix.utilities;
 
+import org.identityconnectors.common.StringUtil;
+
 public class EvaluateCommandsResultOutput {
-    
-    public static boolean evaluateUserOrGroupExistsCommand(
+
+    public static boolean evaluateUserOrGroupExists(
             final String commandResult) {
         return !commandResult.isEmpty();
     }
-    
-    public static String usernameFromSearchUserCommand(
+
+    public static String usernameFromSearchUser(
             final String commandResult) {
         String[] userValues = commandResult.split(":");
         return userValues[0];
     }
-    
-    public static boolean evaluateUserStatusCommand(
+
+    public static boolean evaluateUserStatus(
             final String commandResult) {
-        String[] values = commandResult.split(":");
-        return !values[1].startsWith("!");
+        boolean userStatus = false;
+        if (commandResult != null && StringUtil.isNotBlank(commandResult)
+                && StringUtil.isNotEmpty(commandResult)) {
+            String[] values = commandResult.split(":");
+            userStatus = !values[1].startsWith("!");
+        }
+        return userStatus;
     }
 }
