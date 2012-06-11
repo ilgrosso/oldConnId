@@ -47,6 +47,9 @@ public class UnixUpdate {
     private String newUserName = "";
     private String password = "";
     private boolean status = true;
+    private String comment = "";
+    private String shell = "";
+    private String homeDirectory = "";
     private ObjectClass objectClass = null;
 
     public UnixUpdate(final ObjectClass oc,
@@ -98,17 +101,18 @@ public class UnixUpdate {
                 } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
                     status = Boolean.parseBoolean(
                             attr.getValue().get(0).toString());
-                } else {
-                    List<Object> values = attr.getValue();
-                    if ((values != null) && (!values.isEmpty())) {
-                    }
+                } else if (attr.is("comment")) {
+                    comment = attr.getValue().get(0).toString();
+                } else if (attr.is("shell")) {
+                    shell = (String) attr.getValue().get(0).toString();
+                } else if (attr.is("homedirectory")) {
+                    homeDirectory = (String) attr.getValue().get(0).toString();
                 }
             }
             connection.updateUser(uid.getUidValue(), newUserName, password,
-                    status);
+                    status, comment, shell, homeDirectory);
             if (StringUtil.isNotBlank(newUserName)
                     && StringUtil.isNotEmpty(newUserName)) {
-                System.out.println("AGGIORNO IL GRUPPO");
                 connection.updateGroup(uid.getUidValue(), newUserName);
             }
         } else if (objectClass.equals(ObjectClass.GROUP)) {

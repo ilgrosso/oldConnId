@@ -73,9 +73,11 @@ public class UnixConnection {
     }
 
     public void createUser(final String uidstring,
-            final String password, final String comment, final boolean status)
+            final String password, final String comment, final String shell,
+            final String homeDirectory, final boolean status)
             throws IOException, InvalidStateException, InterruptedException {
-        sshc.createUser(uidstring, password, comment, status);
+        sshc.createUser(uidstring, password, comment, shell,
+                homeDirectory, status);
     }
 
     public void createGroup(String groupName)
@@ -84,9 +86,11 @@ public class UnixConnection {
     }
 
     public void updateUser(final String actualUsername,
-            final String username, final String password, final boolean status)
+            final String username, final String password, final boolean status,
+            final String comment, final String shell, final String homeDir)
             throws IOException, InvalidStateException, InterruptedException {
-        sshc.updateUser(actualUsername, username, password, status);
+        sshc.updateUser(actualUsername, username, password, status, comment,
+                shell, homeDir);
     }
 
     public void updateGroup(String actualGroupName, String newUserName)

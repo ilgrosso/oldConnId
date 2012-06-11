@@ -42,6 +42,10 @@ public class UnixCreate {
     private Set<Attribute> attrs = null;
     private UnixConnection connection = null;
     private ObjectClass objectClass = null;
+    String comment = "";
+    String shell = "";
+    String homeDirectory = "";
+    boolean status = false;
 
     public UnixCreate(final ObjectClass oc,
             final UnixConfiguration unixConfiguration,
@@ -62,8 +66,6 @@ public class UnixCreate {
 
     private Uid doCreate() throws IOException,
             InvalidStateException, InterruptedException {
-        boolean status = false;
-        String comment = "";
 
         if (!objectClass.equals(ObjectClass.ACCOUNT)
                 && (!objectClass.equals(ObjectClass.GROUP))) {
@@ -95,18 +97,20 @@ public class UnixCreate {
                         status = Boolean.parseBoolean(
                                 attr.getValue().get(0).toString());
                     }
-                } else {
-                    List<Object> values = attr.getValue();
-                    if ((values != null) && (!values.isEmpty())) {
-                        comment = (String) values.get(0);
-                    }
+                } else if (attr.is("comment")) {
+                    comment = attr.getValue().get(0).toString();
+                } else if (attr.is("shell")) {
+                    shell = (String) attr.getValue().get(0).toString();
+                } else if (attr.is("homedirectory")) {
+                    homeDirectory = (String) attr.getValue().get(0).toString();
                 }
             }
 
             final String password = Utilities.getPlainPassword(
                     AttributeUtil.getPasswordValue(attrs));
 
-            connection.createUser(username, password, comment, status);
+            connection.createUser(username, password, comment, shell,
+                    homeDirectory, status);
         } else if (objectClass.equals(ObjectClass.GROUP)) {
             if (EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
                     connection.groupExists(username))) {

@@ -43,6 +43,9 @@ public class UnixConfiguration extends AbstractConfiguration {
     private String shell = "";
     private boolean root = false;
     private GuardedString sudoPassword = null;
+    private String commentAttribute = "";
+    private String shellAttribute = "";
+    private String homeDirectoryAttribute = "";
 
     @ConfigurationProperty(displayMessageKey = "unix.admin.display",
     helpMessageKey = "unix.admin.help", order = 1)
@@ -130,6 +133,36 @@ public class UnixConfiguration extends AbstractConfiguration {
     helpMessageKey = "unix.isroot.help", order = 9)
     public boolean isRoot() {
         return root;
+    }
+
+    @ConfigurationProperty(displayMessageKey = "unix.commentattr.display",
+    helpMessageKey = "unix.commentattr.help", order = 9)
+    public String getCommentAttribute() {
+        return commentAttribute;
+    }
+
+    public void setCommentAttribute(String commentAttribute) {
+        this.commentAttribute = commentAttribute;
+    }
+
+    @ConfigurationProperty(displayMessageKey = "unix.shellattr.display",
+    helpMessageKey = "unix.shellattr.help", order = 9)
+    public String getHomeDirectoryAttribute() {
+        return homeDirectoryAttribute;
+    }
+
+    public void setHomeDirectoryAttribute(String homeDirectoryAttribute) {
+        this.homeDirectoryAttribute = homeDirectoryAttribute;
+    }
+
+    @ConfigurationProperty(displayMessageKey = "unix.homeudirattr.display",
+    helpMessageKey = "unix.homedirattr.help", order = 9)
+    public String getShellAttribute() {
+        return shellAttribute;
+    }
+
+    public void setShellAttribute(String shellAttribute) {
+        this.shellAttribute = shellAttribute;
     }
 
     public void setRoot(boolean root) {

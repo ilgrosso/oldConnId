@@ -73,13 +73,17 @@ public class UserAddCommand {
     private String username = "";
     private String password = "";
     private String comment = "";
+    private String shell = "";
+    private String homeDirectory = "";
 
     public UserAddCommand(final UnixConfiguration configuration,
-            final String username, final String password, final String comment) {
+            final String username, final String password, final String comment,
+            final String shell, final String homeDirectory) {
         unixConfiguration = configuration;
         this.username = username;
         this.password = password;
         this.comment = comment;
+        this.shell = homeDirectory;
     }
 
     private String createUserAddCommand() {
@@ -87,10 +91,22 @@ public class UserAddCommand {
         if (unixConfiguration.isCreateHomeDirectory()) {
             useraddCommand.append(CREATE_HOME_DIR_OPTION + " ");
         }
-        useraddCommand.append(BASE_HOME_DIR_OPTION).append(" ").append(
-                unixConfiguration.getBaseHomeDirectory()).append(" ");
-        useraddCommand.append(SHELL_OPTION).append(" ").append(
-                unixConfiguration.getShell()).append(" ");
+        useraddCommand.append(BASE_HOME_DIR_OPTION).append(" ");
+        if (StringUtil.isNotEmpty(homeDirectory)
+                && StringUtil.isNotBlank(homeDirectory)) {
+            useraddCommand.append(homeDirectory).append(" ");
+        } else {
+            useraddCommand.append(
+                    unixConfiguration.getBaseHomeDirectory()).append(" ");
+        }
+        useraddCommand.append(SHELL_OPTION).append(" ");
+        if (StringUtil.isNotEmpty(shell)
+                && StringUtil.isNotBlank(shell)) {
+            useraddCommand.append(shell).append(" ");
+        } else {
+            useraddCommand.append(
+                    unixConfiguration.getShell()).append(" ");
+        }
         if ((StringUtil.isNotBlank(comment))
                 && (StringUtil.isNotEmpty(comment))) {
             useraddCommand.append(COMMENT + " ").append(comment).append(" ");
