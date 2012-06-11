@@ -23,32 +23,17 @@
  */
 package org.connid.unix.commands;
 
-public class GroupModCommand {
+public class General {
 
-    /**
-     * The groupmod command modifies the definition of the specified GROUP by
-     * modifying the appropriate entry in the group database.
-     */
-    private static final String GROUPMOD_COMMAND = "groupmod";
-    /**
-     * The name of the group will be changed from GROUP to NEW_GROUP name.
-     *
-     */
-    private static final String NEW_NAME_OPTION = "-n";
-    private String groupName = "";
-    private String newGroupName = "";
-
-    public GroupModCommand(final String groupName, final String newGroupName) {
-        this.groupName = groupName;
-        this.newGroupName = newGroupName;
+    public static String searchUserIntoPasswdFile(final String username) {
+        return "cat /etc/passwd | grep " + username;
     }
 
-    private String createGroupModCommand() {
-        return GROUPMOD_COMMAND + " " + NEW_NAME_OPTION + " " + newGroupName
-                + " " + groupName;
+    public static String searchGroupIntoGroupFile(String groupname) {
+        return "cat /etc/group | grep " + groupname;
     }
 
-    public String groupMod() {
-        return createGroupModCommand();
+    public static String searchUserStatusIntoShadowFile(final String username) {
+        return "cat /etc/shadow | grep " + username;
     }
 }

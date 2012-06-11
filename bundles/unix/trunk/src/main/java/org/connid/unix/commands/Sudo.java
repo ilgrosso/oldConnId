@@ -26,7 +26,7 @@ package org.connid.unix.commands;
 import org.connid.unix.utilities.Utilities;
 import org.identityconnectors.common.security.GuardedString;
 
-public class SudoCommand {
+public class Sudo {
 
     private String sudoPassword = "";
     /**
@@ -72,7 +72,7 @@ public class SudoCommand {
      */
     private static final String READ_PASSWORD_FROM_STDIN_OPTION = "-S";
 
-    public SudoCommand(final GuardedString sudoPassword) {
+    public Sudo(final GuardedString sudoPassword) {
         this.sudoPassword = Utilities.getPlainPassword(sudoPassword);
     }
 

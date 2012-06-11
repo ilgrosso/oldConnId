@@ -47,6 +47,9 @@ public class SharedTestMethods {
         config.setDeleteHomeDirectory(true);
         config.setRoot(true);
         config.setSudoPassword(null);
+        config.setCommentAttribute("comment");
+        config.setShellAttribute("shell");
+        config.setHomeDirectoryAttribute("homeDir");
         return config;
     }
 
@@ -60,6 +63,8 @@ public class SharedTestMethods {
         final Set<Attribute> attributes = CollectionUtil.newSet(
                 AttributeBuilder.buildPassword(encPassword));
         attributes.add(AttributeBuilder.buildEnabled(status));
+        attributes.add(AttributeBuilder.build("shell", CollectionUtil.newSet(
+                "/bin/sh")));
         attributes.add(name);
         return attributes;
     }

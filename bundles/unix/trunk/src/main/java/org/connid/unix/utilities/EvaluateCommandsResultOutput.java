@@ -23,6 +23,7 @@
  */
 package org.connid.unix.utilities;
 
+import org.connid.unix.files.Passwd;
 import org.identityconnectors.common.StringUtil;
 
 public class EvaluateCommandsResultOutput {
@@ -32,10 +33,18 @@ public class EvaluateCommandsResultOutput {
         return !commandResult.isEmpty();
     }
 
-    public static String usernameFromSearchUser(
+    public static Passwd toPasswd(
             final String commandResult) {
         String[] userValues = commandResult.split(":");
-        return userValues[0];
+        Passwd passwdFile = new Passwd();
+        passwdFile.setUsername(userValues[0]);
+        passwdFile.setPasswordValidator(userValues[1]);
+        passwdFile.setUserIdentifier(userValues[2]);
+        passwdFile.setGroupIdentifier(userValues[3]);
+        passwdFile.setComment(userValues[4]);
+        passwdFile.setHomeDirectory(userValues[5]);
+        passwdFile.setShell(userValues[6]);
+        return passwdFile;
     }
 
     public static boolean evaluateUserStatus(

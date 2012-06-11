@@ -136,7 +136,7 @@ public class UnixConfiguration extends AbstractConfiguration {
     }
 
     @ConfigurationProperty(displayMessageKey = "unix.commentattr.display",
-    helpMessageKey = "unix.commentattr.help", order = 9)
+    helpMessageKey = "unix.commentattr.help", order = 10)
     public String getCommentAttribute() {
         return commentAttribute;
     }
@@ -146,7 +146,7 @@ public class UnixConfiguration extends AbstractConfiguration {
     }
 
     @ConfigurationProperty(displayMessageKey = "unix.shellattr.display",
-    helpMessageKey = "unix.shellattr.help", order = 9)
+    helpMessageKey = "unix.shellattr.help", order = 11)
     public String getHomeDirectoryAttribute() {
         return homeDirectoryAttribute;
     }
@@ -155,8 +155,8 @@ public class UnixConfiguration extends AbstractConfiguration {
         this.homeDirectoryAttribute = homeDirectoryAttribute;
     }
 
-    @ConfigurationProperty(displayMessageKey = "unix.homeudirattr.display",
-    helpMessageKey = "unix.homedirattr.help", order = 9)
+    @ConfigurationProperty(displayMessageKey = "unix.homedirattr.display",
+    helpMessageKey = "unix.homedirattr.help", order = 12)
     public String getShellAttribute() {
         return shellAttribute;
     }
@@ -213,6 +213,18 @@ public class UnixConfiguration extends AbstractConfiguration {
         }
         if (StringUtil.isBlank(shell)) {
             shell = DefaultProperties.UNIX_SHELL;
+        }
+        if (StringUtil.isBlank(commentAttribute)) {
+            commentAttribute = DefaultProperties.COMMENT_ATTRIBUTE;
+
+        }
+        if (StringUtil.isBlank(shellAttribute)) {
+            shellAttribute = DefaultProperties.SHELL_ATTRIBUTE;
+
+        }
+        if (StringUtil.isBlank(homeDirectoryAttribute)) {
+            homeDirectoryAttribute = DefaultProperties.HOMEDIRECTORY_ATTRIBUTE;
+
         }
         if ((!root) && (StringUtil.isBlank(sudoPassword.toString()))) {
             throw new ConfigurationException(

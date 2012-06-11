@@ -74,12 +74,12 @@ public class SSHClient {
         SessionChannelClient session = getSession();
         StringBuilder commandToExecute = new StringBuilder();
         if (!unixConfiguration.isRoot()) {
-            SudoCommand sudoCommand =
-                    new SudoCommand(unixConfiguration.getSudoPassword());
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
             commandToExecute.append(sudoCommand.sudo()).append("; ");
         }
         commandToExecute.append(
-                GeneralCommands.searchUserIntoPasswdFile(username));
+                General.searchUserIntoPasswdFile(username));
         if (session.executeCommand(commandToExecute.toString())) {
             output = getOutput(session);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
@@ -96,12 +96,12 @@ public class SSHClient {
         SessionChannelClient session = getSession();
         StringBuilder commandToExecute = new StringBuilder();
         if (!unixConfiguration.isRoot()) {
-            SudoCommand sudoCommand =
-                    new SudoCommand(unixConfiguration.getSudoPassword());
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
             commandToExecute.append(sudoCommand.sudo()).append("; ");
         }
         commandToExecute.append(
-                GeneralCommands.searchUserIntoPasswdFile(username));
+                General.searchUserIntoPasswdFile(username));
         if (session.executeCommand(commandToExecute.toString())) {
             output = getOutput(session);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
@@ -118,12 +118,12 @@ public class SSHClient {
         SessionChannelClient session = getSession();
         StringBuilder commandToExecute = new StringBuilder();
         if (!unixConfiguration.isRoot()) {
-            SudoCommand sudoCommand =
-                    new SudoCommand(unixConfiguration.getSudoPassword());
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
             commandToExecute.append(sudoCommand.sudo()).append("; ");
         }
         commandToExecute.append(
-                GeneralCommands.searchGroupIntoGroupFile(groupname));
+                General.searchGroupIntoGroupFile(groupname));
         if (session.executeCommand(commandToExecute.toString())) {
             output = getOutput(session);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
@@ -140,12 +140,12 @@ public class SSHClient {
         SessionChannelClient session = getSession();
         StringBuilder commandToExecute = new StringBuilder();
         if (!unixConfiguration.isRoot()) {
-            SudoCommand sudoCommand =
-                    new SudoCommand(unixConfiguration.getSudoPassword());
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
             commandToExecute.append(sudoCommand.sudo()).append("; ");
         }
         commandToExecute.append(
-                GeneralCommands.searchUserStatusIntoShadowFile(username));
+                General.searchUserStatusIntoShadowFile(username));
         if (session.executeCommand(commandToExecute.toString())) {
             output = getOutput(session);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
@@ -163,8 +163,8 @@ public class SSHClient {
         SessionChannelClient session = getSession();
         StringBuilder commandToExecute = new StringBuilder();
         if (!unixConfiguration.isRoot()) {
-            SudoCommand sudoCommand =
-                    new SudoCommand(unixConfiguration.getSudoPassword());
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
             commandToExecute.append(sudoCommand.sudo()).append("; ");
         }
         commandToExecute.append(
@@ -184,14 +184,14 @@ public class SSHClient {
     private String createUserAddCommand(final String username,
             final String password, final String comment, final String shell,
             final String homeDirectory) {
-        UserAddCommand userAddCommand = new UserAddCommand(
+        UserAdd userAddCommand = new UserAdd(
                 unixConfiguration, username, password, comment, shell,
                 homeDirectory);
-        PasswdCommand passwdCommand = new PasswdCommand();
+        Passwd passwdCommand = new Passwd();
         StringBuilder commandToExecute = new StringBuilder();
         if (!unixConfiguration.isRoot()) {
-            SudoCommand sudoCommand =
-                    new SudoCommand(unixConfiguration.getSudoPassword());
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
             commandToExecute.append(sudoCommand.sudo()).append("; ");
         }
         commandToExecute.append(userAddCommand.useradd()).append("; ").append(
@@ -202,7 +202,7 @@ public class SSHClient {
     private void lockUser(final String username)
             throws InterruptedException, InvalidStateException, IOException {
         SessionChannelClient session = getSession();
-        UserModCommand userModCommand = new UserModCommand();
+        UserMod userModCommand = new UserMod();
         if (session.executeCommand(userModCommand.lockUser(username))) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
@@ -214,11 +214,11 @@ public class SSHClient {
             throws IOException, InvalidStateException, InterruptedException {
 
         SessionChannelClient session = getSession();
-        GroupAddCommand groupAddCommand = new GroupAddCommand(groupName);
+        GroupAdd groupAddCommand = new GroupAdd(groupName);
         StringBuilder commandToExecute = new StringBuilder();
         if (!unixConfiguration.isRoot()) {
-            SudoCommand sudoCommand =
-                    new SudoCommand(unixConfiguration.getSudoPassword());
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
             commandToExecute.append(sudoCommand.sudo()).append("; ");
         }
         commandToExecute.append(groupAddCommand.groupadd());
@@ -238,8 +238,8 @@ public class SSHClient {
         SessionChannelClient session = getSession();
         StringBuilder commandToExecute = new StringBuilder();
         if (!unixConfiguration.isRoot()) {
-            SudoCommand sudoCommand =
-                    new SudoCommand(unixConfiguration.getSudoPassword());
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
             commandToExecute.append(sudoCommand.sudo()).append("; ");
         }
         commandToExecute.append(
@@ -261,7 +261,7 @@ public class SSHClient {
     private void unlockUser(String username)
             throws IOException, InvalidStateException, InterruptedException {
         SessionChannelClient session = getSession();
-        UserModCommand userModCommand = new UserModCommand();
+        UserMod userModCommand = new UserMod();
         if (session.executeCommand(userModCommand.unlockUser(username))) {
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
@@ -273,15 +273,15 @@ public class SSHClient {
             final String newUserName, final String password,
             final String comment, final String shell,
             final String homeDirectory) {
-        UserModCommand userModCommand =
-                new UserModCommand();
+        UserMod userModCommand =
+                new UserMod();
         StringBuilder commandToExecute = new StringBuilder();
         commandToExecute.append(userModCommand.userMod(
                 actualUsername, newUserName, comment, shell, homeDirectory));
         if ((StringUtil.isNotBlank(password))
                 && (StringUtil.isNotEmpty(password))) {
-            PasswdCommand passwdCommand =
-                    new PasswdCommand();
+            Passwd passwdCommand =
+                    new Passwd();
             commandToExecute.append("; ").append(passwdCommand.setPassword(
                     newUserName, password));
         }
@@ -291,13 +291,13 @@ public class SSHClient {
     public void updateGroup(final String actualGroupName,
             final String newUserName)
             throws IOException, InvalidStateException, InterruptedException {
-        GroupModCommand groupModCommand =
-                new GroupModCommand(actualGroupName, newUserName);
+        GroupMod groupModCommand =
+                new GroupMod(actualGroupName, newUserName);
         SessionChannelClient session = getSession();
         StringBuilder commandToExecute = new StringBuilder();
         if (!unixConfiguration.isRoot()) {
-            SudoCommand sudoCommand =
-                    new SudoCommand(unixConfiguration.getSudoPassword());
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
             commandToExecute.append(sudoCommand.sudo()).append("; ");
         }
         commandToExecute.append(groupModCommand.groupMod());
@@ -312,12 +312,12 @@ public class SSHClient {
     public final void deleteUser(final String username)
             throws IOException, InvalidStateException, InterruptedException {
         SessionChannelClient session = getSession();
-        UserDelCommand userDelCommand =
-                new UserDelCommand(unixConfiguration, username);
+        UserDel userDelCommand =
+                new UserDel(unixConfiguration, username);
         StringBuilder commandToExecute = new StringBuilder();
         if (!unixConfiguration.isRoot()) {
-            SudoCommand sudoCommand =
-                    new SudoCommand(unixConfiguration.getSudoPassword());
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
             commandToExecute.append(sudoCommand.sudo()).append("; ");
         }
         commandToExecute.append(userDelCommand.userdel());
@@ -332,11 +332,11 @@ public class SSHClient {
     public void deleteGroup(final String groupName)
             throws IOException, InvalidStateException, InterruptedException {
         SessionChannelClient session = getSession();
-        GroupDelCommand groupDelCommand = new GroupDelCommand(groupName);
+        GroupDel groupDelCommand = new GroupDel(groupName);
         StringBuilder commandToExecute = new StringBuilder();
         if (!unixConfiguration.isRoot()) {
-            SudoCommand sudoCommand =
-                    new SudoCommand(unixConfiguration.getSudoPassword());
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
             commandToExecute.append(sudoCommand.sudo()).append("; ");
         }
         commandToExecute.append(groupDelCommand.groupDel());

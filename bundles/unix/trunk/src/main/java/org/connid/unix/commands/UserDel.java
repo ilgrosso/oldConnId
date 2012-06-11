@@ -25,7 +25,7 @@ package org.connid.unix.commands;
 
 import org.connid.unix.UnixConfiguration;
 
-public class UserDelCommand {
+public class UserDel {
 
     /**
      * The userdel command modifies the system account files, deleting all
@@ -44,7 +44,7 @@ public class UserDelCommand {
     private UnixConfiguration unixConfiguration = null;
     private String username = "";
 
-    public UserDelCommand(final UnixConfiguration configuration,
+    public UserDel(final UnixConfiguration configuration,
             final String username) {
         unixConfiguration = configuration;
         this.username = username;

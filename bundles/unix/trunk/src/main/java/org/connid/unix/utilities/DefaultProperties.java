@@ -30,6 +30,9 @@ public class DefaultProperties {
     public static String UNIX_SHELL;
     public static String UNIX_USER_HOMEDIRECTORY;
     public static int SSH_SOCKET_TIMEOUT;
+    public static String COMMENT_ATTRIBUTE = "";
+    public static String SHELL_ATTRIBUTE = "";
+    public static String HOMEDIRECTORY_ATTRIBUTE = "";
 
     static {
         ResourceBundle defaultProperties = ResourceBundle.getBundle("default");
@@ -39,5 +42,8 @@ public class DefaultProperties {
                 defaultProperties.getString("ssh.socket.timeout")).intValue();
         UNIX_USER_HOMEDIRECTORY =
                 defaultProperties.getString("unix.user.homedirectory");
+        COMMENT_ATTRIBUTE = defaultProperties.getString("comment.attribute");
+        SHELL_ATTRIBUTE = defaultProperties.getString("shell.attribute");
+        HOMEDIRECTORY_ATTRIBUTE = defaultProperties.getString("homedirectory.attribute");
     }
 }

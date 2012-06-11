@@ -25,7 +25,7 @@ package org.connid.unix.commands;
 
 import org.identityconnectors.common.StringUtil;
 
-public class UserModCommand {
+public class UserMod {
 
     /**
      * The usermod command modifies the system account files to reflect the
@@ -91,12 +91,12 @@ public class UserModCommand {
         if ((StringUtil.isNotBlank(comment))
                 && (StringUtil.isNotEmpty(comment))) {
             usermodCommand.append(COMMENT_OPTION).append(
-                    " ").append(comment);
+                    " ").append(comment).append(" ");
         }
         if ((StringUtil.isNotBlank(shell))
                 && (StringUtil.isNotEmpty(shell))) {
             usermodCommand.append(SHELL_OPTION).append(
-                    " ").append(shell);
+                    " ").append(shell).append(" ");
         }
         if ((StringUtil.isNotBlank(homeDirectory))
                 && (StringUtil.isNotEmpty(homeDirectory))) {

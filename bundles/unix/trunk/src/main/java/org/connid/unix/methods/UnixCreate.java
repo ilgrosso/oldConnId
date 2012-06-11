@@ -41,6 +41,7 @@ public class UnixCreate {
     private static final Log LOG = Log.getLog(UnixCreate.class);
     private Set<Attribute> attrs = null;
     private UnixConnection connection = null;
+    private UnixConfiguration configuration = null;
     private ObjectClass objectClass = null;
     String comment = "";
     String shell = "";
@@ -52,6 +53,7 @@ public class UnixCreate {
             final Set<Attribute> attributes) throws IOException {
         this.attrs = attributes;
         connection = UnixConnection.openConnection(unixConfiguration);
+        configuration = unixConfiguration;
         objectClass = oc;
     }
 
@@ -97,11 +99,11 @@ public class UnixCreate {
                         status = Boolean.parseBoolean(
                                 attr.getValue().get(0).toString());
                     }
-                } else if (attr.is("comment")) {
+                } else if (attr.is(configuration.getCommentAttribute())) {
                     comment = attr.getValue().get(0).toString();
-                } else if (attr.is("shell")) {
+                } else if (attr.is(configuration.getShellAttribute())) {
                     shell = (String) attr.getValue().get(0).toString();
-                } else if (attr.is("homedirectory")) {
+                } else if (attr.is(configuration.getHomeDirectoryAttribute())) {
                     homeDirectory = (String) attr.getValue().get(0).toString();
                 }
             }

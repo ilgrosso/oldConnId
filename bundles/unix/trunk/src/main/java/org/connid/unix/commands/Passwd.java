@@ -23,7 +23,7 @@
  */
 package org.connid.unix.commands;
 
-public class PasswdCommand {
+public class Passwd {
 
     /**
      * passwd - update user's authentication tokens.

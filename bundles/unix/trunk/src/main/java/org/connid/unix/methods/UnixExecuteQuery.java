@@ -27,19 +27,19 @@ import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
+import org.connid.unix.files.Passwd;
 import org.connid.unix.utilities.EvaluateCommandsResultOutput;
+import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.OperationalAttributes;
-import org.identityconnectors.framework.common.objects.ResultsHandler;
+import org.identityconnectors.framework.common.objects.*;
 
 public class UnixExecuteQuery {
 
     private static final Log LOG = Log.getLog(UnixExecuteQuery.class);
     private UnixConnection connection = null;
+    private UnixConfiguration unixConfiguration = null;
     private String filter = null;
     private ResultsHandler handler = null;
     private ObjectClass objectClass = null;
@@ -48,6 +48,7 @@ public class UnixExecuteQuery {
             final ObjectClass oc, final String filter,
             final ResultsHandler rh) throws IOException {
         connection = UnixConnection.openConnection(configuration);
+        unixConfiguration = configuration;
         this.filter = filter;
         handler = rh;
         objectClass = oc;
@@ -71,18 +72,27 @@ public class UnixExecuteQuery {
 
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
             String username = cleanFilter(filter);
-            String unixUsername =
-                    EvaluateCommandsResultOutput.usernameFromSearchUser(
+            Passwd passwdFile =
+                    EvaluateCommandsResultOutput.toPasswd(
                     connection.searchUser(username));
             ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
-            if (StringUtil.isNotEmpty(unixUsername)
-                    && StringUtil.isNotBlank(unixUsername)) {
-                bld.setName(unixUsername);
-                bld.setUid(unixUsername);
+            if (StringUtil.isNotEmpty(passwdFile.getUsername())
+                    && StringUtil.isNotBlank(passwdFile.getUsername())) {
+                bld.setName(passwdFile.getUsername());
+                bld.setUid(passwdFile.getUsername());
             } else {
                 bld.setUid("_W_R_O_N_G_");
                 bld.setName("_W_R_O_N_G_");
             }
+            bld.addAttribute(AttributeBuilder.build(
+                    unixConfiguration.getCommentAttribute(),
+                    CollectionUtil.newSet(passwdFile.getComment())));
+            bld.addAttribute(AttributeBuilder.build(
+                    unixConfiguration.getShellAttribute(),
+                    CollectionUtil.newSet(passwdFile.getShell())));
+            bld.addAttribute(AttributeBuilder.build(
+                    unixConfiguration.getHomeDirectoryAttribute(),
+                    CollectionUtil.newSet(passwdFile.getHomeDirectory())));
             bld.addAttribute(OperationalAttributes.ENABLE_NAME,
                     EvaluateCommandsResultOutput.evaluateUserStatus(
                     connection.userStatus(username)));
@@ -92,7 +102,7 @@ public class UnixExecuteQuery {
             ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
             if (StringUtil.isNotBlank(groupname)
                     && StringUtil.isNotEmpty(groupname)
-                    && !EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
+                    && EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
                     connection.groupExists(groupname))) {
                 bld.setName(groupname);
                 bld.setUid(groupname);

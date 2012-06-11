@@ -26,7 +26,7 @@ package org.connid.unix.commands;
 import org.connid.unix.UnixConfiguration;
 import org.identityconnectors.common.StringUtil;
 
-public class UserAddCommand {
+public class UserAdd {
 
     private UnixConfiguration unixConfiguration = null;
     /**
@@ -76,7 +76,7 @@ public class UserAddCommand {
     private String shell = "";
     private String homeDirectory = "";
 
-    public UserAddCommand(final UnixConfiguration configuration,
+    public UserAdd(final UnixConfiguration configuration,
             final String username, final String password, final String comment,
             final String shell, final String homeDirectory) {
         unixConfiguration = configuration;

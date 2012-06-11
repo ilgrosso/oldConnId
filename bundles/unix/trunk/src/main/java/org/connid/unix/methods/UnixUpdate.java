@@ -25,7 +25,6 @@ package org.connid.unix.methods;
 
 import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
@@ -101,11 +100,11 @@ public class UnixUpdate {
                 } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
                     status = Boolean.parseBoolean(
                             attr.getValue().get(0).toString());
-                } else if (attr.is("comment")) {
+                } else if (attr.is(configuration.getCommentAttribute())) {
                     comment = attr.getValue().get(0).toString();
-                } else if (attr.is("shell")) {
+                } else if (attr.is(configuration.getShellAttribute())) {
                     shell = (String) attr.getValue().get(0).toString();
-                } else if (attr.is("homedirectory")) {
+                } else if (attr.is(configuration.getHomeDirectoryAttribute())) {
                     homeDirectory = (String) attr.getValue().get(0).toString();
                 }
             }

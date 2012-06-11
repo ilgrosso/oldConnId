@@ -23,25 +23,32 @@
  */
 package org.connid.unix.commands;
 
-public class GroupAddCommand {
+public class GroupMod {
 
     /**
-     * The groupadd command creates a new group account using the values
-     * specified on the command line plus the default values from the system.
-     * The new group will be entered into the system files as needed.
+     * The groupmod command modifies the definition of the specified GROUP by
+     * modifying the appropriate entry in the group database.
      */
-    private static final String GROUPADD_COMMAND = "groupadd";
-    private String groupname = "";
+    private static final String GROUPMOD_COMMAND = "groupmod";
+    /**
+     * The name of the group will be changed from GROUP to NEW_GROUP name.
+     *
+     */
+    private static final String NEW_NAME_OPTION = "-n";
+    private String groupName = "";
+    private String newGroupName = "";
 
-    public GroupAddCommand(final String groupname) {
-        this.groupname = groupname;
+    public GroupMod(final String groupName, final String newGroupName) {
+        this.groupName = groupName;
+        this.newGroupName = newGroupName;
     }
 
-    private String createGroupAddCommand() {
-        return GROUPADD_COMMAND + " " + groupname;
+    private String createGroupModCommand() {
+        return GROUPMOD_COMMAND + " " + NEW_NAME_OPTION + " " + newGroupName
+                + " " + groupName;
     }
 
-    public String groupadd() {
-        return createGroupAddCommand();
+    public String groupMod() {
+        return createGroupModCommand();
     }
 }

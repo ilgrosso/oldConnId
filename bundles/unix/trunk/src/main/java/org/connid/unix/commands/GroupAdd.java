@@ -23,24 +23,25 @@
  */
 package org.connid.unix.commands;
 
-public class GroupDelCommand {
+public class GroupAdd {
 
     /**
-     * The groupdel command modifies the system account files, deleting all
-     * entries that refer to group. The named group must exist.
+     * The groupadd command creates a new group account using the values
+     * specified on the command line plus the default values from the system.
+     * The new group will be entered into the system files as needed.
      */
-    private static final String GROUPDEL_COMMAND = "groupdel";
+    private static final String GROUPADD_COMMAND = "groupadd";
     private String groupname = "";
 
-    public GroupDelCommand(final String groupName) {
-        this.groupname = groupName;
+    public GroupAdd(final String groupname) {
+        this.groupname = groupname;
     }
 
-    private String createGropuDelCommand() {
-        return GROUPDEL_COMMAND + " " + groupname;
+    private String createGroupAddCommand() {
+        return GROUPADD_COMMAND + " " + groupname;
     }
 
-    public String groupDel() {
-        return createGropuDelCommand();
+    public String groupadd() {
+        return createGroupAddCommand();
     }
 }
