@@ -26,6 +26,7 @@ package org.connid.unix;
 import java.io.IOException;
 import java.util.Set;
 import org.connid.unix.methods.*;
+import org.connid.unix.search.Operand;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.*;
@@ -38,7 +39,7 @@ import org.identityconnectors.framework.spi.operations.*;
 @ConnectorClass(configurationClass = UnixConfiguration.class,
 displayNameKey = "unix.connector.display")
 public class UnixConnector implements Connector, CreateOp, UpdateOp,
-        DeleteOp, TestOp, SearchOp<String>, AuthenticateOp {
+        DeleteOp, TestOp, SearchOp<Operand>, AuthenticateOp {
 
     private static final Log LOG = Log.getLog(UnixConnector.class);
     private UnixConfiguration unixConfiguration;
@@ -117,7 +118,7 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
     }
 
     @Override
-    public final void executeQuery(final ObjectClass oc, final String filter,
+    public final void executeQuery(final ObjectClass oc, final Operand filter,
             final ResultsHandler rh, final OperationOptions oo) {
         LOG.info("Execute query");
         try {
@@ -129,7 +130,7 @@ public class UnixConnector implements Connector, CreateOp, UpdateOp,
     }
 
     @Override
-    public final FilterTranslator<String> createFilterTranslator(
+    public final FilterTranslator<Operand> createFilterTranslator(
             final ObjectClass oc, final OperationOptions oo) {
         if (oc == null || (!oc.equals(ObjectClass.ACCOUNT))
                 && (!oc.equals(ObjectClass.GROUP))) {

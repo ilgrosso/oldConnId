@@ -26,6 +26,7 @@ package org.connid.unix;
 import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.List;
 import org.connid.unix.sshmanagement.SSHClient;
 
 public class UnixConnection {
@@ -56,6 +57,11 @@ public class UnixConnection {
     public String searchUser(final String username)
             throws IOException, InvalidStateException, InterruptedException {
         return sshc.searchUser(username);
+    }
+
+    public List<String> searchAllUser()
+            throws IOException, InvalidStateException, InterruptedException {
+        return sshc.searchAllUser();
     }
 
     public String userStatus(final String username)

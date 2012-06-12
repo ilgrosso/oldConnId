@@ -25,6 +25,10 @@ package org.connid.unix.commands;
 
 public class General {
 
+    public static String catPasswdFile() {
+        return "cat /etc/passwd";
+    }
+
     public static String searchUserIntoPasswdFile(final String username) {
         return "cat /etc/passwd | grep " + username;
     }

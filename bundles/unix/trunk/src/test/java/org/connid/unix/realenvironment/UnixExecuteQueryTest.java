@@ -27,6 +27,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import org.connid.unix.UnixConnector;
+import org.connid.unix.search.Operand;
+import org.connid.unix.search.Operator;
 import org.connid.unix.utilities.AttributesTestValue;
 import org.connid.unix.utilities.SharedTestMethods;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
@@ -58,7 +60,8 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
         final Set actual = new HashSet();
         connector.executeQuery(ObjectClass.ACCOUNT,
-                "(" + Uid.NAME + "=" + newAccount.getUidValue() + ")",
+                new Operand(
+                Operator.EQ, Uid.NAME, newAccount.getUidValue(), false),
                 new ResultsHandler() {
 
                     @Override
@@ -83,7 +86,8 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
         final Set actual = new HashSet();
         connector.executeQuery(ObjectClass.GROUP,
-                "(" + Uid.NAME + "=" + newAccount.getUidValue() + ")",
+                new Operand(
+                Operator.EQ, Uid.NAME, newAccount.getUidValue(), false),
                 new ResultsHandler() {
 
                     @Override
@@ -102,10 +106,9 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
     }
 
     @Test(expected = ConnectorException.class)
-    public void createWithWrongObjectClass() {
+    public void executeQueryWithWrongObjectClass() {
         final Set actual = new HashSet();
-        connector.executeQuery(attrs.getWrongObjectClass(),
-                "(" + Uid.NAME + "=" + new Uid(attrs.getWrongUsername()) + ")",
+        connector.executeQuery(attrs.getWrongObjectClass(), null,
                 new ResultsHandler() {
 
                     @Override

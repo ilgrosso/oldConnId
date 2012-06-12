@@ -27,7 +27,9 @@ import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
-import org.connid.unix.files.Passwd;
+import org.connid.unix.files.PasswdFile;
+import org.connid.unix.files.PasswdRow;
+import org.connid.unix.search.Operand;
 import org.connid.unix.utilities.EvaluateCommandsResultOutput;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.StringUtil;
@@ -40,12 +42,13 @@ public class UnixExecuteQuery {
     private static final Log LOG = Log.getLog(UnixExecuteQuery.class);
     private UnixConnection connection = null;
     private UnixConfiguration unixConfiguration = null;
-    private String filter = null;
+    private Operand filter = null;
     private ResultsHandler handler = null;
     private ObjectClass objectClass = null;
+    private String nameToSearch = "";
 
     public UnixExecuteQuery(final UnixConfiguration configuration,
-            final ObjectClass oc, final String filter,
+            final ObjectClass oc, final Operand filter,
             final ResultsHandler rh) throws IOException {
         connection = UnixConnection.openConnection(configuration);
         unixConfiguration = configuration;
@@ -65,54 +68,55 @@ public class UnixExecuteQuery {
 
     private void doExecuteQuery()
             throws IOException, InvalidStateException, InterruptedException {
+
         if (!objectClass.equals(ObjectClass.ACCOUNT)
                 && (!objectClass.equals(ObjectClass.GROUP))) {
             throw new IllegalStateException("Wrong object class");
         }
 
+        if (filter == null) {
+            throw new ConnectorException("Filter is null");
+        }
+
+        if (filter.isUid()) {
+            nameToSearch = filter.getAttributeValue();
+        }
+
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
-            String username = cleanFilter(filter);
-            Passwd passwdFile =
-                    EvaluateCommandsResultOutput.toPasswd(
-                    connection.searchUser(username));
+            PasswdFile passwdFile = new PasswdFile(connection.searchAllUser());
+            PasswdRow passwdRow = passwdFile.searchRowByUsername(nameToSearch);
             ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
-            if (StringUtil.isNotEmpty(passwdFile.getUsername())
-                    && StringUtil.isNotBlank(passwdFile.getUsername())) {
-                bld.setName(passwdFile.getUsername());
-                bld.setUid(passwdFile.getUsername());
+            if (StringUtil.isNotEmpty(passwdRow.getUsername())
+                    && StringUtil.isNotBlank(passwdRow.getUsername())) {
+                bld.setName(passwdRow.getUsername());
+                bld.setUid(passwdRow.getUsername());
             } else {
                 bld.setUid("_W_R_O_N_G_");
                 bld.setName("_W_R_O_N_G_");
             }
             bld.addAttribute(AttributeBuilder.build(
                     unixConfiguration.getCommentAttribute(),
-                    CollectionUtil.newSet(passwdFile.getComment())));
+                    CollectionUtil.newSet(passwdRow.getComment())));
             bld.addAttribute(AttributeBuilder.build(
                     unixConfiguration.getShellAttribute(),
-                    CollectionUtil.newSet(passwdFile.getShell())));
+                    CollectionUtil.newSet(passwdRow.getShell())));
             bld.addAttribute(AttributeBuilder.build(
                     unixConfiguration.getHomeDirectoryAttribute(),
-                    CollectionUtil.newSet(passwdFile.getHomeDirectory())));
+                    CollectionUtil.newSet(passwdRow.getHomeDirectory())));
             bld.addAttribute(OperationalAttributes.ENABLE_NAME,
                     EvaluateCommandsResultOutput.evaluateUserStatus(
-                    connection.userStatus(username)));
+                    connection.userStatus(nameToSearch)));
             handler.handle(bld.build());
         } else if (objectClass.equals(ObjectClass.GROUP)) {
-            String groupname = cleanFilter(filter);
             ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
-            if (StringUtil.isNotBlank(groupname)
-                    && StringUtil.isNotEmpty(groupname)
+            if (StringUtil.isNotBlank(nameToSearch)
+                    && StringUtil.isNotEmpty(nameToSearch)
                     && EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
-                    connection.groupExists(groupname))) {
-                bld.setName(groupname);
-                bld.setUid(groupname);
+                    connection.groupExists(nameToSearch))) {
+                bld.setName(nameToSearch);
+                bld.setUid(nameToSearch);
             }
             handler.handle(bld.build());
         }
-    }
-
-    private String cleanFilter(final String filter) {
-        String[] cleanedFilter = filter.split("=");
-        return cleanedFilter[1].substring(0, cleanedFilter[1].length() - 1);
     }
 }

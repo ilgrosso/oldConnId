@@ -23,7 +23,7 @@
  */
 package org.connid.unix.files;
 
-public class Passwd {
+public class PasswdRow {
 
     private String username = "";
     private String passwordValidator = "";

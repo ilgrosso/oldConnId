@@ -23,197 +23,43 @@
  */
 package org.connid.unix;
 
+import org.connid.unix.search.Operand;
+import org.connid.unix.search.Operator;
+import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
+import org.identityconnectors.framework.common.objects.Name;
+import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.filter.*;
 
-public class UnixFilterTranslator extends AbstractFilterTranslator<String> {
-
+public class UnixFilterTranslator extends AbstractFilterTranslator<Operand> {
+    
     @Override
-    protected final String createAndExpression(final String leftExpression,
-            final String rightExpression) {
-        return "(&(" + leftExpression + ")"
-                + "(" + rightExpression + ")";
-    }
-
-    @Override
-    protected final String createOrExpression(final String leftExpression,
-            final String rightExpression) {
-        return "(|(" + leftExpression + ")"
-                + "(" + rightExpression + ")";
-    }
-
-    @Override
-    protected final String createStartsWithExpression(final StartsWithFilter filter,
+    protected Operand createEqualsExpression(final EqualsFilter filter,
             final boolean not) {
-        final Attribute attribute = filter.getAttribute();
-        if (!validateSearchAttribute(attribute)) {
+        if (filter == null) {
             return null;
         }
-        StringBuilder string = new StringBuilder();
-        if (not) {
-            string.append("(!");
-        }
-        string.append("(").append(attribute.getName()).append("=")
-                .append(attribute.getValue().get(0)).append("*)");
-        if (not) {
-            string.append(")");
-        }
-        return string.toString();
-    }
-
-    @Override
-    protected final String createContainsAllValuesExpression(
-            final ContainsAllValuesFilter filter, final boolean not) {
-        final Attribute attribute = filter.getAttribute();
-        if (!validateSearchAttribute(attribute)) {
+        String value = AttributeUtil.getAsStringValue(filter.getAttribute());
+        if (StringUtil.isBlank(value)) {
             return null;
         }
-        StringBuilder string = new StringBuilder();
-        if (not) {
-            string.append("(!");
-        }
-        string.append("(").append(attribute.getName()).append("=*")
-                .append(attribute.getValue().get(0)).append("*)");
-        if (not) {
-            string.append(")");
-        }
-        return string.toString();
+        String name = filter.getAttribute().getName();
+        
+        return new Operand(Operator.EQ, name, value, not);
     }
-
-    @Override
-    protected final String createContainsExpression(final ContainsFilter filter,
-            final boolean not) {
-        final Attribute attribute = filter.getAttribute();
-        if (!validateSearchAttribute(attribute)) {
+    
+    private String checkSearchValue(String value) {
+        if (StringUtil.isEmpty(value)) {
             return null;
         }
-        StringBuilder string = new StringBuilder();
-        if (not) {
-            string.append("(!");
+        if (value.contains("*") || value.contains("&") || value.contains("|")) {
+            throw new IllegalArgumentException(
+                    "Value of search attribute contains illegal character(s).");
         }
-        string.append("(").append(attribute.getName()).append("=*")
-                .append(attribute.getValue().get(0)).append("*)");
-        if (not) {
-            string.append(")");
-        }
-        return string.toString();
+        return value;
     }
-
-    @Override
-    protected final String createEndsWithExpression(final EndsWithFilter filter,
-            final boolean not) {
-        final Attribute attribute = filter.getAttribute();
-        if (!validateSearchAttribute(attribute)) {
-            return null;
-        }
-        StringBuilder string = new StringBuilder();
-        if (not) {
-            string.append("(!");
-        }
-        string.append("(").append(attribute.getName()).append("=*")
-                .append(attribute.getValue().get(0)).append(")");
-        if (not) {
-            string.append(")");
-        }
-        return string.toString();
-    }
-
-    @Override
-    protected final String createEqualsExpression(final EqualsFilter filter,
-            final boolean not) {
-        final Attribute attribute = filter.getAttribute();
-        if (!validateSearchAttribute(attribute)) {
-            return null;
-        }
-        StringBuilder string = new StringBuilder();
-        if (not) {
-            string.append("(!");
-        }
-        string.append("(").append(attribute.getName()).append("=")
-                .append(attribute.getValue().get(0)).append(")");
-        if (not) {
-            string.append(")");
-        }
-        return string.toString();
-    }
-
-    @Override
-    protected final String createGreaterThanExpression(final GreaterThanFilter filter,
-            final boolean not) {
-        final Attribute attribute = filter.getAttribute();
-        if (!validateSearchAttribute(attribute)) {
-            return null;
-        }
-        StringBuilder string = new StringBuilder();
-        if (not) {
-            string.append("(!");
-        }
-        string.append("(").append(attribute.getName()).append(">")
-                .append(attribute.getValue().get(0)).append(")");
-        if (not) {
-            string.append(")");
-        }
-        return string.toString();
-    }
-
-    @Override
-    protected final String createGreaterThanOrEqualExpression(
-            final GreaterThanOrEqualFilter filter, final boolean not) {
-        final Attribute attribute = filter.getAttribute();
-        if (!validateSearchAttribute(attribute)) {
-            return null;
-        }
-        StringBuilder string = new StringBuilder();
-        if (not) {
-            string.append("(!");
-        }
-        string.append("(").append(attribute.getName()).append(">=")
-                .append(attribute.getValue().get(0)).append(")");
-        if (not) {
-            string.append(")");
-        }
-        return string.toString();
-    }
-
-    @Override
-    protected final String createLessThanExpression(
-            final LessThanFilter filter, final boolean not) {
-        final Attribute attribute = filter.getAttribute();
-        if (!validateSearchAttribute(attribute)) {
-            return null;
-        }
-        StringBuilder string = new StringBuilder();
-        if (not) {
-            string.append("(!");
-        }
-        string.append("(").append(attribute.getName()).append("<")
-                .append(attribute.getValue().get(0)).append(")");
-        if (not) {
-            string.append(")");
-        }
-        return string.toString();
-    }
-
-    @Override
-    protected final String createLessThanOrEqualExpression(
-            final LessThanOrEqualFilter filter, final boolean not) {
-        final Attribute attribute = filter.getAttribute();
-        if (!validateSearchAttribute(attribute)) {
-            return null;
-        }
-        StringBuilder string = new StringBuilder();
-        if (not) {
-            string.append("(!");
-        }
-        string.append("(").append(attribute.getName()).append("<=")
-                .append(attribute.getValue().get(0)).append(")");
-        if (not) {
-            string.append(")");
-        }
-        return string.toString();
-    }
-
+    
     private boolean validateSearchAttribute(final Attribute attribute) {
         //Ignore streamed ( byte[] objects ) from query
         if (byte[].class.equals(AttributeUtil.getSingleValue(attribute).

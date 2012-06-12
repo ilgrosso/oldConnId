@@ -35,6 +35,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.commands.*;
 import org.connid.unix.utilities.DefaultProperties;
@@ -104,6 +106,28 @@ public class SSHClient {
                 General.searchUserIntoPasswdFile(username));
         if (session.executeCommand(commandToExecute.toString())) {
             output = getOutput(session);
+            session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
+        } else {
+            LOG.error("Error during password encrypt");
+        }
+        sshClient.disconnect();
+        return output;
+    }
+
+    public final List<String> searchAllUser()
+            throws IOException, InvalidStateException, InterruptedException {
+        SessionChannelClient session = getSession();
+        StringBuilder commandToExecute = new StringBuilder();
+        if (!unixConfiguration.isRoot()) {
+            Sudo sudoCommand =
+                    new Sudo(unixConfiguration.getSudoPassword());
+            commandToExecute.append(sudoCommand.sudo()).append("; ");
+        }
+        commandToExecute.append(
+                General.catPasswdFile());
+        List<String> output = new ArrayList<String>();
+        if (session.executeCommand(commandToExecute.toString())) {
+            output = getPasswdFileOutput(session);
             session.getState().waitForState(ChannelState.CHANNEL_CLOSED);
         } else {
             LOG.error("Error during password encrypt");
@@ -366,9 +390,21 @@ public class SSHClient {
                 new InputStreamReader(session.getInputStream()));
         StringBuilder buffer = new StringBuilder();
         while ((line = br.readLine()) != null) {
-            buffer.append(line);
+            buffer.append(line).append("\n");
         }
         return buffer.toString();
+    }
+
+    private List<String> getPasswdFileOutput(final SessionChannelClient session)
+            throws IOException {
+        String line = "";
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(session.getInputStream()));
+        List<String> passwdRows = new ArrayList<String>();
+        while ((line = br.readLine()) != null) {
+            passwdRows.add(line);
+        }
+        return passwdRows;
     }
 
     private PasswordAuthenticationClient getPwdAuthClient(

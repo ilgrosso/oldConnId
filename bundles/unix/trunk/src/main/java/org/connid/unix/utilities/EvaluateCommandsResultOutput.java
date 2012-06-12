@@ -23,7 +23,8 @@
  */
 package org.connid.unix.utilities;
 
-import org.connid.unix.files.Passwd;
+import org.connid.unix.files.PasswdRow;
+import org.connid.unix.files.PasswdRowElements;
 import org.identityconnectors.common.StringUtil;
 
 public class EvaluateCommandsResultOutput {
@@ -33,18 +34,27 @@ public class EvaluateCommandsResultOutput {
         return !commandResult.isEmpty();
     }
 
-    public static Passwd toPasswd(
+    public static PasswdRow toPasswdRow(
             final String commandResult) {
         String[] userValues = commandResult.split(":");
-        Passwd passwdFile = new Passwd();
-        passwdFile.setUsername(userValues[0]);
-        passwdFile.setPasswordValidator(userValues[1]);
-        passwdFile.setUserIdentifier(userValues[2]);
-        passwdFile.setGroupIdentifier(userValues[3]);
-        passwdFile.setComment(userValues[4]);
-        passwdFile.setHomeDirectory(userValues[5]);
-        passwdFile.setShell(userValues[6]);
-        return passwdFile;
+        PasswdRow passwdRow = new PasswdRow();
+        if (userValues.length == PasswdRowElements.values().length) {
+            passwdRow.setUsername(userValues[
+                    PasswdRowElements.USERNAME.getCode()]);
+            passwdRow.setPasswordValidator(userValues[
+                    PasswdRowElements.PASSWORD_VALIDATOR.getCode()]);
+            passwdRow.setUserIdentifier(userValues[
+                    PasswdRowElements.USER_IDENTIFIER.getCode()]);
+            passwdRow.setGroupIdentifier(userValues[
+                    PasswdRowElements.GROUP_IDENTIFIER.getCode()]);
+            passwdRow.setComment(userValues[
+                    PasswdRowElements.COMMENT.getCode()]);
+            passwdRow.setHomeDirectory(userValues[
+                    PasswdRowElements.HOME_DIRECTORY.getCode()]);
+            passwdRow.setShell(userValues[
+                    PasswdRowElements.SHELL.getCode()]);
+        }
+        return passwdRow;
     }
 
     public static boolean evaluateUserStatus(
