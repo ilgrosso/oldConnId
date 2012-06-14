@@ -42,7 +42,7 @@ public class PasswdFile {
         }
     }
 
-    public PasswdRow searchRowByUsername(final String username) {
+    public final PasswdRow searchRowByUsername(final String username) {
         PasswdRow userRow = new PasswdRow();
         for (Iterator<PasswdRow> it = passwdRows.iterator(); it.hasNext();) {
             PasswdRow passwdRow = it.next();
@@ -53,12 +53,50 @@ public class PasswdFile {
         return userRow;
     }
 
-    public PasswdRow searchRowByShell(final String shell) {
-        PasswdRow userRow = new PasswdRow();
+    public final List<PasswdRow> searchRowByAttribute(final String attribute) {
+        List<PasswdRow> userRow = new ArrayList<PasswdRow>();
         for (Iterator<PasswdRow> it = passwdRows.iterator(); it.hasNext();) {
             PasswdRow passwdRow = it.next();
-            if (shell.equalsIgnoreCase(passwdRow.getShell())) {
-                userRow = passwdRow;
+            if (attribute.equalsIgnoreCase(passwdRow.getUsername())) {
+                userRow.add(passwdRow);
+            }
+            if (attribute.equalsIgnoreCase(passwdRow.getShell())) {
+                userRow.add(passwdRow);
+            }
+            if (attribute.equalsIgnoreCase(passwdRow.getComment())) {
+                userRow.add(passwdRow);
+            }
+            if (attribute.equalsIgnoreCase(passwdRow.getHomeDirectory())) {
+                userRow.add(passwdRow);
+            }
+        }
+        return userRow;
+    }
+
+    public final List<PasswdRow> orSearchRowByAttribute(final String firstAttribute,
+            final String secondAttribute) {
+        List<PasswdRow> userRow = new ArrayList<PasswdRow>();
+        for (Iterator<PasswdRow> it = passwdRows.iterator(); it.hasNext();) {
+            PasswdRow passwdRow = it.next();
+            if (firstAttribute.equalsIgnoreCase(passwdRow.getUsername())
+                    || secondAttribute.equalsIgnoreCase(
+                    passwdRow.getUsername())) {
+                userRow.add(passwdRow);
+            }
+            if (firstAttribute.equalsIgnoreCase(passwdRow.getShell())
+                    || secondAttribute.equalsIgnoreCase(
+                    passwdRow.getShell())) {
+                userRow.add(passwdRow);
+            }
+            if (firstAttribute.equalsIgnoreCase(passwdRow.getComment())
+                    || secondAttribute.equalsIgnoreCase(
+                    passwdRow.getComment())) {
+                userRow.add(passwdRow);
+            }
+            if (firstAttribute.equalsIgnoreCase(passwdRow.getHomeDirectory())
+                    || secondAttribute.equalsIgnoreCase(
+                    passwdRow.getHomeDirectory())) {
+                userRow.add(passwdRow);
             }
         }
         return userRow;

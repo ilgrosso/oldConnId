@@ -33,10 +33,7 @@ import org.connid.unix.utilities.AttributesTestValue;
 import org.connid.unix.utilities.SharedTestMethods;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.*;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 public class UnixExecuteQueryTest extends SharedTestMethods {
 
@@ -77,6 +74,56 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
                     co.getName().getNameValue());
         }
         connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+    }
+
+    @Test(expected = ConnectorException.class)
+    public final void searchNotExistsUser() {
+        final Set actual = new HashSet();
+        connector.executeQuery(ObjectClass.ACCOUNT,
+                new Operand(
+                Operator.EQ, Uid.NAME, attrs.getWrongUsername(), false),
+                new ResultsHandler() {
+
+                    @Override
+                    public boolean handle(final ConnectorObject co) {
+                        actual.add(co);
+                        return true;
+                    }
+                }, null);
+    }
+    
+    @Ignore
+    @Test
+    public final void searchUserWithSameShell() {
+        Name name1 = new Name(attrs.getUsername());
+        Uid newAccount1 = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name1, attrs.getPassword(), true), null);
+        Name name2 = new Name(attrs.getUsername());
+        Uid newAccount2 = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name2, attrs.getPassword(), true), null);
+        Name name3 = new Name(attrs.getUsername());
+        Uid newAccount3 = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name3, attrs.getPassword(), true), null);
+        Name name4 = new Name(attrs.getUsername());
+        Uid newAccount4 = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name4, attrs.getPassword(), true), null);
+        final Set actual = new HashSet();
+        connector.executeQuery(ObjectClass.ACCOUNT,
+                new Operand(
+                Operator.EQ, "shell", "/bin/bash", false),
+                new ResultsHandler() {
+
+                    @Override
+                    public boolean handle(final ConnectorObject co) {
+                        actual.add(co);
+                        return true;
+                    }
+                }, null);
+        Assert.assertEquals(4, actual.size());
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+        connector.delete(ObjectClass.ACCOUNT, newAccount2, null);
+        connector.delete(ObjectClass.ACCOUNT, newAccount3, null);
+        connector.delete(ObjectClass.ACCOUNT, newAccount4, null);
     }
 
     @Test

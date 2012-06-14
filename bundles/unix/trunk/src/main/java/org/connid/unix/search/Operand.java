@@ -23,69 +23,50 @@
  */
 package org.connid.unix.search;
 
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.Uid;
-
 public class Operand {
 
     private Operator operator = null;
     private String attributeName = "";
     private String attributeValue = "";
     private boolean not = false;
-    private boolean uid = false;
+    private Operand firstOperand = null;
+    private Operand secondOperand = null;
 
     public Operand(final Operator operator, final String name,
             final String value, final boolean not) {
         this.operator = operator;
-        manageAttributeName(name);
         attributeValue = value;
         this.not = not;
     }
 
-    private void manageAttributeName(String name) {
-        if (name.equalsIgnoreCase(
-                Name.NAME) || name.equalsIgnoreCase(Uid.NAME)) {
-            uid = true;
-        }
+    public Operand(final Operator operator, final Operand firstOperand,
+            final Operand secondOperand) {
+        this.operator = operator;
+        this.firstOperand = firstOperand;
+        this.secondOperand = secondOperand;
     }
 
-    public boolean isUid() {
-        return uid;
+    public final Operand getFirstOperand() {
+        return firstOperand;
     }
 
-    public void setUid(boolean uid) {
-        this.uid = uid;
+    public final Operand getSecondOperand() {
+        return secondOperand;
     }
 
-    public String getAttributeName() {
+    public final String getAttributeName() {
         return attributeName;
     }
 
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
-    }
-
-    public String getAttributeValue() {
+    public final String getAttributeValue() {
         return attributeValue;
     }
 
-    public void setAttributeValue(String attributeValue) {
-        this.attributeValue = attributeValue;
-    }
-
-    public boolean isNot() {
+    public final boolean isNot() {
         return not;
     }
 
-    public void setNot(boolean not) {
-        this.not = not;
-    }
-
-    public Operator getOperator() {
+    public final Operator getOperator() {
         return operator;
-    }
-
-    public void setOperator(Operator operator) {
-        this.operator = operator;
     }
 }

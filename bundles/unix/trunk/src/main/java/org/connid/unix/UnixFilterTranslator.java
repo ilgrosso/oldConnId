@@ -23,17 +23,18 @@
  */
 package org.connid.unix;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.connid.unix.search.Operand;
 import org.connid.unix.search.Operator;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.Uid;
-import org.identityconnectors.framework.common.objects.filter.*;
+import org.identityconnectors.framework.common.objects.filter.AbstractFilterTranslator;
+import org.identityconnectors.framework.common.objects.filter.EqualsFilter;
 
 public class UnixFilterTranslator extends AbstractFilterTranslator<Operand> {
-    
+
     @Override
     protected Operand createEqualsExpression(final EqualsFilter filter,
             final boolean not) {
@@ -45,10 +46,20 @@ public class UnixFilterTranslator extends AbstractFilterTranslator<Operand> {
             return null;
         }
         String name = filter.getAttribute().getName();
-        
+
         return new Operand(Operator.EQ, name, value, not);
     }
-    
+
+    @Override
+    protected Operand createOrExpression(
+            Operand leftExpression, Operand rightExpression) {
+        if (leftExpression == null || rightExpression == null) {
+            return null;
+        }
+
+        return new Operand(Operator.OR, leftExpression, rightExpression);
+    }
+
     private String checkSearchValue(String value) {
         if (StringUtil.isEmpty(value)) {
             return null;
@@ -59,7 +70,7 @@ public class UnixFilterTranslator extends AbstractFilterTranslator<Operand> {
         }
         return value;
     }
-    
+
     private boolean validateSearchAttribute(final Attribute attribute) {
         //Ignore streamed ( byte[] objects ) from query
         if (byte[].class.equals(AttributeUtil.getSingleValue(attribute).

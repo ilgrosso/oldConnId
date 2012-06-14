@@ -24,14 +24,8 @@ package org.connid.unix.search;
 
 public enum Operator {
 
-    GT(">"),
-    LT("<"),
     EQ("="),
-    CONTAINS("%"),
-    ENDS("%"),
-    STARTS("%"),
-    AND("AND"),
-    OR("OR");
+    OR("||");
     final private String op;
 
     Operator(String op) {

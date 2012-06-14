@@ -29,7 +29,9 @@ import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
 import org.connid.unix.files.PasswdFile;
 import org.connid.unix.files.PasswdRow;
+import org.connid.unix.search.EqualSearch;
 import org.connid.unix.search.Operand;
+import org.connid.unix.search.Search;
 import org.connid.unix.utilities.EvaluateCommandsResultOutput;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.StringUtil;
@@ -78,45 +80,17 @@ public class UnixExecuteQuery {
             throw new ConnectorException("Filter is null");
         }
 
-        if (filter.isUid()) {
-            nameToSearch = filter.getAttributeValue();
-        }
+        switch (filter.getOperator()) {
+            case EQ:
+                new Search(unixConfiguration,
+                        connection, handler, objectClass, filter).equalSearch();
+                break;
+//            case OR:
+//                handler.handle(new Search(unixConfiguration,
+//                        connection, objectClass, filter).orSearch());
 
-        if (objectClass.equals(ObjectClass.ACCOUNT)) {
-            PasswdFile passwdFile = new PasswdFile(connection.searchAllUser());
-            PasswdRow passwdRow = passwdFile.searchRowByUsername(nameToSearch);
-            ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
-            if (StringUtil.isNotEmpty(passwdRow.getUsername())
-                    && StringUtil.isNotBlank(passwdRow.getUsername())) {
-                bld.setName(passwdRow.getUsername());
-                bld.setUid(passwdRow.getUsername());
-            } else {
-                bld.setUid("_W_R_O_N_G_");
-                bld.setName("_W_R_O_N_G_");
-            }
-            bld.addAttribute(AttributeBuilder.build(
-                    unixConfiguration.getCommentAttribute(),
-                    CollectionUtil.newSet(passwdRow.getComment())));
-            bld.addAttribute(AttributeBuilder.build(
-                    unixConfiguration.getShellAttribute(),
-                    CollectionUtil.newSet(passwdRow.getShell())));
-            bld.addAttribute(AttributeBuilder.build(
-                    unixConfiguration.getHomeDirectoryAttribute(),
-                    CollectionUtil.newSet(passwdRow.getHomeDirectory())));
-            bld.addAttribute(OperationalAttributes.ENABLE_NAME,
-                    EvaluateCommandsResultOutput.evaluateUserStatus(
-                    connection.userStatus(nameToSearch)));
-            handler.handle(bld.build());
-        } else if (objectClass.equals(ObjectClass.GROUP)) {
-            ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
-            if (StringUtil.isNotBlank(nameToSearch)
-                    && StringUtil.isNotEmpty(nameToSearch)
-                    && EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
-                    connection.groupExists(nameToSearch))) {
-                bld.setName(nameToSearch);
-                bld.setUid(nameToSearch);
-            }
-            handler.handle(bld.build());
+            default:
+                throw new ConnectorException("Wrong Operator");
         }
     }
 }

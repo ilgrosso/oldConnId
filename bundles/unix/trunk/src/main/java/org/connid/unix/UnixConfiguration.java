@@ -145,8 +145,8 @@ public class UnixConfiguration extends AbstractConfiguration {
         this.commentAttribute = commentAttribute;
     }
 
-    @ConfigurationProperty(displayMessageKey = "unix.shellattr.display",
-    helpMessageKey = "unix.shellattr.help", order = 11)
+    @ConfigurationProperty(displayMessageKey = "unix.homedirattr.display",
+    helpMessageKey = "unix.homedirattr.help", order = 11)
     public String getHomeDirectoryAttribute() {
         return homeDirectoryAttribute;
     }
@@ -155,8 +155,8 @@ public class UnixConfiguration extends AbstractConfiguration {
         this.homeDirectoryAttribute = homeDirectoryAttribute;
     }
 
-    @ConfigurationProperty(displayMessageKey = "unix.homedirattr.display",
-    helpMessageKey = "unix.homedirattr.help", order = 12)
+    @ConfigurationProperty(displayMessageKey = "unix.shellattr.display",
+    helpMessageKey = "unix.shellattr.help", order = 12)
     public String getShellAttribute() {
         return shellAttribute;
     }
