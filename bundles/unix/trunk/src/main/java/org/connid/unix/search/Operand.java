@@ -39,6 +39,13 @@ public class Operand {
         this.not = not;
     }
 
+    public Operand(final Operator operator, final String startWithValue,
+            final boolean not) {
+        this.operator = operator;
+        this.attributeValue = startWithValue;
+        this.not = not;
+    }
+
     public Operand(final Operator operator, final Operand firstOperand,
             final Operand secondOperand) {
         this.operator = operator;

@@ -76,6 +76,48 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
         connector.delete(ObjectClass.ACCOUNT, newAccount, null);
     }
 
+    @Test
+    public final void searchStartsWithAttribute() {
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
+        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        final Set actual = new HashSet();
+        connector.executeQuery(ObjectClass.ACCOUNT,
+                new Operand(Operator.SW, "crea", false),
+                new ResultsHandler() {
+
+                    @Override
+                    public boolean handle(final ConnectorObject co) {
+                        actual.add(co);
+                        return true;
+                    }
+                }, null);
+        Assert.assertEquals(1, actual.size());
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+    }
+
+    @Test
+    public final void searchEndsWithAttribute() {
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
+        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        final Set actual = new HashSet();
+        connector.executeQuery(ObjectClass.ACCOUNT,
+                new Operand(Operator.EW, newAccount.getUidValue().substring(
+                newAccount.getUidValue().length() - 3,
+                newAccount.getUidValue().length()), false),
+                new ResultsHandler() {
+
+                    @Override
+                    public boolean handle(final ConnectorObject co) {
+                        actual.add(co);
+                        return true;
+                    }
+                }, null);
+        Assert.assertEquals(1, actual.size());
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+    }
+
     @Test(expected = ConnectorException.class)
     public final void searchNotExistsUser() {
         final Set actual = new HashSet();
@@ -91,7 +133,7 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
                     }
                 }, null);
     }
-    
+
     @Ignore
     @Test
     public final void searchUserWithSameShell() {

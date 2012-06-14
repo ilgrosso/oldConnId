@@ -85,9 +85,18 @@ public class UnixExecuteQuery {
                 new Search(unixConfiguration,
                         connection, handler, objectClass, filter).equalSearch();
                 break;
+            case SW:
+                new Search(unixConfiguration, connection, handler,
+                        objectClass, filter).startsWithSearch();
+                break;
+            case EW:
+                new Search(unixConfiguration, connection, handler,
+                        objectClass, filter).endsWithSearch();
+                break;
 //            case OR:
 //                handler.handle(new Search(unixConfiguration,
 //                        connection, objectClass, filter).orSearch());
+//                break;
 
             default:
                 throw new ConnectorException("Wrong Operator");

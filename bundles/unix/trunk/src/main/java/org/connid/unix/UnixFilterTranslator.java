@@ -31,7 +31,9 @@ import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.filter.AbstractFilterTranslator;
+import org.identityconnectors.framework.common.objects.filter.EndsWithFilter;
 import org.identityconnectors.framework.common.objects.filter.EqualsFilter;
+import org.identityconnectors.framework.common.objects.filter.StartsWithFilter;
 
 public class UnixFilterTranslator extends AbstractFilterTranslator<Operand> {
 
@@ -48,6 +50,26 @@ public class UnixFilterTranslator extends AbstractFilterTranslator<Operand> {
         String name = filter.getAttribute().getName();
 
         return new Operand(Operator.EQ, name, value, not);
+    }
+
+    @Override
+    protected Operand createStartsWithExpression(final StartsWithFilter filter,
+            final boolean not) {
+        if (filter == null) {
+            return null;
+        }
+
+        return new Operand(Operator.SW, filter.getValue(), not);
+    }
+
+    @Override
+    protected Operand createEndsWithExpression(final EndsWithFilter filter,
+            final boolean not) {
+        if (filter == null) {
+            return null;
+        }
+
+        return new Operand(Operator.EW, filter.getValue(), not);
     }
 
     @Override

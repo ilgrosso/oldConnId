@@ -25,6 +25,8 @@ package org.connid.unix.search;
 public enum Operator {
 
     EQ("="),
+    SW("*"),
+    EW("*"),
     OR("||");
     final private String op;
 

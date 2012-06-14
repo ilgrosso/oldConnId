@@ -103,6 +103,104 @@ public class Search {
             }
         }
     }
+
+    public void startsWithSearch() throws IOException,
+            InvalidStateException, InterruptedException {
+        String startWithValue = filter.getAttributeValue();
+        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
+        if (objectClass.equals(ObjectClass.ACCOUNT)) {
+            PasswdFile passwdFile =
+                    new PasswdFile(unixConnection.searchAllUser());
+            List<PasswdRow> passwdRows =
+                    passwdFile.searchRowByStartsWithValue(startWithValue);
+            if (passwdRows == null || passwdRows.isEmpty()) {
+                throw new ConnectException("No results found");
+            }
+            for (Iterator<PasswdRow> it =
+                    passwdRows.iterator(); it.hasNext();) {
+                PasswdRow passwdRow = it.next();
+                if (StringUtil.isNotEmpty(passwdRow.getUsername())
+                        && StringUtil.isNotBlank(passwdRow.getUsername())) {
+                    bld.setName(passwdRow.getUsername());
+                    bld.setUid(passwdRow.getUsername());
+                } else {
+                    bld.setUid("_W_R_O_N_G_");
+                    bld.setName("_W_R_O_N_G_");
+                }
+                bld.addAttribute(AttributeBuilder.build(
+                        unixConfiguration.getCommentAttribute(),
+                        CollectionUtil.newSet(passwdRow.getComment())));
+                bld.addAttribute(AttributeBuilder.build(
+                        unixConfiguration.getShellAttribute(),
+                        CollectionUtil.newSet(passwdRow.getShell())));
+                bld.addAttribute(AttributeBuilder.build(
+                        unixConfiguration.getHomeDirectoryAttribute(),
+                        CollectionUtil.newSet(passwdRow.getHomeDirectory())));
+                bld.addAttribute(OperationalAttributes.ENABLE_NAME,
+                        EvaluateCommandsResultOutput.evaluateUserStatus(
+                        unixConnection.userStatus(startWithValue)));
+                handler.handle(bld.build());
+            }
+        } else if (objectClass.equals(ObjectClass.GROUP)) {
+            if (StringUtil.isNotBlank(startWithValue)
+                    && StringUtil.isNotEmpty(startWithValue)
+                    && EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
+                    unixConnection.groupExists(startWithValue))) {
+                bld.setName(startWithValue);
+                bld.setUid(startWithValue);
+                handler.handle(bld.build());
+            }
+        }
+    }
+    
+    public void endsWithSearch() throws IOException,
+            InvalidStateException, InterruptedException {
+        String startWithValue = filter.getAttributeValue();
+        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
+        if (objectClass.equals(ObjectClass.ACCOUNT)) {
+            PasswdFile passwdFile =
+                    new PasswdFile(unixConnection.searchAllUser());
+            List<PasswdRow> passwdRows =
+                    passwdFile.searchRowByEndsWithValue(startWithValue);
+            if (passwdRows == null || passwdRows.isEmpty()) {
+                throw new ConnectException("No results found");
+            }
+            for (Iterator<PasswdRow> it =
+                    passwdRows.iterator(); it.hasNext();) {
+                PasswdRow passwdRow = it.next();
+                if (StringUtil.isNotEmpty(passwdRow.getUsername())
+                        && StringUtil.isNotBlank(passwdRow.getUsername())) {
+                    bld.setName(passwdRow.getUsername());
+                    bld.setUid(passwdRow.getUsername());
+                } else {
+                    bld.setUid("_W_R_O_N_G_");
+                    bld.setName("_W_R_O_N_G_");
+                }
+                bld.addAttribute(AttributeBuilder.build(
+                        unixConfiguration.getCommentAttribute(),
+                        CollectionUtil.newSet(passwdRow.getComment())));
+                bld.addAttribute(AttributeBuilder.build(
+                        unixConfiguration.getShellAttribute(),
+                        CollectionUtil.newSet(passwdRow.getShell())));
+                bld.addAttribute(AttributeBuilder.build(
+                        unixConfiguration.getHomeDirectoryAttribute(),
+                        CollectionUtil.newSet(passwdRow.getHomeDirectory())));
+                bld.addAttribute(OperationalAttributes.ENABLE_NAME,
+                        EvaluateCommandsResultOutput.evaluateUserStatus(
+                        unixConnection.userStatus(startWithValue)));
+                handler.handle(bld.build());
+            }
+        } else if (objectClass.equals(ObjectClass.GROUP)) {
+            if (StringUtil.isNotBlank(startWithValue)
+                    && StringUtil.isNotEmpty(startWithValue)
+                    && EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
+                    unixConnection.groupExists(startWithValue))) {
+                bld.setName(startWithValue);
+                bld.setUid(startWithValue);
+                handler.handle(bld.build());
+            }
+        }
+    }
 //    public ConnectorObject orSearch()
 //            throws IOException, InvalidStateException, InterruptedException {
 //        String firstAttribute = filter.getFirstOperand().getAttributeValue();

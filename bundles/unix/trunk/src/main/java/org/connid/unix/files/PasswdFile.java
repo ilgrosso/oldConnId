@@ -73,6 +73,46 @@ public class PasswdFile {
         return userRow;
     }
 
+    public List<PasswdRow> searchRowByStartsWithValue(String startWithValue) {
+        List<PasswdRow> userRow = new ArrayList<PasswdRow>();
+        for (Iterator<PasswdRow> it = passwdRows.iterator(); it.hasNext();) {
+            PasswdRow passwdRow = it.next();
+            if (passwdRow.getUsername().startsWith(startWithValue)) {
+                userRow.add(passwdRow);
+            }
+            if (passwdRow.getShell().startsWith(startWithValue)) {
+                userRow.add(passwdRow);
+            }
+            if (passwdRow.getComment().startsWith(startWithValue)) {
+                userRow.add(passwdRow);
+            }
+            if (passwdRow.getHomeDirectory().startsWith(startWithValue)) {
+                userRow.add(passwdRow);
+            }
+        }
+        return userRow;
+    }
+
+    public List<PasswdRow> searchRowByEndsWithValue(String startWithValue) {
+        List<PasswdRow> userRow = new ArrayList<PasswdRow>();
+        for (Iterator<PasswdRow> it = passwdRows.iterator(); it.hasNext();) {
+            PasswdRow passwdRow = it.next();
+            if (passwdRow.getUsername().endsWith(startWithValue)) {
+                userRow.add(passwdRow);
+            }
+            if (passwdRow.getShell().endsWith(startWithValue)) {
+                userRow.add(passwdRow);
+            }
+            if (passwdRow.getComment().endsWith(startWithValue)) {
+                userRow.add(passwdRow);
+            }
+            if (passwdRow.getHomeDirectory().endsWith(startWithValue)) {
+                userRow.add(passwdRow);
+            }
+        }
+        return userRow;
+    }
+
     public final List<PasswdRow> orSearchRowByAttribute(final String firstAttribute,
             final String secondAttribute) {
         List<PasswdRow> userRow = new ArrayList<PasswdRow>();
