@@ -29,7 +29,6 @@ import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
 import org.connid.unix.files.PasswdFile;
 import org.connid.unix.files.PasswdRow;
-import org.connid.unix.search.EqualSearch;
 import org.connid.unix.search.Operand;
 import org.connid.unix.search.Search;
 import org.connid.unix.utilities.EvaluateCommandsResultOutput;
