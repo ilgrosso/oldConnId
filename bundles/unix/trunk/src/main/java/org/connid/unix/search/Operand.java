@@ -23,6 +23,8 @@
  */
 package org.connid.unix.search;
 
+import org.identityconnectors.framework.common.objects.Uid;
+
 public class Operand {
 
     private Operator operator = null;
@@ -35,14 +37,8 @@ public class Operand {
     public Operand(final Operator operator, final String name,
             final String value, final boolean not) {
         this.operator = operator;
+        attributeName = name;
         attributeValue = value;
-        this.not = not;
-    }
-
-    public Operand(final Operator operator, final String startWithValue,
-            final boolean not) {
-        this.operator = operator;
-        this.attributeValue = startWithValue;
         this.not = not;
     }
 
@@ -63,6 +59,10 @@ public class Operand {
 
     public final String getAttributeName() {
         return attributeName;
+    }
+
+    public final boolean isUid() {
+        return attributeName.equalsIgnoreCase(Uid.NAME);
     }
 
     public final String getAttributeValue() {

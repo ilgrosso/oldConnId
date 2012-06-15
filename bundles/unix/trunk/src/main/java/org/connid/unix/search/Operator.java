@@ -27,7 +27,9 @@ public enum Operator {
     EQ("="),
     SW("*"),
     EW("*"),
-    OR("||");
+    OR("||"),
+    AND("&&"),
+    C("*");
     final private String op;
 
     Operator(String op) {

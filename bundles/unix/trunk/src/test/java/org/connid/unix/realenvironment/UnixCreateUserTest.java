@@ -23,13 +23,16 @@
  */
 package org.connid.unix.realenvironment;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import org.connid.unix.UnixConnector;
+import org.connid.unix.search.Operand;
+import org.connid.unix.search.Operator;
 import org.connid.unix.utilities.AttributesTestValue;
 import org.connid.unix.utilities.SharedTestMethods;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -78,7 +81,26 @@ public class UnixCreateUserTest extends SharedTestMethods {
     public final void createUnLockedUser() {
         newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name, attrs.getPassword(), true), null);
-        connector.authenticate(ObjectClass.ACCOUNT, attrs.getUsername(),
+        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        final Set actual = new HashSet();
+        connector.executeQuery(ObjectClass.ACCOUNT,
+                new Operand(
+                Operator.EQ, Uid.NAME, newAccount.getUidValue(), false),
+                new ResultsHandler() {
+
+                    @Override
+                    public boolean handle(final ConnectorObject co) {
+                        actual.add(co);
+                        return true;
+                    }
+                }, null);
+        for (Iterator it = actual.iterator(); it.hasNext();) {
+            Object object = it.next();
+            ConnectorObject co = (ConnectorObject) object;
+            Assert.assertEquals(name.getNameValue(),
+                    co.getName().getNameValue());
+        }
+        connector.authenticate(ObjectClass.ACCOUNT, newAccount.getUidValue(),
                 attrs.getGuardedPassword(), null);
     }
 

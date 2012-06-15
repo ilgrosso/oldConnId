@@ -57,14 +57,6 @@ public class UserAdd {
      */
     private static final String SHELL_OPTION = "-s";
     /**
-     * The date on which the user account will be disabled. The date is
-     * specified in the format YYYY-MM-DD. If not specified, useradd will use
-     * the default expiry date specified by the EXPIRE variable in
-     * /etc/default/useradd, or an empty string (no expiry) by default.
-     *
-     */
-    private static final String EXPIRATE_DATE_USER_OPTION = "-e";
-    /**
      * Any text string. It is generally a short description of the login, and is
      * currently used as the field for the user's full name.
      *
@@ -83,7 +75,8 @@ public class UserAdd {
         this.username = username;
         this.password = password;
         this.comment = comment;
-        this.shell = homeDirectory;
+        this.shell = shell;
+        this.homeDirectory = homeDirectory;
     }
 
     private String createUserAddCommand() {

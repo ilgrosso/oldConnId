@@ -57,197 +57,109 @@ public class Search {
 
     public void equalSearch()
             throws IOException, InvalidStateException, InterruptedException {
-        String nameToSearch = filter.getAttributeValue();
-        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
             PasswdFile passwdFile =
                     new PasswdFile(unixConnection.searchAllUser());
-            List<PasswdRow> passwdRows =
-                    passwdFile.searchRowByAttribute(nameToSearch);
-            if (passwdRows == null || passwdRows.isEmpty()) {
-                throw new ConnectException("No results found");
-            }
-            for (Iterator<PasswdRow> it =
-                    passwdRows.iterator(); it.hasNext();) {
-                PasswdRow passwdRow = it.next();
-                if (StringUtil.isNotEmpty(passwdRow.getUsername())
-                        && StringUtil.isNotBlank(passwdRow.getUsername())) {
-                    bld.setName(passwdRow.getUsername());
-                    bld.setUid(passwdRow.getUsername());
-                } else {
-                    bld.setUid("_W_R_O_N_G_");
-                    bld.setName("_W_R_O_N_G_");
-                }
-                bld.addAttribute(AttributeBuilder.build(
-                        unixConfiguration.getCommentAttribute(),
-                        CollectionUtil.newSet(passwdRow.getComment())));
-                bld.addAttribute(AttributeBuilder.build(
-                        unixConfiguration.getShellAttribute(),
-                        CollectionUtil.newSet(passwdRow.getShell())));
-                bld.addAttribute(AttributeBuilder.build(
-                        unixConfiguration.getHomeDirectoryAttribute(),
-                        CollectionUtil.newSet(passwdRow.getHomeDirectory())));
-                bld.addAttribute(OperationalAttributes.ENABLE_NAME,
-                        EvaluateCommandsResultOutput.evaluateUserStatus(
-                        unixConnection.userStatus(nameToSearch)));
-                handler.handle(bld.build());
-            }
+            fillUserHandler(passwdFile.searchRowByAttribute(
+                    filter.getAttributeValue(), filter.isNot()));
         } else if (objectClass.equals(ObjectClass.GROUP)) {
-            if (StringUtil.isNotBlank(nameToSearch)
-                    && StringUtil.isNotEmpty(nameToSearch)
-                    && EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
-                    unixConnection.groupExists(nameToSearch))) {
-                bld.setName(nameToSearch);
-                bld.setUid(nameToSearch);
-                handler.handle(bld.build());
-            }
+            fillGroupHandler();
         }
     }
 
     public void startsWithSearch() throws IOException,
             InvalidStateException, InterruptedException {
-        String startWithValue = filter.getAttributeValue();
-        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
             PasswdFile passwdFile =
                     new PasswdFile(unixConnection.searchAllUser());
-            List<PasswdRow> passwdRows =
-                    passwdFile.searchRowByStartsWithValue(startWithValue);
-            if (passwdRows == null || passwdRows.isEmpty()) {
-                throw new ConnectException("No results found");
-            }
-            for (Iterator<PasswdRow> it =
-                    passwdRows.iterator(); it.hasNext();) {
-                PasswdRow passwdRow = it.next();
-                if (StringUtil.isNotEmpty(passwdRow.getUsername())
-                        && StringUtil.isNotBlank(passwdRow.getUsername())) {
-                    bld.setName(passwdRow.getUsername());
-                    bld.setUid(passwdRow.getUsername());
-                } else {
-                    bld.setUid("_W_R_O_N_G_");
-                    bld.setName("_W_R_O_N_G_");
-                }
-                bld.addAttribute(AttributeBuilder.build(
-                        unixConfiguration.getCommentAttribute(),
-                        CollectionUtil.newSet(passwdRow.getComment())));
-                bld.addAttribute(AttributeBuilder.build(
-                        unixConfiguration.getShellAttribute(),
-                        CollectionUtil.newSet(passwdRow.getShell())));
-                bld.addAttribute(AttributeBuilder.build(
-                        unixConfiguration.getHomeDirectoryAttribute(),
-                        CollectionUtil.newSet(passwdRow.getHomeDirectory())));
-                bld.addAttribute(OperationalAttributes.ENABLE_NAME,
-                        EvaluateCommandsResultOutput.evaluateUserStatus(
-                        unixConnection.userStatus(startWithValue)));
-                handler.handle(bld.build());
-            }
+            fillUserHandler(passwdFile.searchRowByStartsWithValue(
+                    filter.getAttributeValue()));
         } else if (objectClass.equals(ObjectClass.GROUP)) {
-            if (StringUtil.isNotBlank(startWithValue)
-                    && StringUtil.isNotEmpty(startWithValue)
-                    && EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
-                    unixConnection.groupExists(startWithValue))) {
-                bld.setName(startWithValue);
-                bld.setUid(startWithValue);
-                handler.handle(bld.build());
-            }
+            fillGroupHandler();
         }
     }
-    
+
     public void endsWithSearch() throws IOException,
             InvalidStateException, InterruptedException {
-        String startWithValue = filter.getAttributeValue();
-        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         if (objectClass.equals(ObjectClass.ACCOUNT)) {
             PasswdFile passwdFile =
                     new PasswdFile(unixConnection.searchAllUser());
-            List<PasswdRow> passwdRows =
-                    passwdFile.searchRowByEndsWithValue(startWithValue);
-            if (passwdRows == null || passwdRows.isEmpty()) {
-                throw new ConnectException("No results found");
-            }
-            for (Iterator<PasswdRow> it =
-                    passwdRows.iterator(); it.hasNext();) {
-                PasswdRow passwdRow = it.next();
-                if (StringUtil.isNotEmpty(passwdRow.getUsername())
-                        && StringUtil.isNotBlank(passwdRow.getUsername())) {
-                    bld.setName(passwdRow.getUsername());
-                    bld.setUid(passwdRow.getUsername());
-                } else {
-                    bld.setUid("_W_R_O_N_G_");
-                    bld.setName("_W_R_O_N_G_");
-                }
-                bld.addAttribute(AttributeBuilder.build(
-                        unixConfiguration.getCommentAttribute(),
-                        CollectionUtil.newSet(passwdRow.getComment())));
-                bld.addAttribute(AttributeBuilder.build(
-                        unixConfiguration.getShellAttribute(),
-                        CollectionUtil.newSet(passwdRow.getShell())));
-                bld.addAttribute(AttributeBuilder.build(
-                        unixConfiguration.getHomeDirectoryAttribute(),
-                        CollectionUtil.newSet(passwdRow.getHomeDirectory())));
-                bld.addAttribute(OperationalAttributes.ENABLE_NAME,
-                        EvaluateCommandsResultOutput.evaluateUserStatus(
-                        unixConnection.userStatus(startWithValue)));
-                handler.handle(bld.build());
-            }
+            fillUserHandler(passwdFile.searchRowByEndsWithValue(
+                    filter.getAttributeValue()));
         } else if (objectClass.equals(ObjectClass.GROUP)) {
-            if (StringUtil.isNotBlank(startWithValue)
-                    && StringUtil.isNotEmpty(startWithValue)
-                    && EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
-                    unixConnection.groupExists(startWithValue))) {
-                bld.setName(startWithValue);
-                bld.setUid(startWithValue);
-                handler.handle(bld.build());
-            }
+            fillGroupHandler();
         }
     }
-//    public ConnectorObject orSearch()
-//            throws IOException, InvalidStateException, InterruptedException {
-//        String firstAttribute = filter.getFirstOperand().getAttributeValue();
-//        String secondAttribute = filter.getSecondOperand().getAttributeValue();
-//        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
-//        if (objectClass.equals(ObjectClass.ACCOUNT)) {
-//            PasswdFile passwdFile =
-//                    new PasswdFile(unixConnection.searchAllUser());
-//            List<PasswdRow> passwdRows =
-//                    passwdFile.orSearchRowByAttribute(firstAttribute,
-//                    secondAttribute);
-//            if (passwdRows == null || passwdRows.isEmpty()) {
-//                throw new ConnectException("No results found");
-//            }
-//            for (Iterator<PasswdRow> it =
-//                    passwdRows.iterator(); it.hasNext();) {
-//                PasswdRow passwdRow = it.next();
-//                if (StringUtil.isNotEmpty(passwdRow.getUsername())
-//                        && StringUtil.isNotBlank(passwdRow.getUsername())) {
-//                    bld.setName(passwdRow.getUsername());
-//                    bld.setUid(passwdRow.getUsername());
-//                } else {
-//                    bld.setUid("_W_R_O_N_G_");
-//                    bld.setName("_W_R_O_N_G_");
-//                }
-//                bld.addAttribute(AttributeBuilder.build(
-//                        unixConfiguration.getCommentAttribute(),
-//                        CollectionUtil.newSet(passwdRow.getComment())));
-//                bld.addAttribute(AttributeBuilder.build(
-//                        unixConfiguration.getShellAttribute(),
-//                        CollectionUtil.newSet(passwdRow.getShell())));
-//                bld.addAttribute(AttributeBuilder.build(
-//                        unixConfiguration.getHomeDirectoryAttribute(),
-//                        CollectionUtil.newSet(passwdRow.getHomeDirectory())));
-//                bld.addAttribute(OperationalAttributes.ENABLE_NAME,
-//                        EvaluateCommandsResultOutput.evaluateUserStatus(
-//                        unixConnection.userStatus(nameToSearch)));
-//            }
-//        } else if (objectClass.equals(ObjectClass.GROUP)) {
-//            if (StringUtil.isNotBlank(nameToSearch)
-//                    && StringUtil.isNotEmpty(nameToSearch)
-//                    && EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
-//                    unixConnection.groupExists(nameToSearch))) {
-//                bld.setName(nameToSearch);
-//                bld.setUid(nameToSearch);
-//            }
-//        }
-//        return bld.build();
-//    }
+
+    public void containsSearch() throws IOException,
+            InvalidStateException, InterruptedException {
+        if (objectClass.equals(ObjectClass.ACCOUNT)) {
+            PasswdFile passwdFile =
+                    new PasswdFile(unixConnection.searchAllUser());
+            fillUserHandler(
+                    passwdFile.searchRowByContainsValue(
+                    filter.getAttributeValue()));
+        } else if (objectClass.equals(ObjectClass.GROUP)) {
+            fillGroupHandler();
+        }
+    }
+
+    public void orSearch()
+            throws IOException, InvalidStateException, InterruptedException {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public void andSearch() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private void fillUserHandler(final List<PasswdRow> passwdRows)
+            throws ConnectException,
+            IOException, InvalidStateException, InterruptedException {
+        if (passwdRows == null || passwdRows.isEmpty()) {
+            throw new ConnectException("No results found");
+        }
+        for (Iterator<PasswdRow> it =
+                passwdRows.iterator(); it.hasNext();) {
+            ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
+            PasswdRow passwdRow = it.next();
+            if (StringUtil.isNotEmpty(passwdRow.getUsername())
+                    && StringUtil.isNotBlank(passwdRow.getUsername())) {
+                bld.setName(passwdRow.getUsername());
+                bld.setUid(passwdRow.getUsername());
+            } else {
+                bld.setUid("_W_R_O_N_G_");
+                bld.setName("_W_R_O_N_G_");
+            }
+            bld.addAttribute(AttributeBuilder.build(
+                    unixConfiguration.getCommentAttribute(),
+                    CollectionUtil.newSet(passwdRow.getComment())));
+            bld.addAttribute(AttributeBuilder.build(
+                    unixConfiguration.getShellAttribute(),
+                    CollectionUtil.newSet(passwdRow.getShell())));
+            bld.addAttribute(AttributeBuilder.build(
+                    unixConfiguration.getHomeDirectoryAttribute(),
+                    CollectionUtil.newSet(passwdRow.getHomeDirectory())));
+            if (filter.isUid()) {
+                bld.addAttribute(OperationalAttributes.ENABLE_NAME,
+                        EvaluateCommandsResultOutput.evaluateUserStatus(
+                        unixConnection.userStatus(filter.getAttributeValue())));
+            }
+            handler.handle(bld.build());
+        }
+    }
+
+    private void fillGroupHandler()
+            throws IOException, InvalidStateException, InterruptedException {
+        String nameToSearch = filter.getAttributeValue();
+        if (StringUtil.isNotBlank(nameToSearch)
+                && StringUtil.isNotEmpty(nameToSearch)
+                && EvaluateCommandsResultOutput.evaluateUserOrGroupExists(
+                unixConnection.groupExists(nameToSearch))) {
+            ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
+            bld.setName(nameToSearch);
+            bld.setUid(nameToSearch);
+            handler.handle(bld.build());
+        }
+    }
 }

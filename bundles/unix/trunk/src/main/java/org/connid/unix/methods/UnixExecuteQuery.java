@@ -27,16 +27,12 @@ import com.sshtools.j2ssh.util.InvalidStateException;
 import java.io.IOException;
 import org.connid.unix.UnixConfiguration;
 import org.connid.unix.UnixConnection;
-import org.connid.unix.files.PasswdFile;
-import org.connid.unix.files.PasswdRow;
 import org.connid.unix.search.Operand;
 import org.connid.unix.search.Search;
-import org.connid.unix.utilities.EvaluateCommandsResultOutput;
-import org.identityconnectors.common.CollectionUtil;
-import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.ResultsHandler;
 
 public class UnixExecuteQuery {
 
@@ -92,11 +88,18 @@ public class UnixExecuteQuery {
                 new Search(unixConfiguration, connection, handler,
                         objectClass, filter).endsWithSearch();
                 break;
-//            case OR:
-//                handler.handle(new Search(unixConfiguration,
-//                        connection, objectClass, filter).orSearch());
-//                break;
-
+            case C:
+                new Search(unixConfiguration, connection, handler,
+                        objectClass, filter).containsSearch();
+                break;
+            case OR:
+                new Search(unixConfiguration, connection, handler,
+                        objectClass, filter.getFirstOperand()).orSearch();
+                break;
+            case AND:
+                new Search(unixConfiguration, connection, handler,
+                        objectClass, filter).andSearch();
+                break;
             default:
                 throw new ConnectorException("Wrong Operator");
         }

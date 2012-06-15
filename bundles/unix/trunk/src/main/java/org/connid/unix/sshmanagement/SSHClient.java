@@ -66,7 +66,11 @@ public class SSHClient {
 
     public final SessionChannelClient getSession() throws IOException {
         sshClient.connect(properties, new IgnoreHostKeyVerification());
-        sshClient.authenticate(getPwdAuthClient(username, password));
+        int status =
+                sshClient.authenticate(getPwdAuthClient(username, password));
+        if (status != AuthenticationProtocolState.COMPLETE) {
+            throw new IOException();
+        }
         return sshClient.openSessionChannel();
     }
 

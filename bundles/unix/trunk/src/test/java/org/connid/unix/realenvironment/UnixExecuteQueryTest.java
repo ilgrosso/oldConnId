@@ -33,7 +33,10 @@ import org.connid.unix.utilities.AttributesTestValue;
 import org.connid.unix.utilities.SharedTestMethods;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.*;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 public class UnixExecuteQueryTest extends SharedTestMethods {
 
@@ -83,7 +86,7 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
         final Set actual = new HashSet();
         connector.executeQuery(ObjectClass.ACCOUNT,
-                new Operand(Operator.SW, "crea", false),
+                new Operand(Operator.SW, Uid.NAME, "crea", false),
                 new ResultsHandler() {
 
                     @Override
@@ -103,7 +106,8 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
         final Set actual = new HashSet();
         connector.executeQuery(ObjectClass.ACCOUNT,
-                new Operand(Operator.EW, newAccount.getUidValue().substring(
+                new Operand(Operator.EW, Uid.NAME,
+                newAccount.getUidValue().substring(
                 newAccount.getUidValue().length() - 3,
                 newAccount.getUidValue().length()), false),
                 new ResultsHandler() {
@@ -115,6 +119,46 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
                     }
                 }, null);
         Assert.assertEquals(1, actual.size());
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+    }
+
+    @Test
+    public final void searchContainsAttribute() {
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
+        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        final Set actual = new HashSet();
+        connector.executeQuery(ObjectClass.ACCOUNT,
+                new Operand(Operator.C, Uid.NAME, "test", false),
+                new ResultsHandler() {
+
+                    @Override
+                    public boolean handle(final ConnectorObject co) {
+                        actual.add(co);
+                        return true;
+                    }
+                }, null);
+        Assert.assertEquals(1, actual.size());
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+    }
+
+    @Test
+    public final void searchNotEqualsAttribute() {
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(), true), null);
+        Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        final Set actual = new HashSet();
+        connector.executeQuery(ObjectClass.ACCOUNT,
+                new Operand(Operator.EQ, Uid.NAME, "test", true),
+                new ResultsHandler() {
+
+                    @Override
+                    public boolean handle(final ConnectorObject co) {
+                        actual.add(co);
+                        return true;
+                    }
+                }, null);
+        Assert.assertTrue(actual.size() > 1);
         connector.delete(ObjectClass.ACCOUNT, newAccount, null);
     }
 
@@ -134,7 +178,6 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
                 }, null);
     }
 
-    @Ignore
     @Test
     public final void searchUserWithSameShell() {
         Name name1 = new Name(attrs.getUsername());
@@ -152,7 +195,7 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
         final Set actual = new HashSet();
         connector.executeQuery(ObjectClass.ACCOUNT,
                 new Operand(
-                Operator.EQ, "shell", "/bin/bash", false),
+                Operator.EQ, "shell", "/bin/csh", false),
                 new ResultsHandler() {
 
                     @Override
@@ -162,7 +205,7 @@ public class UnixExecuteQueryTest extends SharedTestMethods {
                     }
                 }, null);
         Assert.assertEquals(4, actual.size());
-        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
+        connector.delete(ObjectClass.ACCOUNT, newAccount1, null);
         connector.delete(ObjectClass.ACCOUNT, newAccount2, null);
         connector.delete(ObjectClass.ACCOUNT, newAccount3, null);
         connector.delete(ObjectClass.ACCOUNT, newAccount4, null);

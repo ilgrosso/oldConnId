@@ -55,6 +55,7 @@ public class SharedTestMethods {
 
     protected final Set<Attribute> createSetOfAttributes(final Name name,
             final String password, final boolean status) {
+        AttributesTestValue attrs = new AttributesTestValue();
         GuardedString encPassword = null;
         if (password != null) {
             encPassword = new GuardedString(password.toCharArray());
@@ -63,8 +64,10 @@ public class SharedTestMethods {
         final Set<Attribute> attributes = CollectionUtil.newSet(
                 AttributeBuilder.buildPassword(encPassword));
         attributes.add(AttributeBuilder.buildEnabled(status));
+        attributes.add(AttributeBuilder.build("comment", CollectionUtil.newSet(
+                attrs.getUsername())));
         attributes.add(AttributeBuilder.build("shell", CollectionUtil.newSet(
-                "/bin/sh")));
+                "/bin/csh")));
         attributes.add(name);
         return attributes;
     }

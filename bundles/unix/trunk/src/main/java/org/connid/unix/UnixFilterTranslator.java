@@ -23,17 +23,11 @@
  */
 package org.connid.unix;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.connid.unix.search.Operand;
 import org.connid.unix.search.Operator;
 import org.identityconnectors.common.StringUtil;
-import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
-import org.identityconnectors.framework.common.objects.filter.AbstractFilterTranslator;
-import org.identityconnectors.framework.common.objects.filter.EndsWithFilter;
-import org.identityconnectors.framework.common.objects.filter.EqualsFilter;
-import org.identityconnectors.framework.common.objects.filter.StartsWithFilter;
+import org.identityconnectors.framework.common.objects.filter.*;
 
 public class UnixFilterTranslator extends AbstractFilterTranslator<Operand> {
 
@@ -47,9 +41,8 @@ public class UnixFilterTranslator extends AbstractFilterTranslator<Operand> {
         if (StringUtil.isBlank(value)) {
             return null;
         }
-        String name = filter.getAttribute().getName();
-
-        return new Operand(Operator.EQ, name, value, not);
+        return new Operand(Operator.EQ,
+                filter.getAttribute().getName(), value, not);
     }
 
     @Override
@@ -58,8 +51,8 @@ public class UnixFilterTranslator extends AbstractFilterTranslator<Operand> {
         if (filter == null) {
             return null;
         }
-
-        return new Operand(Operator.SW, filter.getValue(), not);
+        return new Operand(Operator.SW,
+                filter.getName(), filter.getValue(), not);
     }
 
     @Override
@@ -69,17 +62,39 @@ public class UnixFilterTranslator extends AbstractFilterTranslator<Operand> {
             return null;
         }
 
-        return new Operand(Operator.EW, filter.getValue(), not);
+        return new Operand(Operator.EW,
+                filter.getName(), filter.getValue(), not);
+    }
+
+    @Override
+    protected Operand createContainsExpression(final ContainsFilter filter,
+            final boolean not) {
+        if (filter == null) {
+            return null;
+        }
+
+        return new Operand(Operator.C,
+                filter.getName(), filter.getValue(), not);
     }
 
     @Override
     protected Operand createOrExpression(
-            Operand leftExpression, Operand rightExpression) {
+            final Operand leftExpression, final Operand rightExpression) {
         if (leftExpression == null || rightExpression == null) {
             return null;
         }
 
         return new Operand(Operator.OR, leftExpression, rightExpression);
+    }
+
+    @Override
+    protected Operand createAndExpression(final Operand leftExpression,
+            final Operand rightExpression) {
+        if (leftExpression == null || rightExpression == null) {
+            return null;
+        }
+
+        return new Operand(Operator.AND, leftExpression, rightExpression);
     }
 
     private String checkSearchValue(String value) {
@@ -91,15 +106,5 @@ public class UnixFilterTranslator extends AbstractFilterTranslator<Operand> {
                     "Value of search attribute contains illegal character(s).");
         }
         return value;
-    }
-
-    private boolean validateSearchAttribute(final Attribute attribute) {
-        //Ignore streamed ( byte[] objects ) from query
-        if (byte[].class.equals(AttributeUtil.getSingleValue(attribute).
-                getClass())) {
-            return false;
-        }
-        //Otherwise let the database process
-        return true;
     }
 }
