@@ -51,14 +51,14 @@ public class OpenAMAuthenticate extends CommonMethods {
 
     public final Uid authenticate() {
         try {
-            return executeImpl();
+            return doAuthenticate();
         } catch (Exception e) {
             LOG.error(e, "error during authentication");
             throw new ConnectorException(e);
         }
     }
 
-    private Uid executeImpl() {
+    private Uid doAuthenticate() {
         if (!objectClass.equals(ObjectClass.ACCOUNT)) {
             throw new IllegalStateException("Wrong object class");
         }

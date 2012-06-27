@@ -28,11 +28,7 @@ import java.util.Iterator;
 import java.util.Set;
 import org.connid.openam.OpenAMConnector;
 import org.connid.openam.utilities.SharedMethodsForTests;
-import org.identityconnectors.framework.common.objects.ConnectorObject;
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.ResultsHandler;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 import org.junit.Assert;
 import org.junit.Test;
 

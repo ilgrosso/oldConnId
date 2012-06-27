@@ -74,6 +74,8 @@ public class OpenAMCreate extends CommonMethods {
                     + "in the attributes");
         }
 
+        uidString = AttributeUtil.getNameFromAttributes(attrs).getNameValue();
+
         if (!objectClass.equals(ObjectClass.ACCOUNT)
                 && (!objectClass.equals(ObjectClass.GROUP))) {
             throw new IllegalStateException("Wrong object class");
@@ -81,7 +83,8 @@ public class OpenAMCreate extends CommonMethods {
 
         if (userExists(uidString, configuration.getOpenamRealm(),
                 token, connection)) {
-            throw new ConnectorException("User Exists");
+            throw new ConnectorException("User " + uidString
+                    + " already exists");
         }
 
         if (isAlive(connection)) {

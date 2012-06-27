@@ -75,9 +75,15 @@ public class SharedMethodsForTests {
         if (password != null) {
             encPassword = new GuardedString(password.toCharArray());
         }
-
         final Set<Attribute> attributes = CollectionUtil.newSet(
                 AttributeBuilder.buildPassword(encPassword));
+        if (name != null) {
+            attributes.add(AttributeBuilder.build(TestAccountsValue.CN,
+                    name.getNameValue()));
+            attributes.add(AttributeBuilder.build(TestAccountsValue.SN,
+                    name.getNameValue()));
+        }
+        attributes.add(AttributeBuilder.buildEnabled(status));
         attributes.add(name);
         return attributes;
     }

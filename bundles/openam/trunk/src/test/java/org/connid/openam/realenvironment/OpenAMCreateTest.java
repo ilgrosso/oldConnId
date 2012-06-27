@@ -56,40 +56,45 @@ public class OpenAMCreateTest extends SharedMethodsForTests {
         newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name, attrs.getPassword(), true), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
     }
 
     @Test
     public final void createExistsUser() {
-        boolean userExists = false;
         newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name, attrs.getPassword(), true), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        boolean userExists = false;
         try {
             connector.create(ObjectClass.ACCOUNT,
-                    createSetOfAttributes(name, attrs.getPassword(), true),
+                    createSetOfAttributes(new Name(newAccount.getUidValue()),
+                    attrs.getPassword(), true),
                     null);
         } catch (Exception e) {
             userExists = true;
         }
         Assert.assertTrue(userExists);
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
     }
 
-    @Ignore
+    @Ignore //It doesn't delete user in real env..
     @Test(expected = ConnectorException.class)
     public final void createLockedUser() {
         newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name, attrs.getPassword(), false), null);
         connector.authenticate(ObjectClass.ACCOUNT, newAccount.getUidValue(),
                 attrs.getGuardedPassword(), null);
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
     }
 
-    @Ignore
     @Test
     public final void createUnLockedUser() {
         newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name, attrs.getPassword(), true), null);
-        connector.authenticate(ObjectClass.ACCOUNT, newAccount.getUidValue(),
-                attrs.getGuardedPassword(), null);
+        Assert.assertNotNull(connector.authenticate(
+                ObjectClass.ACCOUNT, newAccount.getUidValue(),
+                attrs.getGuardedPassword(), null));
+        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
     }
 
     @Test(expected = ConnectorException.class)
@@ -118,13 +123,5 @@ public class OpenAMCreateTest extends SharedMethodsForTests {
     @Test(expected = ConnectorException.class)
     public void createTestWithAllNull() {
         connector.create(null, null, null);
-    }
-
-    @After
-    public final void close() {
-        if (newAccount != null) {
-            connector.delete(ObjectClass.ACCOUNT, newAccount, null);
-        }
-        connector.dispose();
     }
 }
