@@ -55,7 +55,7 @@ public class OpenAMUpdate extends CommonMethods {
         this.uid = uid;
         this.attrs = attrs;
         connection = OpenAMConnection.openConnection(configuration);
-        token = AdminToken.getAdminToken(configuration).token;
+        token = AdminToken.getAdminToken(configuration).getToken();
     }
 
     public Uid update() {

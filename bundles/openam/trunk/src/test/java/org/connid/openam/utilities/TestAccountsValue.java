@@ -23,10 +23,74 @@
  */
 package org.connid.openam.utilities;
 
-public class TestAccountsValue {
-    
+import org.identityconnectors.common.security.GuardedString;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+
+public class TestAccountsValue extends SharedMethodsForTests {
+
     public static final String USERPASSWORD = "userpassword";
     public static final String CN = "cn";
     public static final String SN = "sn";
-    
+    private static final String WRONG_USERNAME = "wronguser";
+    private static final String PASSWORD = "password";
+    private final GuardedString GUARDED_PASSWORD =
+            new GuardedString(getPassword().toCharArray());
+    private final GuardedString NEW_GUARDED_PASSWORD =
+            new GuardedString(getNewPassword().toCharArray());
+    private final GuardedString WRONG_GUARDED_PASSWORD =
+            new GuardedString("wrongpassword".toCharArray());
+    private static final String NEW_PASSWORD = "password2";
+    private final ObjectClass WRONG_OBJECTCLASS =
+            new ObjectClass("WRONG_OBJECTCLASS");
+    private String GROUPNAME = "grouptest" + randomNumber();
+    private String NEW_GROUPNAME = "grouptest" + randomNumber();
+    private static final String WRONG_GROUPNAME = "wronggroup";
+
+    public String getUsername() {
+        return "createtest" + randomNumber();
+    }
+
+    public String getNewUsername() {
+        return "createtest" + randomNumber();
+    }
+
+    public String getWrongUsername() {
+        return WRONG_USERNAME;
+    }
+
+    public GuardedString getGuardedPassword() {
+        return GUARDED_PASSWORD;
+    }
+
+    public GuardedString getNewGuardedPassword() {
+        return NEW_GUARDED_PASSWORD;
+    }
+
+    public GuardedString getWrongGuardedPassword() {
+        return WRONG_GUARDED_PASSWORD;
+    }
+
+    public String getPassword() {
+        return PASSWORD;
+    }
+
+    public String getNewPassword() {
+        return NEW_PASSWORD;
+    }
+
+    public ObjectClass getWrongObjectClass() {
+        return WRONG_OBJECTCLASS;
+    }
+
+    public String getGroupName() {
+        return GROUPNAME;
+    }
+
+    public String getWrongGroupName() {
+        return WRONG_GROUPNAME;
+    }
+
+    public String getNewGroupName() {
+        return NEW_GROUPNAME;
+    }
 }

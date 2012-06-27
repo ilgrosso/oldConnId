@@ -48,7 +48,7 @@ public class OpenAMDelete extends CommonMethods {
         this.configuration = openAMConfiguration;
         this.uid = uid;
         connection = OpenAMConnection.openConnection(configuration);
-        token = AdminToken.getAdminToken(configuration).token;
+        token = AdminToken.getAdminToken(configuration).getToken();
     }
 
     public final void delete() {
@@ -80,12 +80,8 @@ public class OpenAMDelete extends CommonMethods {
 
     private String deleteParameters() throws UnsupportedEncodingException {
         StringBuilder parameters = new StringBuilder();
-        parameters.append("&identity_name=")
-                .append(uid.getUidValue())
-                .append("&identity_type=user")
-                .append("&admin=")
-                .append(URLEncoder.encode(
-                    token, Constants.ENCODING));
+        parameters.append("&identity_name=").append(uid.getUidValue()).append("&identity_type=user").append("&admin=").append(URLEncoder.encode(
+                token, Constants.ENCODING));
         return parameters.toString();
     }
 }

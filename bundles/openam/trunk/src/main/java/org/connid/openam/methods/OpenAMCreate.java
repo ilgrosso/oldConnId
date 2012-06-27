@@ -35,11 +35,7 @@ import org.connid.openam.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.AttributeUtil;
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.OperationalAttributes;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMCreate extends CommonMethods {
@@ -48,15 +44,18 @@ public class OpenAMCreate extends CommonMethods {
     private Set<Attribute> attrs = null;
     private OpenAMConfiguration configuration = null;
     private OpenAMConnection connection = null;
+    private ObjectClass objectClass = null;
     private String token = "";
     private String uidString = null;
 
-    public OpenAMCreate(final OpenAMConfiguration configuration,
-            final Set<Attribute> attrs) throws UnsupportedEncodingException {
+    public OpenAMCreate(final ObjectClass oc,
+            final OpenAMConfiguration configuration, final Set<Attribute> attrs)
+            throws UnsupportedEncodingException {
         this.configuration = configuration;
         this.attrs = attrs;
         connection = OpenAMConnection.openConnection(configuration);
-        token = AdminToken.getAdminToken(configuration).token;
+        objectClass = oc;
+        token = AdminToken.getAdminToken(configuration).getToken();
     }
 
     public Uid create() {
@@ -74,7 +73,12 @@ public class OpenAMCreate extends CommonMethods {
             throw new IllegalArgumentException("No Name attribute provided"
                     + "in the attributes");
         }
-  
+
+        if (!objectClass.equals(ObjectClass.ACCOUNT)
+                && (!objectClass.equals(ObjectClass.GROUP))) {
+            throw new IllegalStateException("Wrong object class");
+        }
+
         if (userExists(uidString, configuration.getOpenamRealm(),
                 token, connection)) {
             throw new ConnectorException("User Exists");
@@ -97,14 +101,13 @@ public class OpenAMCreate extends CommonMethods {
             if (attr.is(Name.NAME) || attr.is(Uid.NAME)
                     && (!parameters.toString().contains("identity_name="))) {
                 uidString = (String) attr.getValue().get(0);
-                parameters.append("&identity_name=")
-                        .append(uidString);
+                parameters.append("&identity_name=").append(uidString);
             } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
-                parameters.append("&identity_attribute_names=")
-                        .append(configuration.getOpenamPasswordAttribute())
-                        .append("&identity_attribute_values_")
-                        .append(configuration.getOpenamPasswordAttribute())
-                        .append("=").append(getPlainPassword(
+                parameters.append("&identity_attribute_names=").append(
+                        configuration.getOpenamPasswordAttribute()).append(
+                        "&identity_attribute_values_").append(
+                        configuration.getOpenamPasswordAttribute()).append(
+                        "=").append(getPlainPassword(
                         (GuardedString) attr.getValue().get(0)));
             } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
                 boolean status = false;
@@ -114,29 +117,27 @@ public class OpenAMCreate extends CommonMethods {
                             attr.getValue().get(0).toString());
                 }
                 if (!status) {
-                    parameters.append("&identity_attribute_names=")
-                        .append(configuration.getOpenamStatusAttribute())
-                        .append("&identity_attribute_values_")
-                        .append(configuration.getOpenamStatusAttribute())
-                        .append("=").append("inactive");
+                    parameters.append("&identity_attribute_names=").append(
+                            configuration.getOpenamStatusAttribute()).append(
+                            "&identity_attribute_values_").append(
+                            configuration.getOpenamStatusAttribute()).append(
+                            "=").append("inactive");
                 }
             } else {
                 List<Object> values = attr.getValue();
                 if ((values != null) && (!values.isEmpty())) {
-                    parameters.append("&identity_attribute_names=")
-                            .append(attr.getName())
-                            .append("&identity_attribute_values_")
-                            .append(attr.getName()).append("=")
-                            .append((String) values.get(0));
+                    parameters.append("&identity_attribute_names=").append(
+                            attr.getName()).append(
+                            "&identity_attribute_values_").append(
+                            attr.getName()).append("=").append(
+                            (String) values.get(0));
                 }
             }
         }
-        parameters.append("&identity_realm=")
-                .append(configuration.getOpenamRealm())
-                .append("&identity_type=user")
-                .append("&admin=")
-                .append(URLEncoder.encode(
-                    token, Constants.ENCODING));
+        parameters.append("&identity_realm=").append(
+                configuration.getOpenamRealm()).append(
+                "&identity_type=user").append("&admin=").append(
+                URLEncoder.encode(token, Constants.ENCODING));
         return parameters.toString();
     }
 }

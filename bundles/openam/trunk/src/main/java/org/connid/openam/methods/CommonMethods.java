@@ -26,7 +26,6 @@ package org.connid.openam.methods;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import org.apache.commons.httpclient.HttpStatus;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.Constants;
 import org.identityconnectors.common.security.GuardedString;
@@ -49,23 +48,16 @@ public class CommonMethods {
             final String realm, final String token)
             throws UnsupportedEncodingException {
         StringBuilder parameters = new StringBuilder();
-        parameters.append("&filter=")
-                .append(uidString)
-                .append("&attributes_names=realm&attributes_values_realm=")
-                .append(realm)
-                .append("&admin=")
-                .append(URLEncoder.encode(
-                    token, Constants.ENCODING));
+        parameters.append("&filter=").append(uidString).append(
+                "&attributes_names=realm&attributes_values_realm=").append(
+                realm).append("&admin=").append(URLEncoder.encode(
+                token, Constants.ENCODING));
         return parameters.toString();
     }
 
     protected final boolean isAlive(final OpenAMConnection openAMConnection)
             throws IOException {
-        if (HttpStatus.SC_OK == openAMConnection.isAlive()) {
-            return true;
-        } else {
-            return false;
-        }
+        return openAMConnection.isAlive();
     }
 
     protected final String getPlainPassword(final GuardedString password) {

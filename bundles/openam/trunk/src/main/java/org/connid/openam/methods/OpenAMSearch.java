@@ -45,7 +45,7 @@ public class OpenAMSearch extends CommonMethods {
         this.openAMConfiguration = configuration;
         connection = OpenAMConnection.openConnection(configuration);
         this.uid = uid;
-        token = AdminToken.getAdminToken(configuration).token;
+        token = AdminToken.getAdminToken(configuration).getToken();
     }
 
     public final boolean existsUser() {
@@ -60,7 +60,7 @@ public class OpenAMSearch extends CommonMethods {
     public final boolean existsUserImpl() throws IOException {
         try {
             return userExists(uid, openAMConfiguration.getOpenamRealm(),
-                token, connection);
+                    token, connection);
         } catch (HttpClientErrorException hcee) {
             throw hcee;
         }

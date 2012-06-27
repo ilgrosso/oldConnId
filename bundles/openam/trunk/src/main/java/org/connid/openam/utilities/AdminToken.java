@@ -28,20 +28,19 @@ import java.net.URLEncoder;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.methods.CommonMethods;
-import org.springframework.web.client.HttpClientErrorException;
 
 public final class AdminToken extends CommonMethods {
 
     private static OpenAMConnection openAMConnection = null;
     private static AdminToken adminToken = null;
-    public static String token = "";
+    private static String token = "";
 
     private AdminToken(final OpenAMConfiguration configuration) {
         openAMConnection = OpenAMConnection.openConnection(configuration);
-        token = openAMConnection.authenticate(
+        String openamToken = openAMConnection.authenticate(
                 configuration.getOpenamAdminUser(),
                 getPlainPassword(configuration.getOpenamAdminPassword()));
-        token = token.substring(9, token.length() - 1);
+        token = openamToken.substring(9, openamToken.length() - 1);
     }
 
     public static synchronized AdminToken getAdminToken(
@@ -54,15 +53,11 @@ public final class AdminToken extends CommonMethods {
     }
 
     private static boolean isTokenValid() throws UnsupportedEncodingException {
-        String a = "";
-        boolean result = false;
-        try {
-            result = openAMConnection
-                    .isTokenValid(URLEncoder.encode(token, Constants.ENCODING))
-                    .contains("true");
-        } catch (HttpClientErrorException hcee) {
-            result = false;
-        }
-        return result;
+        return openAMConnection.isTokenValid(URLEncoder.encode(
+                token, Constants.ENCODING)).contains("true");
+    }
+
+    public String getToken() {
+        return token;
     }
 }

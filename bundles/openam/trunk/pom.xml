@@ -104,7 +104,7 @@
     
     <profiles>
         <profile>
-            <id>openam</id>
+            <id>real</id>
             <build>
                 <plugins>            
                     <plugin>

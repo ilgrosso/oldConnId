@@ -24,6 +24,7 @@
 package org.connid.openam;
 
 import java.io.IOException;
+import org.apache.commons.httpclient.HttpStatus;
 import org.connid.openam.http.HttpClientMethods;
 import org.connid.openam.restful.RestfulClientMethods;
 import org.connid.openam.utilities.UrlFactory;
@@ -54,7 +55,7 @@ public class OpenAMConnection {
     public String authenticate(final String username, final String password)
             throws HttpClientErrorException {
         return restfulClient.getMethod(
-                    urlFactory.authenticateUrl(username, password));
+                urlFactory.authenticateUrl(username, password));
     }
 
     public void create(final String parameters)
@@ -92,11 +93,12 @@ public class OpenAMConnection {
                 urlFactory.readUrl(parameters));
     }
 
-    public int isAlive() throws IOException {
-        return httpClientMethods.getMethod(
-                urlFactory.testUrl());
+    public boolean isAlive() throws IOException {
+        Integer statusCode = new Integer(httpClientMethods.getMethod(
+                urlFactory.testUrl()));
+        return statusCode.equals(HttpStatus.SC_OK);
     }
-    
+
     public String isTokenValid(final String parameters) {
         return restfulClient.getMethod(
                 urlFactory.isTokenValidUrl(parameters));

@@ -25,33 +25,16 @@ package org.connid.openam;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.connid.openam.methods.OpenAMAuthenticate;
-import org.connid.openam.methods.OpenAMCreate;
-import org.connid.openam.methods.OpenAMDelete;
-import org.connid.openam.methods.OpenAMExecuteQuery;
-import org.connid.openam.methods.OpenAMSearch;
-import org.connid.openam.methods.OpenAMTest;
-import org.connid.openam.methods.OpenAMUpdate;
+import org.connid.openam.methods.*;
 import org.connid.openam.utilities.SelfSignedCertUtilities;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.OperationOptions;
-import org.identityconnectors.framework.common.objects.ResultsHandler;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
-import org.identityconnectors.framework.spi.operations.AuthenticateOp;
-import org.identityconnectors.framework.spi.operations.CreateOp;
-import org.identityconnectors.framework.spi.operations.DeleteOp;
-import org.identityconnectors.framework.spi.operations.SearchOp;
-import org.identityconnectors.framework.spi.operations.TestOp;
-import org.identityconnectors.framework.spi.operations.UpdateOp;
+import org.identityconnectors.framework.spi.operations.*;
 
 @ConnectorClass(configurationClass = OpenAMConfiguration.class,
 displayNameKey = "openam.connector.display")
@@ -62,11 +45,6 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     private OpenAMConfiguration openAMConfiguration;
 
     @Override
-    public final Configuration getConfiguration() {
-        return openAMConfiguration;
-    }
-
-    @Override
     public final void init(final Configuration config) {
         openAMConfiguration = (OpenAMConfiguration) config;
         if (openAMConfiguration.isSsl()) {
@@ -75,16 +53,37 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     }
 
     @Override
+    public final Configuration getConfiguration() {
+        return openAMConfiguration;
+    }
+
+    @Override
     public void dispose() {
         //no action
     }
 
     @Override
+    public final void test() {
+        LOG.info("Connection test");
+        new OpenAMTest(openAMConfiguration).test();
+        LOG.info("Connection test: SUCCESS");
+    }
+
+    @Override
+    public final Uid authenticate(final ObjectClass oc, final String username,
+            final GuardedString password, final OperationOptions oo) {
+        LOG.info("Authenticating user: " + username);
+        return new OpenAMAuthenticate(oc, openAMConfiguration,
+                username, password).authenticate();
+    }
+
+    @Override
     public final Uid create(final ObjectClass oc, final Set<Attribute> set,
             final OperationOptions oo) {
+        LOG.info("Create user");
         Uid uidResult = null;
         try {
-            uidResult = new OpenAMCreate(openAMConfiguration, set).create();
+            uidResult = new OpenAMCreate(oc, openAMConfiguration, set).create();
         } catch (UnsupportedEncodingException ex) {
             LOG.error("Encoding error", ex);
         }
@@ -96,8 +95,8 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
             final Set<Attribute> set, final OperationOptions oo) {
         Uid uidResult = null;
         try {
-            uidResult = new OpenAMUpdate(openAMConfiguration, uid, set)
-                    .update();
+            uidResult = new OpenAMUpdate(
+                    openAMConfiguration, uid, set).update();
         } catch (UnsupportedEncodingException ex) {
             LOG.error("Encoding error", ex);
         }
@@ -125,12 +124,6 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     }
 
     @Override
-    public final void test() {
-        LOG.info("Connection test");
-        new OpenAMTest(openAMConfiguration).test();
-    }
-
-    @Override
     public final FilterTranslator createFilterTranslator(final ObjectClass oc,
             final OperationOptions oo) {
         if (oc == null || (!oc.equals(ObjectClass.ACCOUNT))) {
@@ -143,17 +136,9 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     public final void executeQuery(final ObjectClass oc, final String filter,
             final ResultsHandler rh, final OperationOptions oo) {
         try {
-            new OpenAMExecuteQuery(openAMConfiguration, filter, rh)
-                    .executeQuery();
+            new OpenAMExecuteQuery(openAMConfiguration, filter, rh).executeQuery();
         } catch (UnsupportedEncodingException ex) {
             LOG.error("Encoding error", ex);
         }
-    }
-
-    @Override
-    public final Uid authenticate(final ObjectClass oc, final String username,
-            final GuardedString password, final OperationOptions oo) {
-        return new OpenAMAuthenticate(
-                openAMConfiguration, username, password).authenticate();
     }
 }

@@ -27,13 +27,13 @@ import org.connid.openam.OpenAMConnector;
 import org.connid.openam.utilities.SharedMethodsForTests;
 import org.junit.Test;
 
-public class OpenAMTest extends SharedMethodsForTests{
-    
+public class OpenAMTest extends SharedMethodsForTests {
+
     @Test
     public final void testConnectionWithOpenAm() {
         final OpenAMConnector connector = new OpenAMConnector();
         connector.init(createConfiguration());
         connector.test();
         connector.dispose();
-    }   
+    }
 }

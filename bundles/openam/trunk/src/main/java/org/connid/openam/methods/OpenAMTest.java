@@ -49,10 +49,9 @@ public class OpenAMTest extends CommonMethods {
     }
 
     private void execute() throws IOException {
-        int statusCode = connection.isAlive();
-        if (statusCode != HttpStatus.SC_OK) {
-            LOG.error("Connection error");
-            throw new IOException("Connection error");
+        if (!connection.isAlive()) {
+            LOG.error("Connection is not Alive");
+            throw new IOException("Connection is not Alive");
         }
     }
 }

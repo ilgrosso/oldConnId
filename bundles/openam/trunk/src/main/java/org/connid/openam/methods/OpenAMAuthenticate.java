@@ -28,24 +28,28 @@ import org.connid.openam.OpenAMConnection;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMAuthenticate extends CommonMethods {
 
     private static final Log LOG = Log.getLog(OpenAMAuthenticate.class);
+    private ObjectClass objectClass = null;
     private OpenAMConnection connection = null;
-    String username = "";
-    GuardedString password = null;
+    private String username = "";
+    private GuardedString password = null;
 
-    public OpenAMAuthenticate(final OpenAMConfiguration openAMConfiguration,
+    public OpenAMAuthenticate(final ObjectClass oc,
+            final OpenAMConfiguration openAMConfiguration,
             final String username, final GuardedString password) {
+        objectClass = oc;
         connection = OpenAMConnection.openConnection(openAMConfiguration);
         this.username = username;
         this.password = password;
     }
 
-    public Uid authenticate() {
+    public final Uid authenticate() {
         try {
             return executeImpl();
         } catch (Exception e) {
@@ -55,6 +59,9 @@ public class OpenAMAuthenticate extends CommonMethods {
     }
 
     private Uid executeImpl() {
+        if (!objectClass.equals(ObjectClass.ACCOUNT)) {
+            throw new IllegalStateException("Wrong object class");
+        }
         try {
             connection.authenticate(username, getPlainPassword(password));
         } catch (HttpClientErrorException hcee) {

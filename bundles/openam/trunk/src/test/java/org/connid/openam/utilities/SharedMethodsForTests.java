@@ -26,6 +26,7 @@ package org.connid.openam.utilities;
 import java.util.HashSet;
 import java.util.Set;
 import org.connid.openam.OpenAMConfiguration;
+import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
@@ -65,6 +66,19 @@ public class SharedMethodsForTests {
                 name.getNameValue()));
         attributes.add(AttributeBuilder.build(TestAccountsValue.USERPASSWORD,
                 "password"));
+        return attributes;
+    }
+
+    protected final Set<Attribute> createSetOfAttributes(final Name name,
+            final String password, final boolean status) {
+        GuardedString encPassword = null;
+        if (password != null) {
+            encPassword = new GuardedString(password.toCharArray());
+        }
+
+        final Set<Attribute> attributes = CollectionUtil.newSet(
+                AttributeBuilder.buildPassword(encPassword));
+        attributes.add(name);
         return attributes;
     }
 

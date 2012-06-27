@@ -27,7 +27,6 @@ package org.connid.openam;
 import org.connid.openam.utilities.OpenAMProperties;
 import org.connid.openam.utilities.SharedMethodsForTests;
 import org.junit.Assert;
-
 import org.junit.Test;
 
 /**
