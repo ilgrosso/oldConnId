@@ -25,13 +25,11 @@ package org.connid.openam.methods;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Set;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
-import org.connid.openam.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
@@ -55,7 +53,7 @@ public class OpenAMCreate extends CommonMethods {
         this.attrs = attrs;
         connection = OpenAMConnection.openConnection(configuration);
         objectClass = oc;
-        token = AdminToken.getAdminToken(configuration).getToken();
+        token = AdminToken.getAdminToken(configuration).getEncodedToken();
     }
 
     public Uid create() {
@@ -87,23 +85,20 @@ public class OpenAMCreate extends CommonMethods {
                     + " already exists");
         }
 
-        if (isAlive(connection)) {
-            try {
-                connection.create(createQueryString());
-                LOG.ok("Creation commited");
-            } catch (HttpClientErrorException hcee) {
-                throw hcee;
-            }
+        try {
+            connection.create(createQueryString());
+            LOG.ok("Creation commited");
+        } catch (HttpClientErrorException hcee) {
+            throw hcee;
         }
+
         return new Uid(uidString);
     }
 
-    private String createQueryString() throws UnsupportedEncodingException {
+    private String createQueryString() {
         StringBuilder parameters = new StringBuilder();
         for (Attribute attr : attrs) {
-            if (attr.is(Name.NAME) || attr.is(Uid.NAME)
-                    && (!parameters.toString().contains("identity_name="))) {
-                uidString = (String) attr.getValue().get(0);
+            if (!parameters.toString().contains("identity_name=")) {
                 parameters.append("&identity_name=").append(uidString);
             } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
                 parameters.append("&identity_attribute_names=").append(
@@ -139,8 +134,8 @@ public class OpenAMCreate extends CommonMethods {
         }
         parameters.append("&identity_realm=").append(
                 configuration.getOpenamRealm()).append(
-                "&identity_type=user").append("&admin=").append(
-                URLEncoder.encode(token, Constants.ENCODING));
+                "&identity_type=user").append("&admin=").append(token);
+        System.out.println("CREATE STRING: " + parameters.toString());
         return parameters.toString();
     }
 }

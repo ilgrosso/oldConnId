@@ -45,7 +45,7 @@ public class OpenAMSearch extends CommonMethods {
         this.openAMConfiguration = configuration;
         connection = OpenAMConnection.openConnection(configuration);
         this.uid = uid;
-        token = AdminToken.getAdminToken(configuration).getToken();
+        token = AdminToken.getAdminToken(configuration).getEncodedToken();
     }
 
     public final boolean existsUser() {

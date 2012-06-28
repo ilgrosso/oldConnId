@@ -96,7 +96,7 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
         Uid uidResult = null;
         try {
             uidResult = new OpenAMUpdate(
-                    openAMConfiguration, uid, set).update();
+                    oc, openAMConfiguration, uid, set).update();
         } catch (UnsupportedEncodingException ex) {
             LOG.error("Encoding error", ex);
         }
@@ -107,7 +107,7 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     public final void delete(final ObjectClass oc, final Uid uid,
             final OperationOptions oo) {
         try {
-            new OpenAMDelete(openAMConfiguration, uid).delete();
+            new OpenAMDelete(oc, openAMConfiguration, uid).delete();
         } catch (UnsupportedEncodingException ex) {
             LOG.error("Encoding error", ex);
         }

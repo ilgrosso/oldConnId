@@ -36,28 +36,17 @@ public class CommonMethods {
             final String realm, final String token,
             final OpenAMConnection connection)
             throws IOException {
-        boolean result = false;
-        if (isAlive(connection)) {
-            result = !"NULL".equalsIgnoreCase(connection.userSearch(
-                    searchParameters(uidString, realm, token)));
-        }
-        return result;
+        return !"NULL".equalsIgnoreCase(connection.userSearch(
+                searchParameters(uidString, realm, token)));
     }
 
     private String searchParameters(final String uidString,
-            final String realm, final String token)
-            throws UnsupportedEncodingException {
+            final String realm, final String token) {
         StringBuilder parameters = new StringBuilder();
         parameters.append("&filter=").append(uidString).append(
                 "&attributes_names=realm&attributes_values_realm=").append(
-                realm).append("&admin=").append(URLEncoder.encode(
-                token, Constants.ENCODING));
+                realm).append("&admin=").append(token);
         return parameters.toString();
-    }
-
-    protected final boolean isAlive(final OpenAMConnection openAMConnection)
-            throws IOException {
-        return openAMConnection.isAlive();
     }
 
     protected final String getPlainPassword(final GuardedString password) {

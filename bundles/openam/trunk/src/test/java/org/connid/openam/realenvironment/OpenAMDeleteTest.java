@@ -25,18 +25,50 @@ package org.connid.openam.realenvironment;
 
 import org.connid.openam.OpenAMConnector;
 import org.connid.openam.utilities.SharedMethodsForTests;
+import org.connid.openam.utilities.TestAccountsValue;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
+import org.junit.Before;
 import org.junit.Test;
 
 public class OpenAMDeleteTest extends SharedMethodsForTests {
 
-    @Test (expected = ConnectorException.class)
-    public final void deleteTestOfNotExistsUser() {
-        final OpenAMConnector connector = new OpenAMConnector();
+    private OpenAMConnector connector = null;
+    private Name name = null;
+    private Uid newAccount = null;
+    private TestAccountsValue attrs = null;
+
+    @Before
+    public final void initTest() {
+        attrs = new TestAccountsValue();
+        connector = new OpenAMConnector();
         connector.init(createConfiguration());
-        connector.delete(ObjectClass.ACCOUNT, new Uid("notexists"), null);
+        name = new Name(attrs.getUsername());
+    }
+
+    @Test(expected = ConnectorException.class)
+    public final void deleteTestOfNotExistsUser() {
+        connector.init(createConfiguration());
+        connector.delete(ObjectClass.ACCOUNT,
+                new Uid(attrs.getWrongUsername()), null);
         connector.dispose();
+    }
+    
+    @Test(expected = ConnectorException.class)
+    public final void deleteNullUser() {
+        connector.delete(ObjectClass.ACCOUNT, null, null);
+    }
+    
+    @Test(expected = ConnectorException.class)
+    public final void deleteNull() {
+        connector.delete(null, null, null);
+    }
+
+    @Test(expected = ConnectorException.class)
+    public final void deleteWithWrongObjectClass() {
+        connector.delete(attrs.getWrongObjectClass(),
+                newAccount, null);
     }
 }

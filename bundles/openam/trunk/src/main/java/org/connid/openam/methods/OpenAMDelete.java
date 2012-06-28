@@ -25,30 +25,32 @@ package org.connid.openam.methods;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
-import org.connid.openam.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMDelete extends CommonMethods {
 
     private static final Log LOG = Log.getLog(OpenAMDelete.class);
+    private ObjectClass objectClass = null;
     private OpenAMConfiguration configuration = null;
     private OpenAMConnection connection = null;
     private Uid uid = null;
     private String token = "";
 
-    public OpenAMDelete(final OpenAMConfiguration openAMConfiguration,
+    public OpenAMDelete(final ObjectClass oc,
+            final OpenAMConfiguration openAMConfiguration,
             final Uid uid) throws UnsupportedEncodingException {
         this.configuration = openAMConfiguration;
+        objectClass = oc;
         this.uid = uid;
         connection = OpenAMConnection.openConnection(configuration);
-        token = AdminToken.getAdminToken(configuration).getToken();
+        token = AdminToken.getAdminToken(configuration).getEncodedToken();
     }
 
     public final void delete() {
@@ -62,26 +64,31 @@ public class OpenAMDelete extends CommonMethods {
 
     private void doDelete() throws IOException {
 
-        if (!userExists(uid.getUidValue(), configuration.getOpenamRealm(),
-                token, connection)) {
-            LOG.error("User do not exists");
-            throw new ConnectorException("User do not exists");
+        if (!objectClass.equals(ObjectClass.ACCOUNT)
+                && (!objectClass.equals(ObjectClass.GROUP))) {
+            throw new IllegalStateException("Wrong object class");
         }
 
-        if (isAlive(connection)) {
-            try {
-                connection.delete(deleteParameters());
-                LOG.ok("Delete committed");
-            } catch (HttpClientErrorException hcee) {
-                throw hcee;
-            }
+        if (!userExists(uid.getUidValue(), configuration.getOpenamRealm(),
+                token, connection)) {
+            LOG.error("User " + uid.getUidValue() + " do not exists");
+            throw new ConnectorException("User " + uid.getUidValue()
+                    + " do not exists");
+        }
+
+        try {
+            connection.delete(deleteParameters());
+            LOG.ok("User " + uid.getUidValue() + " deleted");
+        } catch (HttpClientErrorException hcee) {
+            throw hcee;
         }
     }
 
-    private String deleteParameters() throws UnsupportedEncodingException {
+    private String deleteParameters() {
         StringBuilder parameters = new StringBuilder();
-        parameters.append("&identity_name=").append(uid.getUidValue()).append("&identity_type=user").append("&admin=").append(URLEncoder.encode(
-                token, Constants.ENCODING));
+        parameters.append("&identity_name=").append(
+                uid.getUidValue()).append("&identity_type=user").append(
+                "&admin=").append(token);
         return parameters.toString();
     }
 }

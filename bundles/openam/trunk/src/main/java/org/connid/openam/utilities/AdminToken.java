@@ -57,7 +57,7 @@ public final class AdminToken extends CommonMethods {
                 token, Constants.ENCODING)).contains("true");
     }
 
-    public String getToken() {
-        return token;
+    public String getEncodedToken() throws UnsupportedEncodingException {
+        return URLEncoder.encode(token, Constants.ENCODING);
     }
 }

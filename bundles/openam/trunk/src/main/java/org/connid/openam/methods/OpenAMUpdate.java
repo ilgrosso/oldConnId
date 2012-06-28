@@ -25,37 +25,37 @@ package org.connid.openam.methods;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Set;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
-import org.connid.openam.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.OperationalAttributes;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMUpdate extends CommonMethods {
 
     private static final Log LOG = Log.getLog(OpenAMUpdate.class);
     private Set<Attribute> attrs = null;
+    private ObjectClass objectClass = null;
     private OpenAMConfiguration configuration = null;
     private OpenAMConnection connection = null;
     private Uid uid = null;
     private String token = "";
 
-    public OpenAMUpdate(final OpenAMConfiguration openAMConfiguration,
-            final Uid uid, final Set<Attribute> attrs) throws UnsupportedEncodingException {
+    public OpenAMUpdate(final ObjectClass oc,
+            final OpenAMConfiguration openAMConfiguration,
+            final Uid uid, final Set<Attribute> attrs)
+            throws UnsupportedEncodingException {
         this.configuration = openAMConfiguration;
+        objectClass = oc;
         this.uid = uid;
         this.attrs = attrs;
         connection = OpenAMConnection.openConnection(configuration);
-        token = AdminToken.getAdminToken(configuration).getToken();
+        token = AdminToken.getAdminToken(configuration).getEncodedToken();
     }
 
     public Uid update() {
@@ -69,50 +69,73 @@ public class OpenAMUpdate extends CommonMethods {
 
     private Uid doUpdate() throws IOException {
 
+        if (!objectClass.equals(ObjectClass.ACCOUNT)
+                && (!objectClass.equals(ObjectClass.GROUP))) {
+            throw new IllegalStateException("Wrong object class");
+        }
+
         if (!userExists(uid.getUidValue(), configuration.getOpenamRealm(),
                 token, connection)) {
             LOG.error("User do not exists");
             throw new ConnectorException("User do not exists");
         }
 
-        if (isAlive(connection)) {
-            try {
-                connection.update(updateQueryString());
-                LOG.ok("Update values commited");
-            } catch (HttpClientErrorException hcee) {
-                throw hcee;
-            }
+        try {
+            connection.update(updateQueryString());
+            LOG.ok("User " + uid.getUidValue() + " updated");
+        } catch (HttpClientErrorException hcee) {
+            throw hcee;
         }
         return uid;
     }
 
-    private String updateQueryString() throws UnsupportedEncodingException {
+    private String updateQueryString() {
         StringBuilder parameters = new StringBuilder();
-        parameters.append("&identity_name=")
-                .append(uid.getUidValue());
         for (Attribute attr : attrs) {
             List<Object> values = attr.getValue();
             if (values != null && !values.isEmpty()) {
-                if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
-                    parameters.append("&identity_attribute_names=")
-                        .append(configuration.getOpenamPasswordAttribute())
-                        .append("&identity_attribute_values_")
-                        .append(configuration.getOpenamPasswordAttribute())
-                            .append("=")
-                        .append(getPlainPassword(
+                if (attr.is(Name.NAME)) {
+                    parameters.append(
+                            "&identity_name=").append(uid.getUidValue());
+                } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
+                    parameters.append("&identity_attribute_names=").append(
+                            configuration.getOpenamPasswordAttribute()).append(
+                            "&identity_attribute_values_").append(
+                            configuration.getOpenamPasswordAttribute()).append(
+                            "=").append(getPlainPassword(
                             (GuardedString) values.get(0)));
+                } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
+                    System.out.println("CI SONO");
+                    boolean status = false;
+                    // manage enable/disable status
+                    if (attr.getValue() != null && !attr.getValue().isEmpty()) {
+                        status = Boolean.parseBoolean(
+                                attr.getValue().get(0).toString());
+                    }
+                    if (!status) {
+                        parameters.append("&identity_attribute_names=").append(
+                                configuration.getOpenamStatusAttribute()).append(
+                                "&identity_attribute_values_").append(
+                                configuration.getOpenamStatusAttribute()).append(
+                                "=").append("inactive");
+                    } else if (status) {
+                        parameters.append("&identity_attribute_names=").append(
+                                configuration.getOpenamStatusAttribute()).append(
+                                "&identity_attribute_values_").append(
+                                configuration.getOpenamStatusAttribute()).append(
+                                "=").append("active");
+                    }
                 } else {
-                    parameters.append("&identity_attribute_names=")
-                        .append(attr.getName())
-                        .append("&identity_attribute_values_")
-                        .append(attr.getName()).append("=")
-                        .append((String) values.get(0));
+                    parameters.append("&identity_attribute_names=").append(
+                            attr.getName()).append(
+                            "&identity_attribute_values_").append(
+                            attr.getName()).append("=").append(
+                            (String) values.get(0));
                 }
             }
         }
-        parameters.append("&admin=")
-                .append(URLEncoder.encode(
-                    token, Constants.ENCODING));
+        parameters.append("&admin=").append(token);
+        System.out.println("QUERY: " + parameters.toString());
         return parameters.toString();
     }
 }

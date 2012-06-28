@@ -53,7 +53,7 @@ public class OpenAMExecuteQuery extends CommonMethods {
         connection = OpenAMConnection.openConnection(configuration);
         this.ldapFilter = ldapFilter;
         handler = rh;
-        token = AdminToken.getAdminToken(configuration).getToken();
+        token = AdminToken.getAdminToken(configuration).getEncodedToken();
     }
 
     public final void executeQuery() {
@@ -68,12 +68,10 @@ public class OpenAMExecuteQuery extends CommonMethods {
     private void doExecuteQuery() throws IOException {
         String[] uidResults = null;
 
-        if (isAlive(connection)) {
-            uidResults =
-                    connection.search(searchParameters(
-                    cleanLdapFilter())).split("string=");
-            LOG.ok("Search committed");
-        }
+        uidResults =
+                connection.search(searchParameters(
+                cleanLdapFilter())).split("string=");
+        LOG.ok("Search committed");
 
         if (uidResults == null || uidResults.length == 1) {
             LOG.error("User " + ldapFilter + " not exists");
@@ -110,8 +108,7 @@ public class OpenAMExecuteQuery extends CommonMethods {
                         }
                     }
                 }
-                if (name != null && name.contains(openAMConfiguration
-                        .getOpenamUidAttribute())) {
+                if (name != null && name.contains(openAMConfiguration.getOpenamUidAttribute())) {
                     bld.setUid(attributesList.get(0));
                     bld.setName(attributesList.get(0));
                 }
@@ -161,9 +158,7 @@ public class OpenAMExecuteQuery extends CommonMethods {
                 parameters.append(")").append(ldapFilter);
             }
         }
-        parameters.append("&attributes_names=realm&attributes_values_realm=")
-                .append(openAMConfiguration.getOpenamRealm()).append("&admin=")
-                .append(URLEncoder.encode(
+        parameters.append("&attributes_names=realm&attributes_values_realm=").append(openAMConfiguration.getOpenamRealm()).append("&admin=").append(URLEncoder.encode(
                 token, Constants.ENCODING));
         return parameters.toString();
     }
@@ -171,10 +166,7 @@ public class OpenAMExecuteQuery extends CommonMethods {
     private String readParameters(final String name)
             throws UnsupportedEncodingException {
         StringBuilder readParameters = new StringBuilder();
-        readParameters.append("&name=").append(name)
-                .append("&attributes_names=realm&attributes_values_realm=")
-                .append(openAMConfiguration.getOpenamRealm()).append("&admin=")
-                .append(URLEncoder.encode(
+        readParameters.append("&name=").append(name).append("&attributes_names=realm&attributes_values_realm=").append(openAMConfiguration.getOpenamRealm()).append("&admin=").append(URLEncoder.encode(
                 token, Constants.ENCODING));
         return readParameters.toString();
     }
