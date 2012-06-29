@@ -40,79 +40,77 @@ public class UrlFactory {
         } else {
             openAmRestfulServiceUrl.append("http");
         }
-        openAmRestfulServiceUrl.append("://")
-                .append(openAMConfiguration.getOpenamBaseUrl())
-                .append(":")
-                .append(openAMConfiguration.getOpenamPort())
-                .append("/")
-                .append(openAMConfiguration.getOpenamContext());
+        openAmRestfulServiceUrl.append("://").append(
+                openAMConfiguration.getOpenamBaseUrl()).append(":").append(
+                openAMConfiguration.getOpenamPort()).append("/").append(
+                openAMConfiguration.getOpenamContext());
         return openAmRestfulServiceUrl.toString();
     }
 
     public final String authenticateUrl(final String username,
             final String password) {
         StringBuilder authurl = new StringBuilder();
-        authurl.append(openAmUrl())
-                .append(OpenamServicesUrl.AUTHENTICATE_RESTFUL_SERVICE)
-                .append("username=")
-                .append(username)
-                .append("&password=")
-                .append(password);
+        authurl.append(openAmUrl()).append(
+                OpenamServicesUrl.AUTHENTICATE_RESTFUL_SERVICE).append(
+                "username=").append(username).append(
+                "&password=").append(password);
         return authurl.toString();
+    }
+
+    public final String logoutUrl(final String token) {
+        StringBuilder logouturl = new StringBuilder();
+        logouturl.append(openAmUrl()).append(
+                OpenamServicesUrl.LOGOUT_RESTFUL_SERVICE).append(
+                "subjectid=").append(token);
+        return logouturl.toString();
     }
 
     public final String createUrl(final String parameters) {
         StringBuilder creationurl = new StringBuilder();
-        creationurl.append(openAmUrl())
-                .append(OpenamServicesUrl.CREATE_RESTFUL_SERVICE)
-                .append(parameters);
+        creationurl.append(openAmUrl()).append(
+                OpenamServicesUrl.CREATE_RESTFUL_SERVICE).append(parameters);
         return creationurl.toString();
     }
 
     public final String updateUrl(final String parameters) {
         StringBuilder updateurl = new StringBuilder();
-        updateurl.append(openAmUrl())
-                .append(OpenamServicesUrl.UPDATE_RESTFUL_SERVICE)
-                .append(parameters);
+        updateurl.append(openAmUrl()).append(
+                OpenamServicesUrl.UPDATE_RESTFUL_SERVICE).append(parameters);
         return updateurl.toString();
     }
 
     public final String deleteUrl(final String parameters) {
         StringBuilder deleteurl = new StringBuilder();
-        deleteurl.append(openAmUrl())
-                .append(OpenamServicesUrl.DELETE_RESTFUL_SERVICE)
-                .append(parameters);
+        deleteurl.append(openAmUrl()).append(
+                OpenamServicesUrl.DELETE_RESTFUL_SERVICE).append(parameters);
         return deleteurl.toString();
     }
 
     public final String searchUrl(final String parameters) {
         StringBuilder searchUrl = new StringBuilder();
-        searchUrl.append(openAmUrl())
-                .append(OpenamServicesUrl.SEARCH_RESTFUL_SERVICE)
-                .append(parameters);
+        searchUrl.append(openAmUrl()).append(
+                OpenamServicesUrl.SEARCH_RESTFUL_SERVICE).append(parameters);
         return searchUrl.toString();
     }
 
     public final String readUrl(final String parameters) {
         StringBuilder readUrl = new StringBuilder();
-        readUrl.append(openAmUrl())
-                .append(OpenamServicesUrl.READ_RESTFUL_SERVICE)
-                .append(parameters);
+        readUrl.append(openAmUrl()).append(
+                OpenamServicesUrl.READ_RESTFUL_SERVICE).append(parameters);
         return readUrl.toString();
     }
 
     public final String testUrl() {
         StringBuilder testUrl = new StringBuilder();
-        testUrl.append(openAmUrl())
-                .append(OpenamServicesUrl.TEST_SERVICE);
+        testUrl.append(openAmUrl()).append(OpenamServicesUrl.TEST_SERVICE);
         return testUrl.toString();
     }
 
     public String isTokenValidUrl(String parameters) {
         StringBuilder isTokenValidUrl = new StringBuilder();
-        isTokenValidUrl.append(openAmUrl())
-                .append(OpenamServicesUrl.TOKEN_VALID_RESTFUL_SERVICE)
-                .append("tokenid=").append(parameters);
+        isTokenValidUrl.append(openAmUrl()).append(
+                OpenamServicesUrl.TOKEN_VALID_RESTFUL_SERVICE).append(
+                "tokenid=").append(parameters);
         return isTokenValidUrl.toString();
     }
 }

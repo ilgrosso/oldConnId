@@ -32,6 +32,7 @@ public class OpenamServicesUrl {
     public static final String READ_RESTFUL_SERVICE = "/identity/read?";
     public static final String TOKEN_VALID_RESTFUL_SERVICE =
             "/identity/isTokenValid?";
+    public static final String LOGOUT_RESTFUL_SERVICE = "/identity/logout?";
     public static final String AUTHENTICATE_RESTFUL_SERVICE =
             "/identity/authenticate?";
     public static final String TEST_SERVICE = "/namingservice";

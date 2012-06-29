@@ -41,6 +41,8 @@ public class OpenAMAuthenticateTest extends SharedMethodsForTests {
     private Name name = null;
     private Uid newAccount = null;
     private TestAccountsValue attrs = null;
+    private final static boolean ACTIVE_USER = true;
+    private final static boolean INACTIVE_USER = false;
 
     @Before
     public final void initTest() {
@@ -51,10 +53,12 @@ public class OpenAMAuthenticateTest extends SharedMethodsForTests {
     }
 
     @Test
-    public final void authenticateTest() {
+    public final void authenticateTest() throws InterruptedException {
         newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name, attrs.getPassword(), true), null);
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
+        Thread.sleep(3000);
         Assert.assertNotNull(connector.authenticate(
                 ObjectClass.ACCOUNT, newAccount.getUidValue(),
                 attrs.getGuardedPassword(), null));

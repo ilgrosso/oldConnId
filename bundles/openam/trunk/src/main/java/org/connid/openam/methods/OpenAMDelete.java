@@ -41,7 +41,7 @@ public class OpenAMDelete extends CommonMethods {
     private OpenAMConfiguration configuration = null;
     private OpenAMConnection connection = null;
     private Uid uid = null;
-    private String token = "";
+    private AdminToken adminToken = null;
 
     public OpenAMDelete(final ObjectClass oc,
             final OpenAMConfiguration openAMConfiguration,
@@ -50,12 +50,13 @@ public class OpenAMDelete extends CommonMethods {
         objectClass = oc;
         this.uid = uid;
         connection = OpenAMConnection.openConnection(configuration);
-        token = AdminToken.getAdminToken(configuration).getEncodedToken();
+        adminToken = new AdminToken(configuration);
     }
 
     public final void delete() {
         try {
             doDelete();
+            adminToken.destroyToken();
         } catch (Exception e) {
             LOG.error(e, "error during delete operation");
             throw new ConnectorException(e);
@@ -70,7 +71,7 @@ public class OpenAMDelete extends CommonMethods {
         }
 
         if (!userExists(uid.getUidValue(), configuration.getOpenamRealm(),
-                token, connection)) {
+                adminToken.getToken(), connection)) {
             LOG.error("User " + uid.getUidValue() + " do not exists");
             throw new ConnectorException("User " + uid.getUidValue()
                     + " do not exists");
@@ -88,7 +89,7 @@ public class OpenAMDelete extends CommonMethods {
         StringBuilder parameters = new StringBuilder();
         parameters.append("&identity_name=").append(
                 uid.getUidValue()).append("&identity_type=user").append(
-                "&admin=").append(token);
+                "&admin=").append(adminToken.getToken());
         return parameters.toString();
     }
 }

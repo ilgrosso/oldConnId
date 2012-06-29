@@ -25,14 +25,12 @@ package org.connid.openam.methods;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
-import org.connid.openam.utilities.Constants;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.*;
@@ -45,20 +43,22 @@ public class OpenAMExecuteQuery extends CommonMethods {
     private String ldapFilter = null;
     private ResultsHandler handler = null;
     private String uid = "";
-    private String token = "";
+    private AdminToken adminToken = null;
 
     public OpenAMExecuteQuery(final OpenAMConfiguration configuration,
-            final String ldapFilter, final ResultsHandler rh) throws UnsupportedEncodingException {
+            final String ldapFilter, final ResultsHandler rh)
+            throws UnsupportedEncodingException {
         openAMConfiguration = configuration;
         connection = OpenAMConnection.openConnection(configuration);
         this.ldapFilter = ldapFilter;
         handler = rh;
-        token = AdminToken.getAdminToken(configuration).getEncodedToken();
+        adminToken = new AdminToken(configuration);
     }
 
     public final void executeQuery() {
         try {
             doExecuteQuery();
+            adminToken.destroyToken();
         } catch (Exception e) {
             LOG.error(e, "error during execute query operation");
             throw new ConnectorException(e);
@@ -108,12 +108,14 @@ public class OpenAMExecuteQuery extends CommonMethods {
                         }
                     }
                 }
-                if (name != null && name.contains(openAMConfiguration.getOpenamUidAttribute())) {
+                if (name != null && name.contains(
+                        openAMConfiguration.getOpenamUidAttribute())) {
                     bld.setUid(attributesList.get(0));
                     bld.setName(attributesList.get(0));
                 }
                 if (name != null && name.contains(
                         openAMConfiguration.getOpenamStatusAttribute())) {
+                    System.out.println("CI SONO CI SONO");
                     bld.addAttribute(OperationalAttributes.ENABLE_NAME,
                             "Active".equalsIgnoreCase(attributesList.get(0)));
                 }
@@ -158,16 +160,20 @@ public class OpenAMExecuteQuery extends CommonMethods {
                 parameters.append(")").append(ldapFilter);
             }
         }
-        parameters.append("&attributes_names=realm&attributes_values_realm=").append(openAMConfiguration.getOpenamRealm()).append("&admin=").append(URLEncoder.encode(
-                token, Constants.ENCODING));
+        parameters.append(
+                "&attributes_names=realm&attributes_values_realm=").append(
+                openAMConfiguration.getOpenamRealm()).append(
+                "&admin=").append(adminToken.getToken());
         return parameters.toString();
     }
 
     private String readParameters(final String name)
             throws UnsupportedEncodingException {
         StringBuilder readParameters = new StringBuilder();
-        readParameters.append("&name=").append(name).append("&attributes_names=realm&attributes_values_realm=").append(openAMConfiguration.getOpenamRealm()).append("&admin=").append(URLEncoder.encode(
-                token, Constants.ENCODING));
+        readParameters.append("&name=").append(name).append(
+                "&attributes_names=realm&attributes_values_realm=").append(
+                openAMConfiguration.getOpenamRealm()).append("&admin=").append(
+                adminToken.getToken());
         return readParameters.toString();
     }
 }

@@ -44,7 +44,7 @@ public class OpenAMUpdate extends CommonMethods {
     private OpenAMConfiguration configuration = null;
     private OpenAMConnection connection = null;
     private Uid uid = null;
-    private String token = "";
+    private AdminToken adminToken = null;
 
     public OpenAMUpdate(final ObjectClass oc,
             final OpenAMConfiguration openAMConfiguration,
@@ -55,12 +55,14 @@ public class OpenAMUpdate extends CommonMethods {
         this.uid = uid;
         this.attrs = attrs;
         connection = OpenAMConnection.openConnection(configuration);
-        token = AdminToken.getAdminToken(configuration).getEncodedToken();
+        adminToken = new AdminToken(configuration);
     }
 
     public Uid update() {
         try {
-            return doUpdate();
+            Uid updatedUid = doUpdate();
+            adminToken.destroyToken();
+            return updatedUid;
         } catch (Exception e) {
             LOG.error(e, "error during update operation");
             throw new ConnectorException(e);
@@ -75,7 +77,7 @@ public class OpenAMUpdate extends CommonMethods {
         }
 
         if (!userExists(uid.getUidValue(), configuration.getOpenamRealm(),
-                token, connection)) {
+                adminToken.getToken(), connection)) {
             LOG.error("User do not exists");
             throw new ConnectorException("User do not exists");
         }
@@ -105,7 +107,6 @@ public class OpenAMUpdate extends CommonMethods {
                             "=").append(getPlainPassword(
                             (GuardedString) values.get(0)));
                 } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
-                    System.out.println("CI SONO");
                     boolean status = false;
                     // manage enable/disable status
                     if (attr.getValue() != null && !attr.getValue().isEmpty()) {
@@ -134,8 +135,7 @@ public class OpenAMUpdate extends CommonMethods {
                 }
             }
         }
-        parameters.append("&admin=").append(token);
-        System.out.println("QUERY: " + parameters.toString());
+        parameters.append("&admin=").append(adminToken.getToken());
         return parameters.toString();
     }
 }

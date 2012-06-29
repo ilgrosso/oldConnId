@@ -44,8 +44,8 @@ public class OpenAMFilterTranslator extends AbstractFilterTranslator<String> {
     }
 
     @Override
-    protected final String createStartsWithExpression(final StartsWithFilter filter,
-            final boolean not) {
+    protected final String createStartsWithExpression(
+            final StartsWithFilter filter, final boolean not) {
         final Attribute attribute = filter.getAttribute();
         if (!validateSearchAttribute(attribute)) {
             return null;
@@ -54,8 +54,8 @@ public class OpenAMFilterTranslator extends AbstractFilterTranslator<String> {
         if (not) {
             string.append("(!");
         }
-        string.append("(").append(attribute.getName()).append("=")
-                .append(attribute.getValue().get(0)).append("*)");
+        string.append("(").append(attribute.getName()).append(
+                "=").append(attribute.getValue().get(0)).append("*)");
         if (not) {
             string.append(")");
         }
@@ -73,8 +73,8 @@ public class OpenAMFilterTranslator extends AbstractFilterTranslator<String> {
         if (not) {
             string.append("(!");
         }
-        string.append("(").append(attribute.getName()).append("=*")
-                .append(attribute.getValue().get(0)).append("*)");
+        string.append("(").append(attribute.getName()).append(
+                "=*").append(attribute.getValue().get(0)).append("*)");
         if (not) {
             string.append(")");
         }
@@ -92,8 +92,8 @@ public class OpenAMFilterTranslator extends AbstractFilterTranslator<String> {
         if (not) {
             string.append("(!");
         }
-        string.append("(").append(attribute.getName()).append("=*")
-                .append(attribute.getValue().get(0)).append("*)");
+        string.append("(").append(attribute.getName()).append(
+                "=*").append(attribute.getValue().get(0)).append("*)");
         if (not) {
             string.append(")");
         }
@@ -111,8 +111,8 @@ public class OpenAMFilterTranslator extends AbstractFilterTranslator<String> {
         if (not) {
             string.append("(!");
         }
-        string.append("(").append(attribute.getName()).append("=*")
-                .append(attribute.getValue().get(0)).append(")");
+        string.append("(").append(attribute.getName()).append(
+                "=*").append(attribute.getValue().get(0)).append(")");
         if (not) {
             string.append(")");
         }
@@ -130,8 +130,8 @@ public class OpenAMFilterTranslator extends AbstractFilterTranslator<String> {
         if (not) {
             string.append("(!");
         }
-        string.append("(").append(attribute.getName()).append("=")
-                .append(attribute.getValue().get(0)).append(")");
+        string.append("(").append(attribute.getName()).append(
+                "=").append(attribute.getValue().get(0)).append(")");
         if (not) {
             string.append(")");
         }
@@ -139,8 +139,8 @@ public class OpenAMFilterTranslator extends AbstractFilterTranslator<String> {
     }
 
     @Override
-    protected final String createGreaterThanExpression(final GreaterThanFilter filter,
-            final boolean not) {
+    protected final String createGreaterThanExpression(
+            final GreaterThanFilter filter, final boolean not) {
         final Attribute attribute = filter.getAttribute();
         if (!validateSearchAttribute(attribute)) {
             return null;
@@ -149,8 +149,8 @@ public class OpenAMFilterTranslator extends AbstractFilterTranslator<String> {
         if (not) {
             string.append("(!");
         }
-        string.append("(").append(attribute.getName()).append(">")
-                .append(attribute.getValue().get(0)).append(")");
+        string.append("(").append(attribute.getName()).append(
+                ">").append(attribute.getValue().get(0)).append(")");
         if (not) {
             string.append(")");
         }
@@ -168,8 +168,8 @@ public class OpenAMFilterTranslator extends AbstractFilterTranslator<String> {
         if (not) {
             string.append("(!");
         }
-        string.append("(").append(attribute.getName()).append(">=")
-                .append(attribute.getValue().get(0)).append(")");
+        string.append("(").append(attribute.getName()).append(
+                ">=").append(attribute.getValue().get(0)).append(")");
         if (not) {
             string.append(")");
         }
@@ -187,8 +187,8 @@ public class OpenAMFilterTranslator extends AbstractFilterTranslator<String> {
         if (not) {
             string.append("(!");
         }
-        string.append("(").append(attribute.getName()).append("<")
-                .append(attribute.getValue().get(0)).append(")");
+        string.append("(").append(attribute.getName()).append(
+                "<").append(attribute.getValue().get(0)).append(")");
         if (not) {
             string.append(")");
         }
@@ -206,8 +206,8 @@ public class OpenAMFilterTranslator extends AbstractFilterTranslator<String> {
         if (not) {
             string.append("(!");
         }
-        string.append("(").append(attribute.getName()).append("<=")
-                .append(attribute.getValue().get(0)).append(")");
+        string.append("(").append(attribute.getName()).append(
+                "<=").append(attribute.getValue().get(0)).append(")");
         if (not) {
             string.append(")");
         }

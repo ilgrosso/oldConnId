@@ -58,39 +58,33 @@ public class OpenAMConnection {
                 urlFactory.authenticateUrl(username, password));
     }
 
-    public void create(final String parameters)
-            throws HttpClientErrorException {
-        restfulClient.getMethod(
-                urlFactory.createUrl(parameters));
+    public void create(final String parameters) {
+        restfulClient.getMethod(urlFactory.createUrl(parameters));
     }
 
-    public void update(final String parameters)
-            throws HttpClientErrorException {
-        restfulClient.getMethod(
-                urlFactory.updateUrl(parameters));
+    public void logout(final String token) {
+        restfulClient.getMethod(urlFactory.logoutUrl(token));
     }
 
-    public void delete(final String parameters)
-            throws HttpClientErrorException {
-        restfulClient.getMethod(
-                urlFactory.deleteUrl(parameters));
+    public void update(final String parameters) {
+        restfulClient.getMethod(urlFactory.updateUrl(parameters));
     }
 
-    public String userSearch(final String parameters)
-            throws HttpClientErrorException {
-        return restfulClient.getMethod(
-                urlFactory.searchUrl(parameters));
+    public void delete(final String parameters) {
+        restfulClient.getMethod(urlFactory.deleteUrl(parameters));
+    }
+
+    public String userSearch(final String parameters) {
+        return restfulClient.getMethod(urlFactory.searchUrl(parameters));
     }
 
     public String search(final String parameters) throws IOException {
-        return httpClientMethods.get(
-                urlFactory.searchUrl(parameters));
+        return httpClientMethods.get(urlFactory.searchUrl(parameters));
     }
 
     public String read(final String parameters)
             throws HttpClientErrorException {
-        return restfulClient.getMethod(
-                urlFactory.readUrl(parameters));
+        return restfulClient.getMethod(urlFactory.readUrl(parameters));
     }
 
     public boolean isAlive() throws IOException {
@@ -100,7 +94,6 @@ public class OpenAMConnection {
     }
 
     public String isTokenValid(final String parameters) {
-        return restfulClient.getMethod(
-                urlFactory.isTokenValidUrl(parameters));
+        return restfulClient.getMethod(urlFactory.isTokenValidUrl(parameters));
     }
 }

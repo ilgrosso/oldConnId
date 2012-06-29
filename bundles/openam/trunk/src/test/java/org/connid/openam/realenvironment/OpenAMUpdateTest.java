@@ -75,17 +75,14 @@ public class OpenAMUpdateTest extends SharedMethodsForTests {
     }
 
     @Test
-    public final void updateLockedUser() {
+    public final void updateLockedUser() throws InterruptedException {
         newAccount = connector.create(ObjectClass.ACCOUNT,
                 createSetOfAttributes(name, attrs.getPassword(),
                 INACTIVE_USER), null);
         connector.update(ObjectClass.ACCOUNT, newAccount,
                 createSetOfAttributes(name, attrs.getPassword(),
                 ACTIVE_USER), null);
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException ex) {
-        }
+        Thread.sleep(3000);
         connector.authenticate(ObjectClass.ACCOUNT, newAccount.getUidValue(),
                 attrs.getGuardedPassword(), null);
     }

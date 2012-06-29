@@ -31,6 +31,7 @@
         <dependencySet>
             <includes>
                 <include>commons-httpclient:commons-httpclient</include>
+                <include>commons-codec:commons-codec</include>
                 <include>org.springframework:spring-web</include>
                 <include>org.springframework:spring-core</include>
             </includes>

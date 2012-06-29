@@ -38,29 +38,32 @@ public class OpenAMSearch extends CommonMethods {
     private OpenAMConfiguration openAMConfiguration = null;
     private OpenAMConnection connection = null;
     private String uid = "";
-    private String token = "";
+    private AdminToken adminToken = null;
 
     public OpenAMSearch(final OpenAMConfiguration configuration,
             final String uid) throws UnsupportedEncodingException {
         this.openAMConfiguration = configuration;
         connection = OpenAMConnection.openConnection(configuration);
         this.uid = uid;
-        token = AdminToken.getAdminToken(configuration).getEncodedToken();
+        adminToken = new AdminToken(configuration);
     }
 
     public final boolean existsUser() {
         try {
-            return existsUserImpl();
+            return doExistsUser();
         } catch (Exception e) {
             LOG.error(e, "error during search user operation");
             throw new ConnectorException(e);
         }
     }
 
-    public final boolean existsUserImpl() throws IOException {
+    public final boolean doExistsUser() throws IOException {
         try {
-            return userExists(uid, openAMConfiguration.getOpenamRealm(),
-                    token, connection);
+            boolean userExists =
+                    userExists(uid, openAMConfiguration.getOpenamRealm(),
+                    adminToken.getToken(), connection);
+            connection.logout(adminToken.getToken());
+            return userExists;
         } catch (HttpClientErrorException hcee) {
             throw hcee;
         }

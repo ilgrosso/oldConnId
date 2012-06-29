@@ -43,8 +43,8 @@ public class OpenAMCreate extends CommonMethods {
     private OpenAMConfiguration configuration = null;
     private OpenAMConnection connection = null;
     private ObjectClass objectClass = null;
-    private String token = "";
     private String uidString = null;
+    private AdminToken adminToken = null;
 
     public OpenAMCreate(final ObjectClass oc,
             final OpenAMConfiguration configuration, final Set<Attribute> attrs)
@@ -53,12 +53,14 @@ public class OpenAMCreate extends CommonMethods {
         this.attrs = attrs;
         connection = OpenAMConnection.openConnection(configuration);
         objectClass = oc;
-        token = AdminToken.getAdminToken(configuration).getEncodedToken();
+        adminToken = new AdminToken(configuration);
     }
 
     public Uid create() {
         try {
-            return doCreate();
+            Uid createdUid = doCreate();
+            adminToken.destroyToken();
+            return createdUid;
         } catch (Exception e) {
             LOG.error(e, "error during creation");
             throw new ConnectorException(e);
@@ -80,7 +82,7 @@ public class OpenAMCreate extends CommonMethods {
         }
 
         if (userExists(uidString, configuration.getOpenamRealm(),
-                token, connection)) {
+                adminToken.getToken(), connection)) {
             throw new ConnectorException("User " + uidString
                     + " already exists");
         }
@@ -91,7 +93,6 @@ public class OpenAMCreate extends CommonMethods {
         } catch (HttpClientErrorException hcee) {
             throw hcee;
         }
-
         return new Uid(uidString);
     }
 
@@ -134,8 +135,8 @@ public class OpenAMCreate extends CommonMethods {
         }
         parameters.append("&identity_realm=").append(
                 configuration.getOpenamRealm()).append(
-                "&identity_type=user").append("&admin=").append(token);
-        System.out.println("CREATE STRING: " + parameters.toString());
+                "&identity_type=user").append("&admin=").append(
+                adminToken.getToken());
         return parameters.toString();
     }
 }

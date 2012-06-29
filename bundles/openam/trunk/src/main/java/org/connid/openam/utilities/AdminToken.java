@@ -31,33 +31,27 @@ import org.connid.openam.methods.CommonMethods;
 
 public final class AdminToken extends CommonMethods {
 
-    private static OpenAMConnection openAMConnection = null;
-    private static AdminToken adminToken = null;
-    private static String token = "";
+    private OpenAMConnection openAMConnection = null;
+    private AdminToken adminToken = null;
+    private String token = "";
+    private final int HEADER_TOKEN_CHAR = 9;
 
-    private AdminToken(final OpenAMConfiguration configuration) {
+    public AdminToken(final OpenAMConfiguration configuration)
+            throws UnsupportedEncodingException {
         openAMConnection = OpenAMConnection.openConnection(configuration);
         String openamToken = openAMConnection.authenticate(
                 configuration.getOpenamAdminUser(),
                 getPlainPassword(configuration.getOpenamAdminPassword()));
-        token = openamToken.substring(9, openamToken.length() - 1);
+        token = URLEncoder.encode(openamToken.substring(
+                HEADER_TOKEN_CHAR, openamToken.length() - 1),
+                Constants.ENCODING);
     }
 
-    public static synchronized AdminToken getAdminToken(
-            final OpenAMConfiguration configuration)
-            throws UnsupportedEncodingException {
-        if ((adminToken == null) || (!isTokenValid())) {
-            adminToken = new AdminToken(configuration);
-        }
-        return adminToken;
+    public String getToken() {
+        return token;
     }
 
-    private static boolean isTokenValid() throws UnsupportedEncodingException {
-        return openAMConnection.isTokenValid(URLEncoder.encode(
-                token, Constants.ENCODING)).contains("true");
-    }
-
-    public String getEncodedToken() throws UnsupportedEncodingException {
-        return URLEncoder.encode(token, Constants.ENCODING);
+    public void destroyToken() {
+        openAMConnection.logout(token);
     }
 }

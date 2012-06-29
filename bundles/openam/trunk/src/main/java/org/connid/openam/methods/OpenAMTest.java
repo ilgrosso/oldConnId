@@ -24,7 +24,6 @@
 package org.connid.openam.methods;
 
 import java.io.IOException;
-import org.apache.commons.httpclient.HttpStatus;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.identityconnectors.common.logging.Log;

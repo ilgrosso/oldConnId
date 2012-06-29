@@ -28,20 +28,35 @@ import java.util.Iterator;
 import java.util.Set;
 import org.connid.openam.OpenAMConnector;
 import org.connid.openam.utilities.SharedMethodsForTests;
+import org.connid.openam.utilities.TestAccountsValue;
 import org.identityconnectors.framework.common.objects.*;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
 
+    private OpenAMConnector connector = null;
+    private Name name = null;
+    private Uid newAccount = null;
+    private TestAccountsValue attrs = null;
+    private final static boolean ACTIVE_USER = true;
+    private final static boolean INACTIVE_USER = false;
+
+    @Before
+    public final void initTest() {
+        attrs = new TestAccountsValue();
+        connector = new OpenAMConnector();
+        connector.init(createConfiguration());
+        name = new Name(attrs.getUsername());
+    }
+
     @Test
     public final void executeQueryOnlyUidTest() {
-        final OpenAMConnector connector = new OpenAMConnector();
         final Set actual = new HashSet();
-        connector.init(createConfiguration());
-        Name name = new Name("createtest" + randomNumber());
-        Uid newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name), null);
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
 
         connector.executeQuery(ObjectClass.ACCOUNT,
@@ -67,12 +82,10 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
 
     @Test
     public final void executeQueryWithAndFilterTest() {
-        final OpenAMConnector connector = new OpenAMConnector();
         final Set actual = new HashSet();
-        connector.init(createConfiguration());
-        Name name = new Name("createtest" + randomNumber());
-        Uid newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name), null);
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
 
         connector.executeQuery(ObjectClass.ACCOUNT,
@@ -98,12 +111,10 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
 
     @Test
     public final void executeQueryWithOrFilterTest() {
-        final OpenAMConnector connector = new OpenAMConnector();
         final Set actual = new HashSet();
-        connector.init(createConfiguration());
-        Name name = new Name("createtest" + randomNumber());
-        Uid newAccount = connector.create(ObjectClass.ACCOUNT,
-                createSetOfAttributes(name), null);
+        newAccount = connector.create(ObjectClass.ACCOUNT,
+                createSetOfAttributes(name, attrs.getPassword(),
+                ACTIVE_USER), null);
         Assert.assertEquals(name.getNameValue(), newAccount.getUidValue());
 
         connector.executeQuery(ObjectClass.ACCOUNT,
@@ -129,9 +140,7 @@ public class OpenAMExecuteQueryTest extends SharedMethodsForTests {
 
     @Test
     public final void executeQueryNotExistingUserTest() {
-        final OpenAMConnector connector = new OpenAMConnector();
         final Set actual = new HashSet();
-        connector.init(createConfiguration());
         connector.executeQuery(ObjectClass.ACCOUNT,
                 "(" + Uid.NAME + "=notexistsuser)", new ResultsHandler() {
 
