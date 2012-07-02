@@ -28,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
@@ -108,14 +109,13 @@ public class OpenAMExecuteQuery extends CommonMethods {
                         }
                     }
                 }
-                if (name != null && name.contains(
-                        openAMConfiguration.getOpenamUidAttribute())) {
+                if (name != null && name.toLowerCase().contains(
+                        openAMConfiguration.getOpenamUidAttribute().toLowerCase())) {
                     bld.setUid(attributesList.get(0));
                     bld.setName(attributesList.get(0));
                 }
-                if (name != null && name.contains(
-                        openAMConfiguration.getOpenamStatusAttribute())) {
-                    System.out.println("CI SONO CI SONO");
+                if (name != null && name.toLowerCase().contains(
+                        openAMConfiguration.getOpenamStatusAttribute().toLowerCase())) {
                     bld.addAttribute(OperationalAttributes.ENABLE_NAME,
                             "Active".equalsIgnoreCase(attributesList.get(0)));
                 }

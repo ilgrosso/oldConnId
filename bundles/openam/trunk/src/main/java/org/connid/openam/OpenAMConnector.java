@@ -136,7 +136,8 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     public final void executeQuery(final ObjectClass oc, final String filter,
             final ResultsHandler rh, final OperationOptions oo) {
         try {
-            new OpenAMExecuteQuery(openAMConfiguration, filter, rh).executeQuery();
+            new OpenAMExecuteQuery(
+                    openAMConfiguration, filter, rh).executeQuery();
         } catch (UnsupportedEncodingException ex) {
             LOG.error("Encoding error", ex);
         }
