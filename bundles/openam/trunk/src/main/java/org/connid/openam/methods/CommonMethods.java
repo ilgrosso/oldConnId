@@ -24,10 +24,8 @@
 package org.connid.openam.methods;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import org.connid.openam.OpenAMConnection;
-import org.connid.openam.utilities.Constants;
+import org.connid.openam.utilities.constants.OpenAMQueryStringParameters;
 import org.identityconnectors.common.security.GuardedString;
 
 public class CommonMethods {
@@ -43,9 +41,10 @@ public class CommonMethods {
     private String searchParameters(final String uidString,
             final String realm, final String token) {
         StringBuilder parameters = new StringBuilder();
-        parameters.append("&filter=").append(uidString).append(
-                "&attributes_names=realm&attributes_values_realm=").append(
-                realm).append("&admin=").append(token);
+        parameters.append(OpenAMQueryStringParameters.FILTER).append(uidString).
+                append(OpenAMQueryStringParameters.A_NAMES + "realm"
+                + OpenAMQueryStringParameters.A_VALUES + "_realm=").append(
+                realm).append(OpenAMQueryStringParameters.ADMIN).append(token);
         return parameters.toString();
     }
 

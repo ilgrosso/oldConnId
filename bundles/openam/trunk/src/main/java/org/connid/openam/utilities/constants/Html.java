@@ -21,9 +21,9 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  */
-package org.connid.openam.utilities;
+package org.connid.openam.utilities.constants;
 
-public class Constants {
+public class Html {
 
     public static final String MEDIA_TYPE = "text/xml";
     public static final String ENCODING = "UTF-8";

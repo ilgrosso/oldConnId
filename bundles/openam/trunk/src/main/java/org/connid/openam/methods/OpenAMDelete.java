@@ -28,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
+import org.connid.openam.utilities.constants.OpenAMQueryStringParameters;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ObjectClass;
@@ -87,9 +88,11 @@ public class OpenAMDelete extends CommonMethods {
 
     private String deleteParameters() {
         StringBuilder parameters = new StringBuilder();
-        parameters.append("&identity_name=").append(
-                uid.getUidValue()).append("&identity_type=user").append(
-                "&admin=").append(adminToken.getToken());
+        parameters.append(OpenAMQueryStringParameters.IDENTITY_NAME).append(
+                uid.getUidValue()).append(
+                OpenAMQueryStringParameters.IDENTITY_TYPE + "user").append(
+                OpenAMQueryStringParameters.ADMIN).append(
+                adminToken.getToken());
         return parameters.toString();
     }
 }

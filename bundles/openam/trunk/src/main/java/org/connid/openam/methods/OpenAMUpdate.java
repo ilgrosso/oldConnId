@@ -30,6 +30,8 @@ import java.util.Set;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
+import org.connid.openam.utilities.constants.InetUserStatus;
+import org.connid.openam.utilities.constants.OpenAMQueryStringParameters;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
@@ -78,8 +80,9 @@ public class OpenAMUpdate extends CommonMethods {
 
         if (!userExists(uid.getUidValue(), configuration.getOpenamRealm(),
                 adminToken.getToken(), connection)) {
-            LOG.error("User do not exists");
-            throw new ConnectorException("User do not exists");
+            LOG.error("User " + uid.getUidValue() + " do not exists");
+            throw new ConnectorException(
+                    "User " + uid.getUidValue() + " do not exists");
         }
 
         try {
@@ -98,11 +101,13 @@ public class OpenAMUpdate extends CommonMethods {
             if (values != null && !values.isEmpty()) {
                 if (attr.is(Name.NAME)) {
                     parameters.append(
-                            "&identity_name=").append(uid.getUidValue());
+                            OpenAMQueryStringParameters.IDENTITY_NAME).append(
+                            uid.getUidValue());
                 } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
-                    parameters.append("&identity_attribute_names=").append(
+                    parameters.append(OpenAMQueryStringParameters.I_A_NAMES).
+                            append(
                             configuration.getOpenamPasswordAttribute()).append(
-                            "&identity_attribute_values_").append(
+                            OpenAMQueryStringParameters.I_A_VALUES).append(
                             configuration.getOpenamPasswordAttribute()).append(
                             "=").append(getPlainPassword(
                             (GuardedString) values.get(0)));
@@ -113,29 +118,24 @@ public class OpenAMUpdate extends CommonMethods {
                         status = Boolean.parseBoolean(
                                 attr.getValue().get(0).toString());
                     }
-                    if (!status) {
-                        parameters.append("&identity_attribute_names=").append(
-                                configuration.getOpenamStatusAttribute()).append(
-                                "&identity_attribute_values_").append(
-                                configuration.getOpenamStatusAttribute()).append(
-                                "=").append("inactive");
-                    } else if (status) {
-                        parameters.append("&identity_attribute_names=").append(
-                                configuration.getOpenamStatusAttribute()).append(
-                                "&identity_attribute_values_").append(
-                                configuration.getOpenamStatusAttribute()).append(
-                                "=").append("active");
-                    }
+                    parameters.append(OpenAMQueryStringParameters.I_A_NAMES).
+                            append(configuration.getOpenamStatusAttribute());
+                    parameters.append(
+                            OpenAMQueryStringParameters.I_A_VALUES).
+                            append(configuration.getOpenamStatusAttribute()).
+                            append("=").append(!status ? InetUserStatus.INACTIVE
+                            : InetUserStatus.ACTIVE);
                 } else {
-                    parameters.append("&identity_attribute_names=").append(
-                            attr.getName()).append(
-                            "&identity_attribute_values_").append(
+                    parameters.append(OpenAMQueryStringParameters.I_A_NAMES).
+                            append(attr.getName()).append(
+                            OpenAMQueryStringParameters.I_A_VALUES).append(
                             attr.getName()).append("=").append(
                             (String) values.get(0));
                 }
             }
         }
-        parameters.append("&admin=").append(adminToken.getToken());
+        parameters.append(OpenAMQueryStringParameters.ADMIN).append(
+                adminToken.getToken());
         return parameters.toString();
     }
 }

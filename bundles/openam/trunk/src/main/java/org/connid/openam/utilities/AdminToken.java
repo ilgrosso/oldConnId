@@ -28,6 +28,7 @@ import java.net.URLEncoder;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.methods.CommonMethods;
+import org.connid.openam.utilities.constants.Html;
 
 public final class AdminToken extends CommonMethods {
 
@@ -44,7 +45,7 @@ public final class AdminToken extends CommonMethods {
                 getPlainPassword(configuration.getOpenamAdminPassword()));
         token = URLEncoder.encode(openamToken.substring(
                 HEADER_TOKEN_CHAR, openamToken.length() - 1),
-                Constants.ENCODING);
+                Html.ENCODING);
     }
 
     public String getToken() {
