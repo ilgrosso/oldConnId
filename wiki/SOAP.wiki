@@ -4,4 +4,63 @@
 
 = Overview =
 
-The SOAP Connector supports provisioning to SOAP web services implementing a specific interface.
+The SOAP connector is designed to manage application users calling WSDL instarface.
+
+= Installation =
+
+Follow these steps to run the stand-alone connector server:
+
+ # Download the connector server jar file and store it in the connector server directory (any directory).
+ # Download the SOAP connector jar file and store it in the bundles subdirectory.
+ # Start the connector server. For more information, see [ConnectorServers Connector Servers].
+
+=Supported operations=
+
+ *   Authenticate
+ *   Create
+ *   Delete
+ *   Schema
+ *   Update
+ *   Search
+ *   Test
+ *   Sync
+ *   ResolveUsername
+
+=Configuration=
+
+==Configuration Properties==
+
+The following table describes all of the properties that you can specify for the configuration:
+
+<table border="1">
+  <tbody>
+    <tr>
+      <th> Configuration Property </th>
+      <th> Type </th>
+      <th> Required</th>
+      <th> Description </th>
+    </tr>
+    <tr>
+      <td> Endpoint </td>
+      <td> String </td>
+      <td> X </td>
+      <td> Web Service Endpoint </td>
+    </tr>
+    <tr>
+      <td> Service Endpoint </td>
+      <td> String </td>
+      <td> X </td>
+      <td> Public Web Service interface class </td>
+    </tr>
+    <tr>
+      <td> Connection Timeout </td>
+      <td> long </td>
+      <td> X </td>
+      <td> Connection timeout </td>
+    </tr>
+    <tr>
+      <td> Receive timeout </td>
+      <td> long </td>
+      <td> X </td>
+      <td> Receive timeout </td>
+    </tr>
