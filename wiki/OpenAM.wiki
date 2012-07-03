@@ -8,7 +8,7 @@ The OpenAM connector is designed to manage users stored in a OpenAM server; the 
 
 = Supported Versions =
 
- * Until OpenAM 9.5.4
+ * Until OpenAM 10.0.0
 
 = Not Fully Tested Versions =
 
