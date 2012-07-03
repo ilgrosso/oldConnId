@@ -4,7 +4,7 @@
 
 = Overview =
 
-The SOAP connector is designed to manage application users calling WSDL instarface.
+The SOAP connector is designed to manage application users calling WSDL interface.
 
 = Installation =
 
