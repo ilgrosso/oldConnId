@@ -33,27 +33,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.jws.WebService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.apache.commons.lang.StringUtils;
+import org.connid.bundles.soap.exceptions.ProvisioningException;
+import org.connid.bundles.soap.provisioning.interfaces.Provisioning;
 import org.connid.bundles.soap.to.WSAttribute;
 import org.connid.bundles.soap.to.WSAttributeValue;
 import org.connid.bundles.soap.to.WSChange;
 import org.connid.bundles.soap.to.WSUser;
-import org.connid.bundles.soap.exceptions.ProvisioningException;
-import org.connid.bundles.soap.provisioning.interfaces.Provisioning;
 import org.connid.bundles.soap.utilities.Operand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 
-@WebService(endpointInterface =
-"org.connid.bundles.soap.provisioning.interfaces.Provisioning",
+@WebService(endpointInterface = "org.connid.bundles.soap.provisioning.interfaces.Provisioning",
 serviceName = "Provisioning")
 public class ProvisioningImpl implements Provisioning {
 
     /**
      * Logger.
      */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(Provisioning.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Provisioning.class);
 
     @Override
     public String delete(String accountid)
@@ -67,9 +66,7 @@ public class ProvisioningImpl implements Provisioning {
 
             Statement statement = conn.createStatement();
 
-            String query =
-                    "DELETE FROM user WHERE userId='" + accountid + "';";
-
+            String query = "DELETE FROM user WHERE userId='" + accountid + "';";
             LOG.debug("Execute query: " + query);
 
             statement.executeUpdate(query);
@@ -146,9 +143,7 @@ public class ProvisioningImpl implements Provisioning {
             StringBuilder set = new StringBuilder();
             for (WSAttributeValue attr : data) {
                 if (schemaNames.contains(attr.getName())) {
-                    if (attr.getValues() == null
-                            || attr.getValues().isEmpty()) {
-
+                    if (attr.getValues() == null || attr.getValues().isEmpty()) {
                         value = null;
                     } else if (attr.getValues().size() == 1) {
                         value = attr.getValues().get(0).toString();
@@ -156,8 +151,7 @@ public class ProvisioningImpl implements Provisioning {
                         value = attr.getValues().toString();
                     }
 
-                    if (!attr.isKey()
-                            || !accountid.equals(value)) {
+                    if (!attr.isKey() || !accountid.equals(value)) {
                         if (set.length() > 0) {
                             set.append(",");
                         }
@@ -176,10 +170,7 @@ public class ProvisioningImpl implements Provisioning {
             }
 
             if (set.length() > 0) {
-                String query =
-                        "UPDATE user SET " + set.toString()
-                        + " WHERE userId='" + accountid + "';";
-
+                String query = "UPDATE user SET " + set.toString() + " WHERE userId='" + accountid + "';";
                 LOG.debug("Execute query: " + query);
 
                 statement.executeUpdate(query);
@@ -208,8 +199,7 @@ public class ProvisioningImpl implements Provisioning {
 
         Connection conn = null;
         try {
-            String queryString =
-                    "SELECT * FROM user WHERE " + query.toString();
+            String queryString = "SELECT * FROM user WHERE " + query.toString();
 
             queryString = queryString.replaceAll("__NAME__", "userId").
                     replaceAll("__UID__", "userId").
@@ -227,24 +217,18 @@ public class ProvisioningImpl implements Provisioning {
             ResultSet rs = statement.executeQuery(queryString);
 
             ResultSetMetaData metaData = rs.getMetaData();
-
             LOG.debug("Metadata: {}", metaData);
 
-            WSUser user = null;
-            WSAttributeValue attr = null;
-
             while (rs.next()) {
-
-                user = new WSUser();
+                WSUser user = new WSUser();
 
                 for (int i = 0; i < metaData.getColumnCount(); i++) {
-                    attr = new WSAttributeValue();
+                    WSAttributeValue attr = new WSAttributeValue();
                     attr.setName(metaData.getColumnLabel(i + 1));
-                    attr.setValues(
-                            Collections.singletonList(rs.getString(i + 1)));
-
-                    if ("userId".equalsIgnoreCase(
-                            metaData.getColumnName(i + 1))) {
+                    if (StringUtils.isNotBlank(rs.getString(i + 1))) {
+                        attr.setValues(Collections.singletonList(rs.getString(i + 1)));
+                    }
+                    if ("userId".equalsIgnoreCase(metaData.getColumnName(i + 1))) {
                         attr.setKey(true);
                         user.setAccountid(rs.getString(i + 1));
                     }
@@ -275,7 +259,7 @@ public class ProvisioningImpl implements Provisioning {
     public String create(List<WSAttributeValue> data)
             throws ProvisioningException {
 
-         LOG.debug("Create request received with data {}", data);
+        LOG.debug("Create request received with data {}", data);
 
         List<WSAttribute> schema = schema();
         Set<String> schemaNames = new HashSet<String>();
@@ -301,9 +285,7 @@ public class ProvisioningImpl implements Provisioning {
                 if (schemaNames.contains(attr.getName())) {
                     LOG.debug("Bind attribute: {}", attr);
 
-                    if (attr.getValues() == null
-                            || attr.getValues().isEmpty()) {
-
+                    if (attr.getValues() == null || attr.getValues().isEmpty()) {
                         value = null;
                     } else if (attr.getValues().size() == 1) {
                         value = attr.getValues().get(0).toString();
@@ -413,9 +395,7 @@ public class ProvisioningImpl implements Provisioning {
 
         List<WSAttribute> attrs = new ArrayList<WSAttribute>();
 
-        WSAttribute attr = null;
-
-        attr = new WSAttribute();
+        WSAttribute attr = new WSAttribute();
         attr.setName("userId");
         attr.setNullable(false);
         attr.setPassword(false);
@@ -486,7 +466,7 @@ public class ProvisioningImpl implements Provisioning {
         attr.setKey(false);
         attr.setType("String");
         attrs.add(attr);
-        
+
         attr = new WSAttribute();
         attr.setName("fullname");
         attr.setNullable(false);
@@ -627,7 +607,8 @@ public class ProvisioningImpl implements Provisioning {
     }
 
     /**
-     * Establish a connection to db addressbook
+     * Establish a connection to underlying db.
+     *
      * @return
      * @throws ClassNotFoundException
      * @throws SQLException
@@ -652,7 +633,8 @@ public class ProvisioningImpl implements Provisioning {
     }
 
     /**
-     * Close connection to db addressbook
+     * Close connection to underlying db
+     *
      * @throws SQLException
      */
     private void close(Connection conn)

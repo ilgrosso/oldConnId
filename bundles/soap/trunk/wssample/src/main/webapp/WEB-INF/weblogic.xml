@@ -29,5 +29,10 @@
                                       http://xmlns.oracle.com/weblogic/weblogic-web-app/1.4/weblogic-web-app.xsd">
 
   <context-root>wssample</context-root>
-
+    
+  <container-descriptor>
+    <prefer-application-packages>
+      <package-name>javax.wsdl.*</package-name>
+    </prefer-application-packages>
+  </container-descriptor>
 </weblogic-web-app>
