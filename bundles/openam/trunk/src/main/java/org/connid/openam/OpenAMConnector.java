@@ -26,7 +26,6 @@ package org.connid.openam;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 import org.connid.openam.methods.*;
-import org.connid.openam.utilities.SelfSignedCertUtilities;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.*;
@@ -42,14 +41,11 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
         DeleteOp, TestOp, SearchOp<String>, AuthenticateOp {
 
     private static final Log LOG = Log.getLog(OpenAMConnector.class);
+
     private OpenAMConfiguration openAMConfiguration;
 
     @Override
     public final void init(final Configuration config) {
-        openAMConfiguration = (OpenAMConfiguration) config;
-        if (openAMConfiguration.isSsl()) {
-            SelfSignedCertUtilities.trustSelfSignedSSL();
-        }
     }
 
     @Override
