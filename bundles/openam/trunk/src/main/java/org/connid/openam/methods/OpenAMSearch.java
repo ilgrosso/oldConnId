@@ -35,13 +35,17 @@ import org.springframework.web.client.HttpClientErrorException;
 public class OpenAMSearch extends CommonMethods {
 
     private static final Log LOG = Log.getLog(OpenAMSearch.class);
+
     private OpenAMConfiguration openAMConfiguration = null;
+
     private OpenAMConnection connection = null;
+
     private String uid = "";
+
     private AdminToken adminToken = null;
 
-    public OpenAMSearch(final OpenAMConfiguration configuration,
-            final String uid) throws UnsupportedEncodingException {
+    public OpenAMSearch(final OpenAMConfiguration configuration, final String uid)
+            throws UnsupportedEncodingException {
         this.openAMConfiguration = configuration;
         connection = OpenAMConnection.openConnection(configuration);
         this.uid = uid;
@@ -57,11 +61,11 @@ public class OpenAMSearch extends CommonMethods {
         }
     }
 
-    public final boolean doExistsUser() throws IOException {
+    public final boolean doExistsUser()
+            throws IOException {
         try {
             boolean userExists =
-                    userExists(uid, openAMConfiguration.getOpenamRealm(),
-                    adminToken.getToken(), connection);
+                    userExists(uid, openAMConfiguration.getOpenamRealm(), adminToken.getToken(), connection);
             connection.logout(adminToken.getToken());
             return userExists;
         } catch (HttpClientErrorException hcee) {

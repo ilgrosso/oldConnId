@@ -69,8 +69,7 @@ public class OpenAMExecuteQuery extends CommonMethods {
 
     private void doExecuteQuery() throws IOException {
         String[] uidResults =
-                connection.search(searchParameters(
-                cleanLdapFilter())).split("string=");
+                connection.search(searchParameters(cleanLdapFilter())).split("string=");
         LOG.ok("Search committed");
 
         if (uidResults == null || uidResults.length == 1) {

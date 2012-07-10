@@ -31,16 +31,27 @@ import org.identityconnectors.framework.spi.ConfigurationProperty;
 public class OpenAMConfiguration extends AbstractConfiguration {
 
     private boolean ssl = false;
+
     private String openamBaseUrl = "";
+
     private String openamPort = "";
+
     private String openamContext = "";
-    
+
     private String openamRealm = "";
+
+    private String openamAuthService = "ldapService";
+
+    private String openamAuthRealm = "/";
+
     private String openamAdminUser = "";
+
     private GuardedString openamAdminPassword = null;
-    
+
     private String openamUidAttribute = "";
+
     private String openamPasswordAttribute = "";
+
     private String openamStatusAttribute = "";
 
     @ConfigurationProperty(displayMessageKey = "openamprotocol.display",
@@ -93,8 +104,28 @@ public class OpenAMConfiguration extends AbstractConfiguration {
         this.openamRealm = openamRealm;
     }
 
+    @ConfigurationProperty(displayMessageKey = "openamAuthRealm.display",
+    helpMessageKey = "openamAuthRealm.help", order = 6)
+    public String getOpenamAuthRealm() {
+        return openamAuthRealm;
+    }
+
+    public void setOpenamAuthRealm(String openamAuthRealm) {
+        this.openamAuthRealm = openamAuthRealm;
+    }
+
+    @ConfigurationProperty(displayMessageKey = "openamAuthService.display",
+    helpMessageKey = "openamAuthService.help", order = 7)
+    public String getOpenamAuthService() {
+        return openamAuthService;
+    }
+
+    public void setOpenamAuthService(String openamAuthService) {
+        this.openamAuthService = openamAuthService;
+    }
+
     @ConfigurationProperty(displayMessageKey = "openamadminuser.display",
-    helpMessageKey = "openamadminuser.help", order = 6)
+    helpMessageKey = "openamadminuser.help", order = 8)
     public final String getOpenamAdminUser() {
         return openamAdminUser;
     }
@@ -102,21 +133,20 @@ public class OpenAMConfiguration extends AbstractConfiguration {
     public final void setOpenamAdminUser(final String openamAdminUser) {
         this.openamAdminUser = openamAdminUser;
     }
-    
+
     @ConfigurationProperty(displayMessageKey = "openamadminpassword.display",
-    helpMessageKey = "openamadminpassword.help", order = 7)
+    helpMessageKey = "openamadminpassword.help", order = 9)
     public final GuardedString getOpenamAdminPassword() {
         return openamAdminPassword;
     }
 
-    public final void setOpenamAdminPassword(final GuardedString
-            openamAdminPassword) {
+    public final void setOpenamAdminPassword(final GuardedString openamAdminPassword) {
         this.openamAdminPassword = openamAdminPassword;
     }
 
     @ConfigurationProperty(displayMessageKey =
-            "openampasswordattribute.display",
-    helpMessageKey = "openampasswordattribute.help", order = 8)
+    "openampasswordattribute.display",
+    helpMessageKey = "openampasswordattribute.help", order = 10)
     public final String getOpenamPasswordAttribute() {
         return openamPasswordAttribute;
     }
@@ -127,7 +157,7 @@ public class OpenAMConfiguration extends AbstractConfiguration {
     }
 
     @ConfigurationProperty(displayMessageKey = "openamstatusattribute.display",
-    helpMessageKey = "openamstatusattribute.help", order = 9)
+    helpMessageKey = "openamstatusattribute.help", order = 11)
     public final String getOpenamStatusAttribute() {
         return openamStatusAttribute;
     }
@@ -138,7 +168,7 @@ public class OpenAMConfiguration extends AbstractConfiguration {
     }
 
     @ConfigurationProperty(displayMessageKey = "openamuidattribute.display",
-    helpMessageKey = "openamuidattribute.help", order = 10)
+    helpMessageKey = "openamuidattribute.help", order = 12)
     public final String getOpenamUidAttribute() {
         return openamUidAttribute;
     }

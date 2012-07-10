@@ -24,6 +24,8 @@
 package org.connid.openam;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.connid.openam.http.HttpClientMethods;
 import org.connid.openam.restful.RestfulClientMethods;
@@ -34,11 +36,15 @@ import org.springframework.web.client.HttpClientErrorException;
 public class OpenAMConnection {
 
     private static final Log LOG = Log.getLog(OpenAMConnection.class);
+
     private OpenAMConfiguration configuration = null;
+
     private final RestfulClientMethods restfulClient =
             new RestfulClientMethods();
+
     private final HttpClientMethods httpClientMethods =
             new HttpClientMethods();
+
     private UrlFactory urlFactory = null;
 
     private OpenAMConnection(final OpenAMConfiguration configuration) {
@@ -54,8 +60,12 @@ public class OpenAMConnection {
 
     public String authenticate(final String username, final String password)
             throws HttpClientErrorException {
-        return restfulClient.getMethod(
-                urlFactory.authenticateUrl(username, password));
+        try {
+            return restfulClient.getMethod(new URI(urlFactory.authenticateUrl(username, password)));
+        } catch (URISyntaxException e) {
+            LOG.error(e, "Authentication failed. Invalid URI.");
+            return null;
+        }
     }
 
     public void create(final String parameters) {
@@ -78,7 +88,8 @@ public class OpenAMConnection {
         return restfulClient.getMethod(urlFactory.searchUrl(parameters));
     }
 
-    public String search(final String parameters) throws IOException {
+    public String search(final String parameters)
+            throws IOException {
         return httpClientMethods.get(urlFactory.searchUrl(parameters));
     }
 
@@ -87,9 +98,9 @@ public class OpenAMConnection {
         return restfulClient.getMethod(urlFactory.readUrl(parameters));
     }
 
-    public boolean isAlive() throws IOException {
-        Integer statusCode = new Integer(httpClientMethods.getMethod(
-                urlFactory.testUrl()));
+    public boolean isAlive()
+            throws IOException {
+        Integer statusCode = new Integer(httpClientMethods.getMethod(urlFactory.testUrl()));
         return statusCode.equals(HttpStatus.SC_OK);
     }
 

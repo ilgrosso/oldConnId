@@ -41,11 +41,17 @@ import org.springframework.web.client.HttpClientErrorException;
 public class OpenAMUpdate extends CommonMethods {
 
     private static final Log LOG = Log.getLog(OpenAMUpdate.class);
+
     private Set<Attribute> attrs = null;
+
     private ObjectClass objectClass = null;
+
     private OpenAMConfiguration configuration = null;
+
     private OpenAMConnection connection = null;
+
     private Uid uid = null;
+
     private AdminToken adminToken = null;
 
     public OpenAMUpdate(final ObjectClass oc,
@@ -71,7 +77,8 @@ public class OpenAMUpdate extends CommonMethods {
         }
     }
 
-    private Uid doUpdate() throws IOException {
+    private Uid doUpdate()
+            throws IOException {
 
         if (!objectClass.equals(ObjectClass.ACCOUNT)
                 && (!objectClass.equals(ObjectClass.GROUP))) {
@@ -125,12 +132,18 @@ public class OpenAMUpdate extends CommonMethods {
                             append(configuration.getOpenamStatusAttribute()).
                             append("=").append(!status ? InetUserStatus.INACTIVE
                             : InetUserStatus.ACTIVE);
+                } else if (attr.is(Uid.NAME)) {
+                    if ((values != null) && (!values.isEmpty())) {
+                        parameters.append(
+                                OpenAMQueryStringParameters.I_A_NAMES).append(configuration.getOpenamUidAttribute()).
+                                append(OpenAMQueryStringParameters.I_A_VALUES).append(configuration.
+                                getOpenamUidAttribute()).append("=").append((String) values.get(0));
+                    }
                 } else {
                     parameters.append(OpenAMQueryStringParameters.I_A_NAMES).
                             append(attr.getName()).append(
                             OpenAMQueryStringParameters.I_A_VALUES).append(
-                            attr.getName()).append("=").append(
-                            (String) values.get(0));
+                            attr.getName()).append("=").append((String) values.get(0));
                 }
             }
         }

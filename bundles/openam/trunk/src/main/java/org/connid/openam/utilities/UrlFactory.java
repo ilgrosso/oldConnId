@@ -23,37 +23,58 @@
  */
 package org.connid.openam.utilities;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import org.connid.openam.OpenAMConfiguration;
+import org.connid.openam.utilities.constants.OpenAMQueryStringParameters;
+import org.identityconnectors.common.StringUtil;
+import org.identityconnectors.common.logging.Log;
 
 public class UrlFactory {
 
-    private OpenAMConfiguration openAMConfiguration = null;
+    private static final Log LOG = Log.getLog(UrlFactory.class);
 
-    public UrlFactory(final OpenAMConfiguration openAMConfiguration) {
-        this.openAMConfiguration = openAMConfiguration;
+    private OpenAMConfiguration configuration = null;
+
+    public UrlFactory(final OpenAMConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     public final String openAmUrl() {
         StringBuilder openAmRestfulServiceUrl = new StringBuilder();
-        if (openAMConfiguration.isSsl()) {
+        if (configuration.isSsl()) {
             openAmRestfulServiceUrl.append("https");
         } else {
             openAmRestfulServiceUrl.append("http");
         }
-        openAmRestfulServiceUrl.append("://").append(
-                openAMConfiguration.getOpenamBaseUrl()).append(":").append(
-                openAMConfiguration.getOpenamPort()).append("/").append(
-                openAMConfiguration.getOpenamContext());
+
+        openAmRestfulServiceUrl.append("://").
+                append(configuration.getOpenamBaseUrl()).append(":").append(configuration.getOpenamPort()).
+                append("/").append(configuration.getOpenamContext());
+
         return openAmRestfulServiceUrl.toString();
     }
 
-    public final String authenticateUrl(final String username,
-            final String password) {
-        StringBuilder authurl = new StringBuilder();
-        authurl.append(openAmUrl()).append(
-                OpenamServicesUrl.AUTHENTICATE_RESTFUL_SERVICE).append(
-                "username=").append(username).append(
-                "&password=").append(password);
+    public final String authenticateUrl(final String username, final String password) {
+        final StringBuilder authurl = new StringBuilder();
+
+        authurl.append(openAmUrl()).append(OpenamServicesUrl.AUTHENTICATE_RESTFUL_SERVICE).
+                append("username=").append(username).append("&password=").append(password);
+
+        final StringBuilder uri = new StringBuilder();
+
+        uri.append(OpenAMQueryStringParameters.AUTHREALM).append(configuration.getOpenamAuthRealm());
+
+        if (StringUtil.isNotBlank(configuration.getOpenamAuthService())) {
+            uri.append(OpenAMQueryStringParameters.AUTHSERVICE + configuration.getOpenamAuthService());
+        }
+
+        try {
+            authurl.append(OpenAMQueryStringParameters.AUTHURI).append(URLEncoder.encode(uri.toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            LOG.error(e, "Error encoding URI");
+        }
+
         return authurl.toString();
     }
 

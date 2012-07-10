@@ -23,6 +23,9 @@
  */
 package org.connid.openam.restful;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.identityconnectors.common.logging.Log;
 import org.springframework.web.client.RestTemplate;
 
 public class RestfulClientMethods {
@@ -31,6 +34,10 @@ public class RestfulClientMethods {
 
     public RestfulClientMethods() {
         restTemplate = new RestTemplate();
+    }
+
+    public final String getMethod(final URI uri) {
+        return restTemplate.getForObject(uri, String.class);
     }
 
     public final String getMethod(final String url) {

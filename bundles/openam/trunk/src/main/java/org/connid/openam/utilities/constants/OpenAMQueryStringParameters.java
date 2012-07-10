@@ -35,4 +35,7 @@ public class OpenAMQueryStringParameters {
     public static final String A_VALUES = "&attribute_values_";
     public static final String FILTER = "&filter=";
     public static final String REALM = "&identity_realm=";
+    public static final String AUTHURI = "&uri=";
+    public static final String AUTHREALM = "realm=";
+    public static final String AUTHSERVICE = "&service=";
 }

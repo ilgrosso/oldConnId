@@ -25,15 +25,30 @@ package org.connid.openam;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
-import org.connid.openam.methods.*;
+import org.connid.openam.methods.OpenAMAuthenticate;
+import org.connid.openam.methods.OpenAMCreate;
+import org.connid.openam.methods.OpenAMDelete;
+import org.connid.openam.methods.OpenAMExecuteQuery;
+import org.connid.openam.methods.OpenAMSearch;
+import org.connid.openam.methods.OpenAMTest;
+import org.connid.openam.methods.OpenAMUpdate;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
-import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.OperationOptions;
+import org.identityconnectors.framework.common.objects.ResultsHandler;
+import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
-import org.identityconnectors.framework.spi.operations.*;
+import org.identityconnectors.framework.spi.operations.AuthenticateOp;
+import org.identityconnectors.framework.spi.operations.CreateOp;
+import org.identityconnectors.framework.spi.operations.DeleteOp;
+import org.identityconnectors.framework.spi.operations.SearchOp;
+import org.identityconnectors.framework.spi.operations.TestOp;
+import org.identityconnectors.framework.spi.operations.UpdateOp;
 
 @ConnectorClass(configurationClass = OpenAMConfiguration.class,
 displayNameKey = "openam.connector.display")
@@ -46,6 +61,7 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
 
     @Override
     public final void init(final Configuration config) {
+        this.openAMConfiguration = (OpenAMConfiguration) config;
     }
 
     @Override
@@ -132,8 +148,7 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     public final void executeQuery(final ObjectClass oc, final String filter,
             final ResultsHandler rh, final OperationOptions oo) {
         try {
-            new OpenAMExecuteQuery(
-                    openAMConfiguration, filter, rh).executeQuery();
+            new OpenAMExecuteQuery(openAMConfiguration, filter, rh).executeQuery();
         } catch (UnsupportedEncodingException ex) {
             LOG.error("Encoding error", ex);
         }

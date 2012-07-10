@@ -41,11 +41,17 @@ import org.springframework.web.client.HttpClientErrorException;
 public class OpenAMCreate extends CommonMethods {
 
     private static final Log LOG = Log.getLog(OpenAMCreate.class);
+
     private Set<Attribute> attrs = null;
+
     private OpenAMConfiguration configuration = null;
+
     private OpenAMConnection connection = null;
+
     private ObjectClass objectClass = null;
+
     private String uidString = null;
+
     private AdminToken adminToken = null;
 
     public OpenAMCreate(final ObjectClass oc,
@@ -69,14 +75,15 @@ public class OpenAMCreate extends CommonMethods {
         }
     }
 
-    private Uid doCreate() throws IOException {
+    private Uid doCreate()
+            throws IOException {
 
         if (AttributeUtil.getNameFromAttributes(attrs) == null) {
             throw new IllegalArgumentException("No Name attribute provided"
                     + "in the attributes");
         }
 
-        uidString = AttributeUtil.getNameFromAttributes(attrs).getNameValue();
+        uidString = AttributeUtil.getUidAttribute(attrs).getUidValue();
 
         if (!objectClass.equals(ObjectClass.ACCOUNT)
                 && (!objectClass.equals(ObjectClass.GROUP))) {
@@ -85,8 +92,7 @@ public class OpenAMCreate extends CommonMethods {
 
         if (userExists(uidString, configuration.getOpenamRealm(),
                 adminToken.getToken(), connection)) {
-            throw new ConnectorException("User " + uidString
-                    + " already exists");
+            throw new ConnectorException("User " + uidString + " already exists");
         }
 
         try {
@@ -100,12 +106,11 @@ public class OpenAMCreate extends CommonMethods {
 
     private String createQueryString() {
         StringBuilder parameters = new StringBuilder();
+
+        parameters.append(OpenAMQueryStringParameters.IDENTITY_NAME).append(uidString);
+
         for (Attribute attr : attrs) {
-            if (!parameters.toString().contains(
-                    OpenAMQueryStringParameters.IDENTITY_NAME)) {
-                parameters.append(OpenAMQueryStringParameters.IDENTITY_NAME).
-                        append(uidString);
-            } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
+            if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
                 parameters.append(OpenAMQueryStringParameters.I_A_NAMES).append(
                         configuration.getOpenamPasswordAttribute()).append(
                         OpenAMQueryStringParameters.I_A_VALUES).append(
@@ -126,6 +131,16 @@ public class OpenAMCreate extends CommonMethods {
                             append(configuration.getOpenamStatusAttribute()).
                             append("=").append(InetUserStatus.INACTIVE);
                 }
+            } else if (attr.is(Name.NAME)) {
+                // ignore
+            } else if (attr.is(Uid.NAME)) {
+                List<Object> values = attr.getValue();
+                if ((values != null) && (!values.isEmpty())) {
+                    parameters.append(
+                            OpenAMQueryStringParameters.I_A_NAMES).append(configuration.getOpenamUidAttribute()).
+                            append(OpenAMQueryStringParameters.I_A_VALUES).append(configuration.getOpenamUidAttribute()).
+                            append("=").append((String) values.get(0));
+                }
             } else {
                 List<Object> values = attr.getValue();
                 if ((values != null) && (!values.isEmpty())) {
@@ -139,9 +154,10 @@ public class OpenAMCreate extends CommonMethods {
         }
         parameters.append(OpenAMQueryStringParameters.REALM).append(
                 configuration.getOpenamRealm()).append(
-                OpenAMQueryStringParameters.IDENTITY_TYPE + "user").append(
-                OpenAMQueryStringParameters.ADMIN).append(
-                adminToken.getToken());
+                OpenAMQueryStringParameters.IDENTITY_TYPE + "user").append(OpenAMQueryStringParameters.ADMIN).
+                append(adminToken.getToken());
+
+        System.out.println("AAAAAAAAAAAAAAAAAAAAA " + parameters.toString());
         return parameters.toString();
     }
 }
