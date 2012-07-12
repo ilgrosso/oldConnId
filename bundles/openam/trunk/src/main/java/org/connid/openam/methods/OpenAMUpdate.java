@@ -25,45 +25,40 @@ package org.connid.openam.methods;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Set;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
-import org.connid.openam.utilities.constants.InetUserStatus;
-import org.connid.openam.utilities.constants.OpenAMQueryStringParameters;
-import org.identityconnectors.common.logging.Log;
-import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMUpdate extends CommonMethods {
 
-    private static final Log LOG = Log.getLog(OpenAMUpdate.class);
-
-    private Set<Attribute> attrs = null;
-
     private ObjectClass objectClass = null;
-
-    private OpenAMConfiguration configuration = null;
 
     private OpenAMConnection connection = null;
 
-    private Uid uid = null;
+    private final Uid uid;
 
-    private AdminToken adminToken = null;
+    private final Set<Attribute> attrs;
 
-    public OpenAMUpdate(final ObjectClass oc,
-            final OpenAMConfiguration openAMConfiguration,
+    private final AdminToken adminToken;
+
+    public OpenAMUpdate(
+            final ObjectClass oc,
+            final OpenAMConfiguration configuration,
             final Uid uid, final Set<Attribute> attrs)
             throws UnsupportedEncodingException {
-        this.configuration = openAMConfiguration;
+
+        super(configuration);
+
+        adminToken = new AdminToken(configuration);
+
         objectClass = oc;
         this.uid = uid;
         this.attrs = attrs;
         connection = OpenAMConnection.openConnection(configuration);
-        adminToken = new AdminToken(configuration);
     }
 
     public Uid update() {
@@ -88,67 +83,15 @@ public class OpenAMUpdate extends CommonMethods {
         if (!userExists(uid.getUidValue(), configuration.getOpenamRealm(),
                 adminToken.getToken(), connection)) {
             LOG.error("User " + uid.getUidValue() + " do not exists");
-            throw new ConnectorException(
-                    "User " + uid.getUidValue() + " do not exists");
+            throw new ConnectorException("User " + uid.getUidValue() + " do not exists");
         }
 
         try {
-            connection.update(updateQueryString());
+            connection.update(createUpdateQueryString(uid, attrs, adminToken).toString());
             LOG.ok("User " + uid.getUidValue() + " updated");
         } catch (HttpClientErrorException hcee) {
             throw hcee;
         }
         return uid;
-    }
-
-    private String updateQueryString() {
-        StringBuilder parameters = new StringBuilder();
-        for (Attribute attr : attrs) {
-            List<Object> values = attr.getValue();
-            if (values != null && !values.isEmpty()) {
-                if (attr.is(Name.NAME)) {
-                    parameters.append(
-                            OpenAMQueryStringParameters.IDENTITY_NAME).append(
-                            uid.getUidValue());
-                } else if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
-                    parameters.append(OpenAMQueryStringParameters.I_A_NAMES).
-                            append(
-                            configuration.getOpenamPasswordAttribute()).append(
-                            OpenAMQueryStringParameters.I_A_VALUES).append(
-                            configuration.getOpenamPasswordAttribute()).append(
-                            "=").append(getPlainPassword(
-                            (GuardedString) values.get(0)));
-                } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
-                    boolean status = false;
-                    // manage enable/disable status
-                    if (attr.getValue() != null && !attr.getValue().isEmpty()) {
-                        status = Boolean.parseBoolean(
-                                attr.getValue().get(0).toString());
-                    }
-                    parameters.append(OpenAMQueryStringParameters.I_A_NAMES).
-                            append(configuration.getOpenamStatusAttribute());
-                    parameters.append(
-                            OpenAMQueryStringParameters.I_A_VALUES).
-                            append(configuration.getOpenamStatusAttribute()).
-                            append("=").append(!status ? InetUserStatus.INACTIVE
-                            : InetUserStatus.ACTIVE);
-                } else if (attr.is(Uid.NAME)) {
-                    if ((values != null) && (!values.isEmpty())) {
-                        parameters.append(
-                                OpenAMQueryStringParameters.I_A_NAMES).append(configuration.getOpenamUidAttribute()).
-                                append(OpenAMQueryStringParameters.I_A_VALUES).append(configuration.
-                                getOpenamUidAttribute()).append("=").append((String) values.get(0));
-                    }
-                } else {
-                    parameters.append(OpenAMQueryStringParameters.I_A_NAMES).
-                            append(attr.getName()).append(
-                            OpenAMQueryStringParameters.I_A_VALUES).append(
-                            attr.getName()).append("=").append((String) values.get(0));
-                }
-            }
-        }
-        parameters.append(OpenAMQueryStringParameters.ADMIN).append(
-                adminToken.getToken());
-        return parameters.toString();
     }
 }

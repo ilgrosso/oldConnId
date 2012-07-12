@@ -85,8 +85,7 @@ public class OpenAMConnector implements Connector, CreateOp, UpdateOp,
     public final Uid authenticate(final ObjectClass oc, final String username,
             final GuardedString password, final OperationOptions oo) {
         LOG.info("Authenticating user: " + username);
-        return new OpenAMAuthenticate(oc, openAMConfiguration,
-                username, password).authenticate();
+        return new OpenAMAuthenticate(oc, openAMConfiguration, username, password).authenticate();
     }
 
     @Override

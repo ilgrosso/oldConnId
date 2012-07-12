@@ -31,6 +31,7 @@ import org.connid.openam.http.HttpClientMethods;
 import org.connid.openam.restful.RestfulClientMethods;
 import org.connid.openam.utilities.UrlFactory;
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMConnection {
@@ -69,7 +70,12 @@ public class OpenAMConnection {
     }
 
     public void create(final String parameters) {
-        restfulClient.getMethod(urlFactory.createUrl(parameters));
+        try {
+            restfulClient.getMethod(new URI(urlFactory.createUrl(parameters)));
+        } catch (URISyntaxException e) {
+            LOG.error(e, "Creation failed. Invalid URI.");
+            throw new ConnectorException(e);
+        }
     }
 
     public void logout(final String token) {
@@ -77,7 +83,12 @@ public class OpenAMConnection {
     }
 
     public void update(final String parameters) {
-        restfulClient.getMethod(urlFactory.updateUrl(parameters));
+        try {
+            restfulClient.getMethod(new URI(urlFactory.updateUrl(parameters)));
+        } catch (URISyntaxException e) {
+            LOG.error(e, "Update failed. Invalid URI.");
+            throw new ConnectorException(e);
+        }
     }
 
     public void delete(final String parameters) {

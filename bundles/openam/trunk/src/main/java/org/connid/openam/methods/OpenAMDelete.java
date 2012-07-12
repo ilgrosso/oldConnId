@@ -29,7 +29,6 @@ import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
 import org.connid.openam.utilities.constants.OpenAMQueryStringParameters;
-import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
@@ -37,17 +36,19 @@ import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMDelete extends CommonMethods {
 
-    private static final Log LOG = Log.getLog(OpenAMDelete.class);
     private ObjectClass objectClass = null;
-    private OpenAMConfiguration configuration = null;
+
     private OpenAMConnection connection = null;
+
     private Uid uid = null;
+
     private AdminToken adminToken = null;
 
-    public OpenAMDelete(final ObjectClass oc,
-            final OpenAMConfiguration openAMConfiguration,
-            final Uid uid) throws UnsupportedEncodingException {
-        this.configuration = openAMConfiguration;
+    public OpenAMDelete(final ObjectClass oc, final OpenAMConfiguration configuration, final Uid uid)
+            throws UnsupportedEncodingException {
+
+        super(configuration);
+
         objectClass = oc;
         this.uid = uid;
         connection = OpenAMConnection.openConnection(configuration);
@@ -64,7 +65,8 @@ public class OpenAMDelete extends CommonMethods {
         }
     }
 
-    private void doDelete() throws IOException {
+    private void doDelete()
+            throws IOException {
 
         if (!objectClass.equals(ObjectClass.ACCOUNT)
                 && (!objectClass.equals(ObjectClass.GROUP))) {

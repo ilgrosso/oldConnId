@@ -36,8 +36,6 @@ public class OpenAMSearch extends CommonMethods {
 
     private static final Log LOG = Log.getLog(OpenAMSearch.class);
 
-    private OpenAMConfiguration openAMConfiguration = null;
-
     private OpenAMConnection connection = null;
 
     private String uid = "";
@@ -46,7 +44,9 @@ public class OpenAMSearch extends CommonMethods {
 
     public OpenAMSearch(final OpenAMConfiguration configuration, final String uid)
             throws UnsupportedEncodingException {
-        this.openAMConfiguration = configuration;
+
+        super(configuration);
+
         connection = OpenAMConnection.openConnection(configuration);
         this.uid = uid;
         adminToken = new AdminToken(configuration);
@@ -65,7 +65,7 @@ public class OpenAMSearch extends CommonMethods {
             throws IOException {
         try {
             boolean userExists =
-                    userExists(uid, openAMConfiguration.getOpenamRealm(), adminToken.getToken(), connection);
+                    userExists(uid, configuration.getOpenamRealm(), adminToken.getToken(), connection);
             connection.logout(adminToken.getToken());
             return userExists;
         } catch (HttpClientErrorException hcee) {

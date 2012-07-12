@@ -33,12 +33,18 @@ import org.connid.openam.utilities.constants.Html;
 public final class AdminToken extends CommonMethods {
 
     private OpenAMConnection openAMConnection = null;
+
     private AdminToken adminToken = null;
+
     private String token = "";
+
     private final int HEADER_TOKEN_CHAR = 9;
 
     public AdminToken(final OpenAMConfiguration configuration)
             throws UnsupportedEncodingException {
+
+        super(configuration);
+
         openAMConnection = OpenAMConnection.openConnection(configuration);
         String openamToken = openAMConnection.authenticate(
                 configuration.getOpenamAdminUser(),

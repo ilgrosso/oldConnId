@@ -33,24 +33,26 @@ import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
 import org.connid.openam.utilities.constants.InetUserStatus;
 import org.connid.openam.utilities.constants.OpenAMQueryStringParameters;
-import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.*;
 
 public class OpenAMExecuteQuery extends CommonMethods {
 
-    private static final Log LOG = Log.getLog(OpenAMExecuteQuery.class);
-    private OpenAMConfiguration openAMConfiguration = null;
     private OpenAMConnection connection = null;
+
     private String ldapFilter = null;
+
     private ResultsHandler handler = null;
+
     private String uid = "";
+
     private AdminToken adminToken = null;
 
-    public OpenAMExecuteQuery(final OpenAMConfiguration configuration,
-            final String ldapFilter, final ResultsHandler rh)
+    public OpenAMExecuteQuery(final OpenAMConfiguration configuration, final String ldapFilter, final ResultsHandler rh)
             throws UnsupportedEncodingException {
-        openAMConfiguration = configuration;
+
+        super(configuration);
+
         connection = OpenAMConnection.openConnection(configuration);
         this.ldapFilter = ldapFilter;
         handler = rh;
@@ -67,7 +69,8 @@ public class OpenAMExecuteQuery extends CommonMethods {
         }
     }
 
-    private void doExecuteQuery() throws IOException {
+    private void doExecuteQuery()
+            throws IOException {
         String[] uidResults =
                 connection.search(searchParameters(cleanLdapFilter())).split("string=");
         LOG.ok("Search committed");
@@ -108,13 +111,13 @@ public class OpenAMExecuteQuery extends CommonMethods {
                     }
                 }
                 if (name != null && name.toLowerCase().contains(
-                        openAMConfiguration.getOpenamUidAttribute().
+                        configuration.getOpenamUidAttribute().
                         toLowerCase())) {
                     bld.setUid(attributesList.get(0));
                     bld.setName(attributesList.get(0));
                 }
                 if (name != null && name.toLowerCase().contains(
-                        openAMConfiguration.getOpenamStatusAttribute().
+                        configuration.getOpenamStatusAttribute().
                         toLowerCase())) {
                     bld.addAttribute(OperationalAttributes.ENABLE_NAME,
                             InetUserStatus.ACTIVE.equalsIgnoreCase(
@@ -165,7 +168,7 @@ public class OpenAMExecuteQuery extends CommonMethods {
         parameters.append(
                 OpenAMQueryStringParameters.A_NAMES
                 + "realm" + OpenAMQueryStringParameters.A_VALUES + "_realm=").
-                append(openAMConfiguration.getOpenamRealm()).append(
+                append(configuration.getOpenamRealm()).append(
                 OpenAMQueryStringParameters.ADMIN).append(
                 adminToken.getToken());
         return parameters.toString();
@@ -177,7 +180,7 @@ public class OpenAMExecuteQuery extends CommonMethods {
         readParameters.append(OpenAMQueryStringParameters.NAME).
                 append(name).append(OpenAMQueryStringParameters.A_NAMES
                 + "realm" + OpenAMQueryStringParameters.A_VALUES + "_realm=").
-                append(openAMConfiguration.getOpenamRealm()).append(
+                append(configuration.getOpenamRealm()).append(
                 OpenAMQueryStringParameters.ADMIN).append(
                 adminToken.getToken());
         return readParameters.toString();

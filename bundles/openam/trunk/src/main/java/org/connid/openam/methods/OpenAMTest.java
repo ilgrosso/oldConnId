@@ -26,15 +26,14 @@ package org.connid.openam.methods;
 import java.io.IOException;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
-import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
 public class OpenAMTest extends CommonMethods {
 
-    private static final Log LOG = Log.getLog(OpenAMTest.class);
     private OpenAMConnection connection = null;
 
     public OpenAMTest(final OpenAMConfiguration configuration) {
+        super(configuration);
         connection = OpenAMConnection.openConnection(configuration);
     }
 
@@ -47,7 +46,8 @@ public class OpenAMTest extends CommonMethods {
         }
     }
 
-    private void execute() throws IOException {
+    private void execute()
+            throws IOException {
         if (!connection.isAlive()) {
             LOG.error("Connection is not Alive");
             throw new IOException("Connection is not Alive");

@@ -80,23 +80,19 @@ public class UrlFactory {
 
     public final String logoutUrl(final String token) {
         StringBuilder logouturl = new StringBuilder();
-        logouturl.append(openAmUrl()).append(
-                OpenamServicesUrl.LOGOUT_RESTFUL_SERVICE).append(
-                "subjectid=").append(token);
+        logouturl.append(openAmUrl()).append(OpenamServicesUrl.LOGOUT_RESTFUL_SERVICE).append("subjectid=").append(token);
         return logouturl.toString();
     }
 
     public final String createUrl(final String parameters) {
         StringBuilder creationurl = new StringBuilder();
-        creationurl.append(openAmUrl()).append(
-                OpenamServicesUrl.CREATE_RESTFUL_SERVICE).append(parameters);
+        creationurl.append(openAmUrl()).append(OpenamServicesUrl.CREATE_RESTFUL_SERVICE).append(parameters);
         return creationurl.toString();
     }
 
     public final String updateUrl(final String parameters) {
         StringBuilder updateurl = new StringBuilder();
-        updateurl.append(openAmUrl()).append(
-                OpenamServicesUrl.UPDATE_RESTFUL_SERVICE).append(parameters);
+        updateurl.append(openAmUrl()).append(OpenamServicesUrl.UPDATE_RESTFUL_SERVICE).append(parameters);
         return updateurl.toString();
     }
 

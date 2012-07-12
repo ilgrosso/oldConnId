@@ -25,7 +25,6 @@ package org.connid.openam.methods;
 
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
-import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ObjectClass;
@@ -34,17 +33,21 @@ import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMAuthenticate extends CommonMethods {
 
-    private static final Log LOG = Log.getLog(OpenAMAuthenticate.class);
     private ObjectClass objectClass = null;
+
     private OpenAMConnection connection = null;
+
     private String username = "";
+
     private GuardedString password = null;
 
     public OpenAMAuthenticate(final ObjectClass oc,
-            final OpenAMConfiguration openAMConfiguration,
-            final String username, final GuardedString password) {
+            final OpenAMConfiguration configuration, final String username, final GuardedString password) {
+
+        super(configuration);
+
         objectClass = oc;
-        connection = OpenAMConnection.openConnection(openAMConfiguration);
+        connection = OpenAMConnection.openConnection(configuration);
         this.username = username;
         this.password = password;
     }

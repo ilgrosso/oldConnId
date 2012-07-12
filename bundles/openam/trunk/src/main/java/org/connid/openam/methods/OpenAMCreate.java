@@ -25,43 +25,38 @@ package org.connid.openam.methods;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Set;
 import org.connid.openam.OpenAMConfiguration;
 import org.connid.openam.OpenAMConnection;
 import org.connid.openam.utilities.AdminToken;
-import org.connid.openam.utilities.constants.InetUserStatus;
 import org.connid.openam.utilities.constants.OpenAMQueryStringParameters;
-import org.identityconnectors.common.logging.Log;
-import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 public class OpenAMCreate extends CommonMethods {
 
-    private static final Log LOG = Log.getLog(OpenAMCreate.class);
-
-    private Set<Attribute> attrs = null;
-
-    private OpenAMConfiguration configuration = null;
-
     private OpenAMConnection connection = null;
 
     private ObjectClass objectClass = null;
 
-    private String uidString = null;
+    private final Set<Attribute> attrs;
 
-    private AdminToken adminToken = null;
+    private final AdminToken adminToken;
 
-    public OpenAMCreate(final ObjectClass oc,
-            final OpenAMConfiguration configuration, final Set<Attribute> attrs)
+    public OpenAMCreate(
+            final ObjectClass oc,
+            final OpenAMConfiguration configuration,
+            final Set<Attribute> attrs)
             throws UnsupportedEncodingException {
-        this.configuration = configuration;
-        this.attrs = attrs;
+
+        super(configuration);
+
+        adminToken = new AdminToken(configuration);
+
         connection = OpenAMConnection.openConnection(configuration);
         objectClass = oc;
-        adminToken = new AdminToken(configuration);
+        this.attrs = attrs;
     }
 
     public Uid create() {
@@ -83,81 +78,30 @@ public class OpenAMCreate extends CommonMethods {
                     + "in the attributes");
         }
 
-        uidString = AttributeUtil.getUidAttribute(attrs).getUidValue();
+        Uid uid = AttributeUtil.getUidAttribute(attrs);
 
-        if (!objectClass.equals(ObjectClass.ACCOUNT)
-                && (!objectClass.equals(ObjectClass.GROUP))) {
+        if (!objectClass.equals(ObjectClass.ACCOUNT) && (!objectClass.equals(ObjectClass.GROUP))) {
             throw new IllegalStateException("Wrong object class");
         }
 
-        if (userExists(uidString, configuration.getOpenamRealm(),
-                adminToken.getToken(), connection)) {
-            throw new ConnectorException("User " + uidString + " already exists");
+        if (userExists(uid.getUidValue(), configuration.getOpenamRealm(), adminToken.getToken(), connection)) {
+            throw new ConnectorException("User " + uid.getUidValue() + " already exists");
         }
 
         try {
-            connection.create(createQueryString());
+            final StringBuilder parameters = createUpdateQueryString(uid, attrs, adminToken);
+
+            parameters.append(OpenAMQueryStringParameters.REALM).append(configuration.getOpenamRealm()).
+                    append(OpenAMQueryStringParameters.IDENTITY_TYPE).append("user").
+                    append(OpenAMQueryStringParameters.ADMIN).append(adminToken.getToken());
+
+            connection.create(parameters.toString());
+
             LOG.ok("Creation commited");
         } catch (HttpClientErrorException hcee) {
             throw hcee;
         }
-        return new Uid(uidString);
-    }
 
-    private String createQueryString() {
-        StringBuilder parameters = new StringBuilder();
-
-        parameters.append(OpenAMQueryStringParameters.IDENTITY_NAME).append(uidString);
-
-        for (Attribute attr : attrs) {
-            if (attr.is(OperationalAttributes.PASSWORD_NAME)) {
-                parameters.append(OpenAMQueryStringParameters.I_A_NAMES).append(
-                        configuration.getOpenamPasswordAttribute()).append(
-                        OpenAMQueryStringParameters.I_A_VALUES).append(
-                        configuration.getOpenamPasswordAttribute()).append(
-                        "=").append(getPlainPassword(
-                        (GuardedString) attr.getValue().get(0)));
-            } else if (attr.is(OperationalAttributes.ENABLE_NAME)) {
-                boolean status = false;
-                // manage enable/disable status
-                if (attr.getValue() != null && !attr.getValue().isEmpty()) {
-                    status = Boolean.parseBoolean(
-                            attr.getValue().get(0).toString());
-                }
-                if (!status) {
-                    parameters.append(OpenAMQueryStringParameters.I_A_NAMES).
-                            append(configuration.getOpenamStatusAttribute()).
-                            append(OpenAMQueryStringParameters.I_A_VALUES).
-                            append(configuration.getOpenamStatusAttribute()).
-                            append("=").append(InetUserStatus.INACTIVE);
-                }
-            } else if (attr.is(Name.NAME)) {
-                // ignore
-            } else if (attr.is(Uid.NAME)) {
-                List<Object> values = attr.getValue();
-                if ((values != null) && (!values.isEmpty())) {
-                    parameters.append(
-                            OpenAMQueryStringParameters.I_A_NAMES).append(configuration.getOpenamUidAttribute()).
-                            append(OpenAMQueryStringParameters.I_A_VALUES).append(configuration.getOpenamUidAttribute()).
-                            append("=").append((String) values.get(0));
-                }
-            } else {
-                List<Object> values = attr.getValue();
-                if ((values != null) && (!values.isEmpty())) {
-                    parameters.append(OpenAMQueryStringParameters.I_A_NAMES).
-                            append(attr.getName()).append(
-                            OpenAMQueryStringParameters.I_A_VALUES).append(
-                            attr.getName()).append("=").append(
-                            (String) values.get(0));
-                }
-            }
-        }
-        parameters.append(OpenAMQueryStringParameters.REALM).append(
-                configuration.getOpenamRealm()).append(
-                OpenAMQueryStringParameters.IDENTITY_TYPE + "user").append(OpenAMQueryStringParameters.ADMIN).
-                append(adminToken.getToken());
-
-        System.out.println("AAAAAAAAAAAAAAAAAAAAA " + parameters.toString());
-        return parameters.toString();
+        return uid;
     }
 }
