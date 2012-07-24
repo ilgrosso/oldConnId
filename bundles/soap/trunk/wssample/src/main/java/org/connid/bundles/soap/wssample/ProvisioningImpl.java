@@ -199,7 +199,8 @@ public class ProvisioningImpl implements Provisioning {
 
         Connection conn = null;
         try {
-            String queryString = "SELECT * FROM user WHERE " + query.toString();
+
+            String queryString = "SELECT * FROM user" + (query == null ? "" : " WHERE " + query.toString());
 
             queryString = queryString.replaceAll("__NAME__", "userId").
                     replaceAll("__UID__", "userId").

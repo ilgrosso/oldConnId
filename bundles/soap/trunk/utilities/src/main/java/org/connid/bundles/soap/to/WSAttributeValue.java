@@ -119,7 +119,7 @@ public class WSAttributeValue extends WSAttribute {
         return res;
     }
 
-    public Float getFloadValue() {
+    public Float getFloatValue() {
         if (getType() == null || !"Float".equals(getType())) {
             throw new IllegalArgumentException("Invalid type declaration");
         }
