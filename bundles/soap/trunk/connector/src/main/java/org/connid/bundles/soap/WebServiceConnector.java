@@ -39,7 +39,6 @@ import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.AttributeInfo;
 import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
-import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
@@ -51,7 +50,6 @@ import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.Schema;
 import org.identityconnectors.framework.common.objects.SchemaBuilder;
 import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
-import org.identityconnectors.framework.common.objects.SyncDeltaType;
 import org.identityconnectors.framework.common.objects.SyncResultsHandler;
 import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.common.objects.Uid;
@@ -77,6 +75,9 @@ import org.connid.bundles.soap.to.WSAttributeValue;
 import org.connid.bundles.soap.to.WSChange;
 import org.connid.bundles.soap.to.WSUser;
 import org.connid.bundles.soap.utilities.Operand;
+import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.OperationalAttributes;
+import org.identityconnectors.framework.common.objects.SyncDeltaType;
 
 @ConnectorClass(displayNameKey = "SOAP_CONNECTOR",
 configurationClass = WebServiceConfiguration.class)
@@ -129,6 +130,7 @@ public class WebServiceConnector implements
 
     /**
      * Callback method to receive the {@link Configuration}.
+     *
      * @param cfg connector configuration
      * @see Connector#init
      */
@@ -142,7 +144,7 @@ public class WebServiceConnector implements
 
     /**
      * Disposes of the {@link WebServiceConnector}'s resources.
-     * 
+     *
      * @see Connector#dispose()
      */
     @Override
@@ -393,12 +395,10 @@ public class WebServiceConnector implements
         schemaBld.defineObjectClass(objectclassInfo);
 
         /*
-         * Note: AuthenticateOp, and all the 'SPIOperation'-s are by default
-         * added by Reflection API to the Schema.
+         * Note: AuthenticateOp, and all the 'SPIOperation'-s are by default added by Reflection API to the Schema.
          *
-         * See for details: FrameworkUtil.getDefaultSupportedOperations()
-         * ReflectionUtil.getAllInterfaces(connector); is the line that *does*
-         * acquire the implemented interfaces by the connector class.
+         * See for details: FrameworkUtil.getDefaultSupportedOperations() ReflectionUtil.getAllInterfaces(connector); is
+         * the line that *does* acquire the implemented interfaces by the connector class.
          */
         if (!provisioning.isAuthenticationSupported()) {
             LOG.debug("Authentication is not supported.");
@@ -469,14 +469,13 @@ public class WebServiceConnector implements
 
             WSUser user;
             boolean handle = true;
-            for (Iterator<WSUser> i = resultSet.iterator();
-                    i.hasNext() && handle;) {
+            for (Iterator<WSUser> i = resultSet.iterator(); i.hasNext() && handle;) {
 
                 user = i.next();
                 LOG.debug("Found user: " + user.getAccountid());
 
-                handle = handler.handle(
-                        buildConnectorObject(user.getAttributes()).build());
+                handle = handler.handle(buildConnectorObject(user.getAttributes()).build());
+
                 LOG.debug("Handle:" + handle);
             }
         } catch (Exception e) {
@@ -711,8 +710,7 @@ public class WebServiceConnector implements
             }
 
             // Check the type
-            Class.forName(
-                    AttributeType.valueOf(attribute.getType()).getClassName());
+            Class.forName(AttributeType.valueOf(attribute.getType()).getClassName());
 
             builder.setName(attribute.getName());
             builder.setRequired(attribute.isNullable());
@@ -739,17 +737,22 @@ public class WebServiceConnector implements
         for (WSAttributeValue attribute : attributes) {
 
             if (attribute.isKey()) {
+
                 uid = attribute.getStringValue();
                 bld.setName(uid);
-                bld.addAttribute(AttributeBuilder.build(
-                        attribute.getName(), attribute.getValues()));
-            }
+                bld.addAttribute(AttributeBuilder.build(attribute.getName(), attribute.getValues()));
 
-            if (!attribute.isKey() && !attribute.isPassword()) {
+            } else if (OperationalAttributes.ENABLE_NAME.equals(attribute.getName())) {
+
+                bld.addAttribute(AttributeBuilder.buildEnabled(
+                        attribute.getValues() == null
+                        || attribute.getValues().isEmpty()
+                        || Boolean.parseBoolean(attribute.getValues().get(0).toString())));
+
+            } else {
 
                 if (attribute.getValues() == null) {
-                    bld.addAttribute(AttributeBuilder.build(
-                            attribute.getName()));
+                    bld.addAttribute(AttributeBuilder.build(attribute.getName()));
                 } else {
                     bld.addAttribute(AttributeBuilder.build(
                             attribute.getName(), attribute.getValues()));
@@ -764,7 +767,8 @@ public class WebServiceConnector implements
         }
 
         // Add Uid attribute to object
-        bld.setUid(new Uid(uid));
+        bld.setUid(
+                new Uid(uid));
 
         // Add objectclass
         bld.setObjectClass(ObjectClass.ACCOUNT);
@@ -793,8 +797,7 @@ public class WebServiceConnector implements
     private SyncDeltaBuilder buildSyncDelta(final WSChange change) {
         SyncDeltaBuilder bld = new SyncDeltaBuilder();
 
-        ConnectorObject object =
-                buildConnectorObject(change.getAttributes()).build();
+        ConnectorObject object = buildConnectorObject(change.getAttributes()).build();
 
         bld.setToken(new SyncToken(change.getId()));
         bld.setObject(object);
