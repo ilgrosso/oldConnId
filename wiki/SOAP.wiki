@@ -24,7 +24,7 @@ Follow these steps to run the stand-alone connector server:
  *   Search
  *   Test
  *   Sync
- *   ResolveUsername
+ *   !ResolveUsername
 
 =Configuration=
 
