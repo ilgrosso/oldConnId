@@ -254,7 +254,7 @@ The following table describes all of the properties that you can specify for the
       <td> String </td>
       <td> X </td>
       <td> X </td>
-      <td> Cipher algorithm used to encode password before to store it onto the database table. Specify one of the values among AES, MD5, SHA1, SHA256 or a custom implementation identified by its class name. </td>
+      <td> Cipher algorithm used to encode password before to store it onto the database table. Specify one of the values among CLEARTEXT, AES, MD5, SHA1, SHA256 or a custom implementation identified by its class name. </td>
     </tr>
     <tr>
       <td> Password cipher key </td>
