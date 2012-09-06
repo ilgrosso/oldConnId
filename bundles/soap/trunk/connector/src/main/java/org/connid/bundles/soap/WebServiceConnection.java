@@ -27,6 +27,7 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+import org.connid.bundles.soap.cxf.ForceSoapActionOutInterceptor;
 import org.connid.bundles.soap.provisioning.interfaces.Provisioning;
 
 import org.slf4j.Logger;
@@ -48,58 +49,38 @@ public class WebServiceConnection {
 
     private Provisioning provisioning;
 
-    public WebServiceConnection(WebServiceConfiguration configuration) {
+    public WebServiceConnection(final WebServiceConfiguration configuration) {
         try {
 
-            final ApplicationContext context = new ClassPathXmlApplicationContext(
-                    new String[]{APPLICATIONCONTEXT});
+            final ApplicationContext context = new ClassPathXmlApplicationContext(new String[]{APPLICATIONCONTEXT});
 
             final JaxWsProxyFactoryBean proxyFactory =
-                    (JaxWsProxyFactoryBean) context.getBean(
-                    JaxWsProxyFactoryBean.class);
+                    (JaxWsProxyFactoryBean) context.getBean(JaxWsProxyFactoryBean.class);
 
             configuration.validate();
 
-            proxyFactory.setAddress(
-                    configuration.getEndpoint());
+            proxyFactory.setAddress(configuration.getEndpoint());
 
-            proxyFactory.setServiceClass(
-                    Class.forName(configuration.getServicename()));
+            proxyFactory.setServiceClass(Class.forName(configuration.getServicename()));
 
             provisioning = (Provisioning) proxyFactory.create();
 
             final Client client = ClientProxy.getClient(provisioning);
             if (client != null) {
                 final HTTPConduit conduit = (HTTPConduit) client.getConduit();
-                final HTTPClientPolicy policy =
-                        (HTTPClientPolicy) conduit.getClient();
-
-                policy.setConnectionTimeout(Long.parseLong(
-                        configuration.getConnectionTimeout()) * 1000L);
-                policy.setReceiveTimeout(Long.parseLong(
-                        configuration.getReceiveTimeout()) * 1000L);
+                final HTTPClientPolicy policy = (HTTPClientPolicy) conduit.getClient();
+                policy.setConnectionTimeout(Long.parseLong(configuration.getConnectionTimeout()) * 1000L);
+                policy.setReceiveTimeout(Long.parseLong(configuration.getReceiveTimeout()) * 1000L);
             }
+
+            client.getOutInterceptors().add(new ForceSoapActionOutInterceptor(configuration.getSoapActionUriPrefix()));
 
         } catch (IllegalArgumentException e) {
-
-            if (LOG.isErrorEnabled()) {
-                LOG.error("Invalid confoguration", e);
-            }
-
+            LOG.error("Invalid confoguration", e);
         } catch (ClassNotFoundException e) {
-
-            if (LOG.isErrorEnabled()) {
-                LOG.error("Provisioning class"
-                        + " \"" + configuration.getServicename() + "\" "
-                        + "not found", e);
-            }
-
+            LOG.error("Provisioning class \"{}\" not found", configuration.getServicename(), e);
         } catch (Throwable t) {
-
-            if (LOG.isErrorEnabled()) {
-                LOG.error("Unknown exception", t);
-            }
-
+            LOG.error("Unknown exception", t);
         }
     }
 

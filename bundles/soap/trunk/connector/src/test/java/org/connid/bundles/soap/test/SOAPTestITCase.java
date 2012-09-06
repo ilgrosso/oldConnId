@@ -158,6 +158,7 @@ public class SOAPTestITCase {
         // Set all of the ConfigurationProperties needed by the connector.
         properties.setPropertyValue("endpoint", ENDPOINT_PREFIX + SERVICE);
         properties.setPropertyValue("servicename", Provisioning.class.getName());
+        properties.setPropertyValue("soapActionUriPrefix", ENDPOINT_PREFIX);
 
         // Use the ConnectorFacadeFactory's newInstance() method to get
         // a new connector.

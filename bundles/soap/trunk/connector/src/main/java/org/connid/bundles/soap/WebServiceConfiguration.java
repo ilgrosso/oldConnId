@@ -29,8 +29,8 @@ import org.identityconnectors.framework.spi.ConfigurationProperty;
 import org.identityconnectors.common.StringUtil;
 
 /**
- * Extends the {@link AbstractConfiguration} class to provide all the necessary
- * parameters to initialize the WebService Connector.
+ * Extends the {@link AbstractConfiguration} class to provide all the necessary parameters to initialize the WebService
+ * Connector.
  */
 public class WebServiceConfiguration extends AbstractConfiguration {
 
@@ -54,9 +54,14 @@ public class WebServiceConfiguration extends AbstractConfiguration {
      */
     private String receiveTimeout = "60";
 
+    /*
+     * Receive timeout
+     */
+    private String soapActionUriPrefix = null;
+
     /**
-     * Accessor for the example property. Uses ConfigurationProperty annotation
-     * to provide property metadata to the application.
+     * Accessor for the example property. Uses ConfigurationProperty annotation to provide property metadata to the
+     * application.
      */
     @ConfigurationProperty(displayMessageKey = "ENDPOINT_DISPLAY",
     helpMessageKey = "ENDPOINT_HELP",
@@ -73,12 +78,11 @@ public class WebServiceConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * Accessor for the example property. Uses ConfigurationProperty annotation
-     * to provide property metadata to the application.
+     * Accessor for the example property. Uses ConfigurationProperty annotation to provide property metadata to the
+     * application.
      */
     @ConfigurationProperty(displayMessageKey = "CLASSNAME_DISPLAY",
-    helpMessageKey = "CLASSNAME_HELP",
-    confidential = false)
+    helpMessageKey = "CLASSNAME_HELP", confidential = false, order = 1)
     public String getServicename() {
         return servicename;
     }
@@ -88,8 +92,7 @@ public class WebServiceConfiguration extends AbstractConfiguration {
     }
 
     @ConfigurationProperty(displayMessageKey = "CONNECTIONTIMEOUT_DISPLAY",
-    helpMessageKey = "CONNECTIONTIMEOUT_HELP",
-    confidential = false)
+    helpMessageKey = "CONNECTIONTIMEOUT_HELP", confidential = false, order = 2)
     public String getConnectionTimeout() {
         return connectionTimeout;
     }
@@ -99,14 +102,23 @@ public class WebServiceConfiguration extends AbstractConfiguration {
     }
 
     @ConfigurationProperty(displayMessageKey = "RECEIVETIMEOUT_DISPLAY",
-    helpMessageKey = "RECEIVETIMEOUT_HELP",
-    confidential = false)
+    helpMessageKey = "RECEIVETIMEOUT_HELP", confidential = false, order = 3)
     public String getReceiveTimeout() {
         return receiveTimeout;
     }
 
     public void setReceiveTimeout(String receiveTimeout) {
         this.receiveTimeout = receiveTimeout;
+    }
+
+    @ConfigurationProperty(displayMessageKey = "SOAPACTION_DISPLAY",
+    helpMessageKey = "SOAPACTION_HELP", confidential = false, order = 4)
+    public String getSoapActionUriPrefix() {
+        return soapActionUriPrefix;
+    }
+
+    public void setSoapActionUriPrefix(String soapActionUriPrefix) {
+        this.soapActionUriPrefix = soapActionUriPrefix;
     }
 
     /**
