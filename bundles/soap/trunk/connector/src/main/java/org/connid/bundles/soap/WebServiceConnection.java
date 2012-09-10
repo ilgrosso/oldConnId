@@ -73,7 +73,7 @@ public class WebServiceConnection {
                 policy.setReceiveTimeout(Long.parseLong(configuration.getReceiveTimeout()) * 1000L);
             }
 
-            client.getOutInterceptors().add(new ForceSoapActionOutInterceptor(configuration.getSoapActionUriPrefix()));
+//            client.getOutInterceptors().add(new ForceSoapActionOutInterceptor(configuration.getSoapActionUriPrefix()));
 
         } catch (IllegalArgumentException e) {
             LOG.error("Invalid confoguration", e);
