@@ -47,6 +47,8 @@
                 <include>org.apache.cxf:cxf-rt-bindings-soap</include>
                 <include>org.apache.cxf:cxf-rt-bindings-xml</include>
                 <include>org.apache.cxf:cxf-rt-core</include>
+		<include>org.apache.cxf:cxf-rt-ws-policy</include>
+                <include>org.apache.cxf:cxf-rt-ws-addr</include>
                 <include>org.apache.cxf:cxf-rt-databinding-jaxb</include>
                 <include>org.apache.cxf:cxf-rt-frontend-jaxws</include>
                 <include>org.apache.cxf:cxf-rt-frontend-simple</include>
