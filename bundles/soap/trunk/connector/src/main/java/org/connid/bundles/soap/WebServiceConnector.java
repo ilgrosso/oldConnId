@@ -736,8 +736,8 @@ public class WebServiceConnector implements
 
         for (WSAttributeValue attribute : attributes) {
 
-            if (attribute.isKey()) {
-
+            if (uid == null && (attribute.isKey()
+                    || Name.NAME.equals(attribute.getName()) || Uid.NAME.equals(attribute.getName()))) {
                 uid = attribute.getStringValue();
                 bld.setName(uid);
                 bld.addAttribute(AttributeBuilder.build(attribute.getName(), attribute.getValues()));
@@ -767,8 +767,7 @@ public class WebServiceConnector implements
         }
 
         // Add Uid attribute to object
-        bld.setUid(
-                new Uid(uid));
+        bld.setUid(new Uid(uid));
 
         // Add objectclass
         bld.setObjectClass(ObjectClass.ACCOUNT);
