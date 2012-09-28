@@ -29,11 +29,14 @@ import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import org.identityconnectors.framework.common.FrameworkUtil;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WSAttributeValue extends WSAttribute {
 
     private List values = null;
+
+    private List evaluatedTypeValues = null;
 
     public WSAttributeValue() {
         super();
@@ -52,14 +55,27 @@ public class WSAttributeValue extends WSAttribute {
     }
 
     public List getValues() {
-        return values;
-    }
-
-    public void setValues(List values) {
         if (this.values == null) {
             this.values = new ArrayList();
         }
 
+        if (evaluatedTypeValues == null) {
+            evaluatedTypeValues = new ArrayList();
+
+            for (Object obj : values) {
+                try {
+                    FrameworkUtil.checkAttributeValue(obj);
+                    getValues().add(obj);
+                } catch (IllegalArgumentException e) {
+                    getValues().add(obj.toString());
+                }
+            }
+        }
+
+        return this.evaluatedTypeValues;
+    }
+
+    public void setValues(final List values) {
         this.values = values;
     }
 

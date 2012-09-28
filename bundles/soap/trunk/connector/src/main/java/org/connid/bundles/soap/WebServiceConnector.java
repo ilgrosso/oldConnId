@@ -201,8 +201,7 @@ public class WebServiceConnector implements
         }
 
         try {
-            return new Uid(
-                    provisioning.authenticate(username, password.toString()));
+            return new Uid(provisioning.authenticate(username, password.toString()));
         } catch (ProvisioningException e) {
             throw new ConnectorException("Authentication failed", e);
         } catch (Throwable t) {
@@ -263,8 +262,7 @@ public class WebServiceConnector implements
             }
 
             if (attr.is(OperationalAttributeInfos.PASSWORD.getName())) {
-                wsAttribute.setName(
-                        OperationalAttributeInfos.PASSWORD.getName());
+                wsAttribute.setName(OperationalAttributeInfos.PASSWORD.getName());
                 wsAttribute.setPassword(true);
             }
 
@@ -272,6 +270,7 @@ public class WebServiceConnector implements
                 LOG.debug(
                         "\nAttribute: "
                         + "\n\tName: " + wsAttribute.getName()
+                        + "\n\tType: " + wsAttribute.getType()
                         + "\n\tIsKey: " + wsAttribute.isKey()
                         + "\n\tIsPassword: " + wsAttribute.isPassword());
             }
@@ -285,15 +284,13 @@ public class WebServiceConnector implements
                     && (value.get(0) instanceof GuardedString
                     || value.get(0) instanceof GuardedByteArray)) {
 
-                wsAttributeValue.setValues(
-                        Collections.singletonList(value.toString()));
+                wsAttributeValue.setValues(Collections.singletonList(value.toString()));
             } else {
                 wsAttributeValue.setValues(value);
             }
         }
 
-        LOG.debug("\nUser " + name.getNameValue()
-                + "\n\tattributes: " + attributes.size());
+        LOG.debug("\nUser " + name.getNameValue() + "\n\tattributes: " + attributes.size());
 
         try {
             // user creation
@@ -547,6 +544,7 @@ public class WebServiceConnector implements
             if (LOG.isDebugEnabled()) {
                 LOG.debug("\nAttribute: "
                         + "\n\tName: " + wsAttribute.getName()
+                        + "\n\tType: " + wsAttribute.getType()
                         + "\n\tIsKey: " + wsAttribute.isKey()
                         + "\n\tIsPassword: " + wsAttribute.isPassword());
             }
@@ -754,8 +752,7 @@ public class WebServiceConnector implements
                 if (attribute.getValues() == null) {
                     bld.addAttribute(AttributeBuilder.build(attribute.getName()));
                 } else {
-                    bld.addAttribute(AttributeBuilder.build(
-                            attribute.getName(), attribute.getValues()));
+                    bld.addAttribute(AttributeBuilder.build(attribute.getName(), attribute.getValues()));
                 }
 
             }
