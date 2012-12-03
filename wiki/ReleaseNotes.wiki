@@ -5,7 +5,6 @@
 =Bundles=
 
 == Active Directory (JNDI implementation) ==
-
 === 1.0.2 (December 3rd, 2012) ===
 With great pleasure we announce the availability of the new Active Directory connector's 1.0.2 release (JNDI implementation).
 
@@ -43,6 +42,15 @@ The most important new features are:
 Alongside with these new features, a documentation wiki page has been provided ( [http://code.google.com/p/connid/wiki/ActiveDirectoryJava Active Directory connector (JNDI implementation) ]).
 
 == Database Table ==
+=== 2.1.4 (September 28th, 2012) ===
+With great pleasure we announce the availability of the new Database Table connector's 2.1.4 release.
+
+The most important new features are:
+
+1. Removed mandatory constraint onto password cipher algorithm field ([http://code.google.com/p/connid/issues/detail?id=36&can=1 #36]).
+1. Given the possibility to force password encoding to all upper/lower cases ([http://code.google.com/p/connid/issues/detail?id=41&can=1 #41]).
+1. Fixed "Password cipher algorithm" configuration parameter  inconsistency ([http://code.google.com/p/connid/issues/detail?id=50&can=1 #50]).
+
 === 2.1 (January 12th, 2012) ===
 With great pleasure we announce the availability of the new Database Table connector's 2.1 release.
 
@@ -53,6 +61,13 @@ The most important new features are:
  1. Possibility to choose to retrieve password by default during sync or search query.
 
 == LDAP ==
+=== 1.3.4 (November 15th, 2012) ===
+With great pleasure we announce the availability of the new LDAP connector's 1.3.4 release.
+
+The most important new feature is:
+
+ 1. Provided default StatusManagement implementation ([http://code.google.com/p/connid/issues/detail?id=43&can=1 #43])
+
 === 1.3 (January 16th, 2012) ===
 With great pleasure we announce the availability of the new LDAP connector's 1.3 release.
 
