@@ -6,6 +6,26 @@
 
 == Active Directory (JNDI implementation) ==
 
+=== 1.0.2 (December 3rd, 2012) ===
+With great pleasure we announce the availability of the new Active Directory connector's 1.0.2 release (JNDI implementation).
+
+The most relevant new feature is:
+ 1. Fake object creation and return for each deleted entry.
+
+=== 1.0.1 (April 16th, 2012) ===
+With great pleasure we announce the availability of the new Active Directory connector's 1.0.1 release (JNDI implementation).
+
+The most relevant new feature is:
+ 1. Possibility to create a new user entry by specifying the sAMAccountName but by providing the complete DN (a default people container will be used).
+
+=== 1.0 (December 22nd, 2011) ===
+With great pleasure we announce the availability of the new Active Directory connector's 1.0 release (JNDI implementation).
+
+The most important new features are:
+ 1. Possibility to verify membership using OR/AND logical operator
+ 1. Possibility to perform an initial loading based on sync operation
+ 1. DirSync search extended to all the existent groups ([http://code.google.com/p/connid/issues/detail?id=25&can=1 #25]) in order to catch all memberOf attribute updates
+
 === 0.9 (December 7th, 2011) ===
 With great pleasure we announce the availability of the new Active Directory connector's 0.9 release (JNDI implementation).
 
@@ -21,20 +41,6 @@ The most important new features are:
  1. Possibility to trust all server certificates without any specified certification authority 
 
 Alongside with these new features, a documentation wiki page has been provided ( [http://code.google.com/p/connid/wiki/ActiveDirectoryJava Active Directory connector (JNDI implementation) ]).
-
-=== 1.0 (December 22nd, 2011) ===
-With great pleasure we announce the availability of the new Active Directory connector's 1.0 release (JNDI implementation).
-
-The most important new features are:
- 1. Possibility to verify membership using OR/AND logical operator
- 1. Possibility to perform an initial loading based on sync operation
- 1. DirSync search extended to all the existent groups ([http://code.google.com/p/connid/issues/detail?id=25&can=1 #25]) in order to catch all memberOf attribute updates
-
-=== 1.0.1 (April 16th, 2012) ===
-With great pleasure we announce the availability of the new Active Directory connector's 1.0.1 release (JNDI implementation).
-
-The most relevant new feature is:
- 1. Possibility to create a new user entry by specifying the sAMAccountName but by providing the complete DN (a default people container will be used).
 
 == Database Table ==
 === 2.1 (January 12th, 2012) ===
