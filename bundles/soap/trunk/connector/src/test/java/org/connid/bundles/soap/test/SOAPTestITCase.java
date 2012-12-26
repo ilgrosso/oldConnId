@@ -59,14 +59,13 @@ import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.connid.bundles.soap.WebServiceConnector;
 import org.connid.bundles.soap.provisioning.interfaces.Provisioning;
+import org.identityconnectors.common.logging.Log;
 
 public class SOAPTestITCase {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SOAPTestITCase.class);
+    private static final Log LOG = Log.getLog(SOAPTestITCase.class);
 
     final private String ENDPOINT_PREFIX = "http://localhost:8888/wssample/services";
 
@@ -106,12 +105,12 @@ public class SOAPTestITCase {
                 urls.add(IOUtil.makeURL(bundleDirectory, file));
             } catch (Exception ignore) {
                 // ignore exception and don't add bundle
-                LOG.debug("\"" + bundleDirectory.toString() + "/" + file + "\""
-                        + " is not a valid connector bundle.", ignore);
+                LOG.warn(ignore, "\"" + bundleDirectory.toString() + "/" + file + "\""
+                        + " is not a valid connector bundle.");
             }
         }
         assertFalse(urls.isEmpty());
-        LOG.debug("URL: " + urls.toString());
+        LOG.ok("URL: " + urls.toString());
 
         ConnectorInfoManagerFactory connectorInfoManagerFactory = ConnectorInfoManagerFactory.getInstance();
         ConnectorInfoManager manager = connectorInfoManagerFactory.getLocalManager(urls.toArray(new URL[0]));
@@ -120,13 +119,13 @@ public class SOAPTestITCase {
         // list connectors info
         List<ConnectorInfo> infos = manager.getConnectorInfos();
         assertNotNull(infos);
-        LOG.debug("infos size: " + infos.size());
+        LOG.ok("infos size: " + infos.size());
 
         for (ConnectorInfo i : infos) {
-            LOG.debug("Name: " + i.getConnectorDisplayName());
+            LOG.ok("Name: " + i.getConnectorDisplayName());
         }
 
-        LOG.debug("\nBundle name: " + bundlename
+        LOG.ok("\nBundle name: " + bundlename
                 + "\nBundle version: " + bundleversion
                 + "\nBundle class: " + bundleclass);
 
@@ -151,7 +150,7 @@ public class SOAPTestITCase {
         for (String propName : properties.getPropertyNames()) {
             ConfigurationProperty prop = properties.getProperty(propName);
 
-            LOG.debug("\nProperty Name: " + prop.getName()
+            LOG.ok("\nProperty Name: " + prop.getName()
                     + "\nProperty Type: " + prop.getType());
         }
 
@@ -204,7 +203,7 @@ public class SOAPTestITCase {
             assertNotNull(attrs);
 
             for (AttributeInfo attr : attrs) {
-                LOG.debug("\nAttribute name: " + attr.getName()
+                LOG.ok("\nAttribute name: " + attr.getName()
                         + "\nAttribute type: " + attr.getType().getName());
             }
         }
@@ -221,8 +220,6 @@ public class SOAPTestITCase {
 
             @Override
             public boolean handle(ConnectorObject obj) {
-                LOG.debug("Add record {}", obj);
-
                 results.add(obj);
                 return true;
             }
@@ -248,10 +245,10 @@ public class SOAPTestITCase {
          */
         assertFalse(results.isEmpty());
 
-        if (LOG.isDebugEnabled()) {
+        if (LOG.isOk()) {
             for (ConnectorObject obj : results) {
-                LOG.debug("\nName: " + obj.getName()
-                        + "\nUID: " + obj.getUid());
+                LOG.ok("\nName: " + obj.getName().getNameValue()
+                        + "\nUID: " + obj.getUid().getUidValue());
             }
         }
     }

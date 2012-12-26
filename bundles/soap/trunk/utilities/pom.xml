@@ -53,13 +53,13 @@
       <version>${base.version}</version>
     </dependency>
     
-        <!-- CXF -->
+    <!-- CXF -->
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxws</artifactId>
     </dependency>
 
-        <!-- Spring -->
+    <!-- Spring -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>

@@ -24,14 +24,21 @@ package org.connid.bundles.soap;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import org.connid.bundles.soap.provisioning.interfaces.Provisioning;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.connid.bundles.soap.exceptions.ProvisioningException;
+import org.connid.bundles.soap.provisioning.interfaces.Provisioning;
+import org.connid.bundles.soap.to.WSAttribute;
+import org.connid.bundles.soap.to.WSAttributeValue;
+import org.connid.bundles.soap.to.WSChange;
+import org.connid.bundles.soap.to.WSUser;
+import org.connid.bundles.soap.utilities.AttributeType;
+import org.connid.bundles.soap.utilities.Operand;
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedByteArray;
-import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Attribute;
@@ -39,6 +46,7 @@ import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.AttributeInfo;
 import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
+import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
@@ -46,13 +54,16 @@ import org.identityconnectors.framework.common.objects.ObjectClassInfo;
 import org.identityconnectors.framework.common.objects.ObjectClassInfoBuilder;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationalAttributeInfos;
+import org.identityconnectors.framework.common.objects.OperationalAttributes;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.Schema;
 import org.identityconnectors.framework.common.objects.SchemaBuilder;
 import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
+import org.identityconnectors.framework.common.objects.SyncDeltaType;
 import org.identityconnectors.framework.common.objects.SyncResultsHandler;
 import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
@@ -66,18 +77,6 @@ import org.identityconnectors.framework.spi.operations.SearchOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;
 import org.identityconnectors.framework.spi.operations.TestOp;
 import org.identityconnectors.framework.spi.operations.UpdateOp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.connid.bundles.soap.utilities.AttributeType;
-import org.connid.bundles.soap.exceptions.ProvisioningException;
-import org.connid.bundles.soap.to.WSAttribute;
-import org.connid.bundles.soap.to.WSAttributeValue;
-import org.connid.bundles.soap.to.WSChange;
-import org.connid.bundles.soap.to.WSUser;
-import org.connid.bundles.soap.utilities.Operand;
-import org.identityconnectors.framework.common.objects.ConnectorObject;
-import org.identityconnectors.framework.common.objects.OperationalAttributes;
-import org.identityconnectors.framework.common.objects.SyncDeltaType;
 
 @ConnectorClass(displayNameKey = "SOAP_CONNECTOR",
 configurationClass = WebServiceConfiguration.class)
@@ -96,8 +95,7 @@ public class WebServiceConnector implements
     /**
      * Setup logging for the {@link WebServiceConnector}.
      */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(WebServiceConnector.class);
+    private static final Log LOG = Log.getLog(WebServiceConnector.class);
 
     /**
      * Place holder for the Connection created in the init method.
@@ -105,8 +103,7 @@ public class WebServiceConnector implements
     private WebServiceConnection connection;
 
     /**
-     * Place holder for the {@link Configuration} passed into the init() method
-     * {@link WebServiceConnector#init}.
+     * Place holder for the {@link Configuration} passed into the init() method {@link WebServiceConnector#init}.
      */
     private WebServiceConfiguration config;
 
@@ -136,7 +133,7 @@ public class WebServiceConnector implements
      */
     @Override
     public void init(final Configuration cfg) {
-        LOG.debug("Connector initialization");
+        LOG.ok("Connector initialization");
 
         this.config = (WebServiceConfiguration) cfg;
         this.connection = new WebServiceConnection(this.config);
@@ -149,7 +146,7 @@ public class WebServiceConnector implements
      */
     @Override
     public void dispose() {
-        LOG.debug("Dispose connector resources");
+        LOG.ok("Dispose connector resources");
 
         config = null;
 
@@ -167,7 +164,7 @@ public class WebServiceConnector implements
      */
     @Override
     public void checkAlive() {
-        LOG.debug("Connection test");
+        LOG.ok("Connection test");
 
         connection.test();
     }
@@ -182,7 +179,7 @@ public class WebServiceConnector implements
             final GuardedString password,
             final OperationOptions options) {
 
-        LOG.debug("User uthentication");
+        LOG.ok("User uthentication");
 
         // check objectclass
         if (objectClass == null || (!objectClass.equals(ObjectClass.ACCOUNT))) {
@@ -218,7 +215,7 @@ public class WebServiceConnector implements
             final Set<Attribute> attrs,
             final OperationOptions options) {
 
-        LOG.debug("Account creation");
+        LOG.ok("Account creation");
 
         // check objectclass
         if (objClass == null || (!objClass.equals(ObjectClass.ACCOUNT))) {
@@ -242,7 +239,7 @@ public class WebServiceConnector implements
             throw new IllegalArgumentException("No name specified");
         }
 
-        LOG.debug("Account to be created: " + name.getNameValue());
+        LOG.ok("Account to be created: " + name.getNameValue());
 
         // to be user in order to pass information to the web service
         final List<WSAttributeValue> attributes =
@@ -266,8 +263,8 @@ public class WebServiceConnector implements
                 wsAttribute.setPassword(true);
             }
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(
+            if (LOG.isOk()) {
+                LOG.ok(
                         "\nAttribute: "
                         + "\n\tName: " + wsAttribute.getName()
                         + "\n\tType: " + wsAttribute.getType()
@@ -290,7 +287,7 @@ public class WebServiceConnector implements
             }
         }
 
-        LOG.debug("\nUser " + name.getNameValue() + "\n\tattributes: " + attributes.size());
+        LOG.ok("\nUser " + name.getNameValue() + "\n\tattributes: " + attributes.size());
 
         try {
             // user creation
@@ -314,7 +311,7 @@ public class WebServiceConnector implements
             final Uid uid,
             final OperationOptions options) {
 
-        LOG.debug("Account deletion");
+        LOG.ok("Account deletion");
 
         // check objectclass
         if (objClass == null || (!objClass.equals(ObjectClass.ACCOUNT))) {
@@ -341,7 +338,7 @@ public class WebServiceConnector implements
      */
     @Override
     public Schema schema() {
-        LOG.debug("Schema retrieving");
+        LOG.ok("Schema retrieving");
 
         Provisioning provisioning = connection.getProvisioning();
 
@@ -363,8 +360,8 @@ public class WebServiceConnector implements
 
             wsAttributes.put(getAttributeName(attribute), attribute);
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("\nAttribute: "
+            if (LOG.isOk()) {
+                LOG.ok("\nAttribute: "
                         + "\n\tName: " + attribute.getName()
                         + "\n\tType: " + attribute.getType()
                         + "\n\tIsKey: " + attribute.isKey()
@@ -398,14 +395,14 @@ public class WebServiceConnector implements
          * the line that *does* acquire the implemented interfaces by the connector class.
          */
         if (!provisioning.isAuthenticationSupported()) {
-            LOG.debug("Authentication is not supported.");
+            LOG.ok("Authentication is not supported.");
 
             schemaBld.removeSupportedObjectClass(
                     AuthenticateOp.class, objectclassInfo);
         }
 
         if (!provisioning.isSyncSupported()) {
-            LOG.debug("Synchronization is not supported.");
+            LOG.ok("Synchronization is not supported.");
 
             schemaBld.removeSupportedObjectClass(
                     SyncOp.class, objectclassInfo);
@@ -440,7 +437,7 @@ public class WebServiceConnector implements
             final ResultsHandler handler,
             final OperationOptions options) {
 
-        LOG.debug("Execute query: " + query);
+        LOG.ok("Execute query: " + query);
 
         // check objectclass
         if (objClass == null || (!objClass.equals(ObjectClass.ACCOUNT))) {
@@ -469,11 +466,11 @@ public class WebServiceConnector implements
             for (Iterator<WSUser> i = resultSet.iterator(); i.hasNext() && handle;) {
 
                 user = i.next();
-                LOG.debug("Found user: " + user.getAccountid());
+                LOG.ok("Found user: " + user.getAccountid());
 
                 handle = handler.handle(buildConnectorObject(user.getAttributes()).build());
 
-                LOG.debug("Handle:" + handle);
+                LOG.ok("Handle:" + handle);
             }
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -541,8 +538,8 @@ public class WebServiceConnector implements
                 wsAttribute.setPassword(true);
             }
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("\nAttribute: "
+            if (LOG.isOk()) {
+                LOG.ok("\nAttribute: "
                         + "\n\tName: " + wsAttribute.getName()
                         + "\n\tType: " + wsAttribute.getType()
                         + "\n\tIsKey: " + wsAttribute.isKey()
@@ -685,7 +682,7 @@ public class WebServiceConnector implements
 
         Uid uuid = null;
         if (uid != null) {
-            LOG.debug("Not able to resolve '" + username + "'");
+            LOG.ok("Not able to resolve '" + username + "'");
             uuid = new Uid(uid);
         }
 
