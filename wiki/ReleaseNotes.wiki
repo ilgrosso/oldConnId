@@ -4,6 +4,15 @@
 
 =Bundles=
 
+== SOAP ==
+=== 1.3.4 (December 26th, 2012) ===
+With great pleasure we announce the availability of the new SOAP connector's 1.0.2 release (JNDI implementation).
+
+Issues included in this release:
+ 1. [https://code.google.com/p/connid/issues/detail?id=48 #48]
+ 1. [https://code.google.com/p/connid/issues/detail?id=49 #49]
+ 1. [https://code.google.com/p/connid/issues/detail?id=55 #55]
+
 == Active Directory (JNDI implementation) ==
 === 1.0.2 (December 3rd, 2012) ===
 With great pleasure we announce the availability of the new Active Directory connector's 1.0.2 release (JNDI implementation).
