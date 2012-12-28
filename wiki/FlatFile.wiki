@@ -1,7 +1,0 @@
-#summary Flat file connector
-
-<wiki:toc max_depth="2"/>
-
-= Overview =
-
-The Flat file Connector supports provisioning to and from a flat text file.
